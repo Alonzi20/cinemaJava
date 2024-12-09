@@ -32,10 +32,7 @@ dependencies {
     // Suppressions for SpotBugs
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.8.6")
 
-    // Example library: Guava. Add what you need (and remove Guava if you don't use it)
-    // implementation("com.google.guava:guava:28.1-jre")
-
-    // JavaFX: comment out if you do not need them
+    // JavaFX dependencies
     val javaFxVersion = 15
     for (platform in supportedPlatforms) {
         for (module in javaFXModules) {
@@ -43,8 +40,15 @@ dependencies {
         }
     }
 
+    // TMDb API dependency
+    implementation("com.uwetrottmann.tmdb2:tmdb-java:2.2.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("org.json:json:20210307")
+
+
+
+    // JUnit for testing
     val jUnitVersion = "5.11.2"
-    // JUnit API and testing engine
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
 }
