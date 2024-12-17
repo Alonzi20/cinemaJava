@@ -1,15 +1,30 @@
 package it.unibo.samplejavafx.cinema.models;
 
-public class Proiezione {
-    private Film film;
-    private String sala;
-    private String orario;
-    private int postiDisponibili;
+import java.util.List;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
-    public Proiezione(Film film, String sala, String orario, int postiDisponibili) {
-        this.film = film;
-        this.sala = sala;
-        this.orario = orario;
-        this.postiDisponibili = postiDisponibili;
+@Data
+public class Proiezione {
+  Film film;
+  Sala sala;
+  String orario;
+  List<Posto> postiPrenotati = List.of();
+
+  public int postiLiberi() {
+    return sala.getPosti() - postiPrenotati.size();
+  }
+
+  public boolean isPrenotabile() {
+    return postiLiberi() > 0;
+  }
+
+  // TODO Alex: [17/12/2024] implementare il metodo prenota, questo è solo uno scheletro
+  public boolean prenota(@NotNull Posto posto) {
+    if (isPrenotabile()) {
+      this.postiPrenotati.add(posto);
+      return true;
     }
+    return false;
+  }
 }
