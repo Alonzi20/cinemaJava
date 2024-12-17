@@ -32,6 +32,10 @@ dependencies {
     // Suppressions for SpotBugs
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.8.6")
 
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
+
     // JavaFX dependencies
     val javaFxVersion = 15
     for (platform in supportedPlatforms) {
@@ -45,12 +49,22 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("org.json:json:20210307")
 
-
+    // API SLF4J e Logback
+    implementation("org.slf4j:slf4j-api:2.0.13")
+    implementation("ch.qos.logback:logback-classic:1.4.14")
 
     // JUnit for testing
     val jUnitVersion = "5.11.2"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
+
+    // Lombok per i test
+    testCompileOnly("org.projectlombok:lombok:1.18.36")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+}
+
+tasks.withType<JavaCompile> {
+    options.annotationProcessorPath = configurations["annotationProcessor"]
 }
 
 tasks.withType<Test> {
