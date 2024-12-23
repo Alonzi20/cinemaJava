@@ -1,6 +1,6 @@
 package it.unibo.samplejavafx.cinema.services;
 
-import it.unibo.samplejavafx.cinema.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.Film;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +18,11 @@ import org.json.JSONObject;
 public class MovieProjections {
   private static final String API_KEY = "2ad42fcfac14ac8869896349fa9c4b6f";
   private List<Film> weeklyMovies;
+
+  public MovieProjections() {
+    weeklyMovies = new ArrayList<>();
+    fetchWeeklyMovies();
+  }
 
   private void fetchWeeklyMovies() {
     OkHttpClient client = new OkHttpClient();
