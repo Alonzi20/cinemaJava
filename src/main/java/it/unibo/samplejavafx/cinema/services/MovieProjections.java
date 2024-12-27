@@ -1,17 +1,19 @@
 package it.unibo.samplejavafx.cinema.services;
 
-import it.unibo.samplejavafx.cinema.application.models.Film;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import it.unibo.samplejavafx.cinema.models.Film;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 @Slf4j
 @Data
@@ -79,50 +81,74 @@ public class MovieProjections {
   // Recupero dettagli specifici di un film
   private Film getMovieDetails(int movieId) {
     OkHttpClient client = new OkHttpClient();
-    Request request =
-        new Request.Builder()
-            .url(
-                "https://api.themoviedb.org/3/movie/"
-                    + movieId
-                    + "?api_key="
-                    + API_KEY
-                    + "&language=it-IT")
-            .get()
-            .addHeader("accept", "application/json")
-            .build();
-
+ 
+    // Chiamate API per dettagli e cast
+    Request detailsRequest = new Request.Builder()
+        .url("https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + API_KEY + "&language=it-IT")
+        .get()
+        .addHeader("accept", "application/json")
+        .build();
+        
+    Request creditsRequest = new Request.Builder()
+        .url("https://api.themoviedb.org/3/movie/" + movieId + "/credits?api_key=" + API_KEY)
+        .get()
+        .addHeader("accept", "application/json")  
+        .build();
+ 
     try {
-      Response response = client.newCall(request).execute();
+        Response detailsResponse = client.newCall(detailsRequest).execute();
+        Response creditsResponse = client.newCall(creditsRequest).execute();
+ 
+        if (detailsResponse.isSuccessful() && creditsResponse.isSuccessful() && 
+            detailsResponse.body() != null && creditsResponse.body() != null) {
+ 
+            JSONObject movieDetails = new JSONObject(detailsResponse.body().string());
+            JSONObject credits = new JSONObject(creditsResponse.body().string());
+ 
+            // Estrai generi
+            JSONArray genresArray = movieDetails.getJSONArray("genres");
+            List<String> genres = new ArrayList<>();
+            for (int i = 0; i < genresArray.length(); i++) {
+                genres.add(genresArray.getJSONObject(i).getString("name"));
+            }
+ 
+            // Estrai cast principale (primi 5)
+            JSONArray castArray = credits.getJSONArray("cast");
+            List<String> mainCast = new ArrayList<>();
+            int castLimit = Math.min(castArray.length(), 5);
+            for (int i = 0; i < castLimit; i++) {
+                mainCast.add(castArray.getJSONObject(i).getString("name"));
+            }
 
-      if (response.isSuccessful() && response.body() != null) {
-        String jsonData = response.body().string();
-        JSONObject movieDetails = new JSONObject(jsonData);
-
-        // estrazione generi film
-        JSONArray genresArray = movieDetails.getJSONArray("genres");
-        List<String> genres = new ArrayList<>();
-        for (int i = 0; i < genresArray.length(); i++) {
-          genres.add(genresArray.getJSONObject(i).getString("name"));
+            JSONArray crewArray = credits.getJSONArray("crew");
+            String director = "Non disponibile";
+            for (int i = 0; i < crewArray.length(); i++) {
+              JSONObject crewMember = crewArray.getJSONObject(i);
+              if ("Director".equals(crewMember.getString("job"))) {
+                director = crewMember.getString("name");
+                break;
+              }
+            }
+ 
+            return new Film(
+                movieDetails.getInt("id"),
+                movieDetails.getString("title"),
+                movieDetails.getString("overview"),
+                movieDetails.getString("release_date"),
+                movieDetails.getString("poster_path"),
+                genres,
+                movieDetails.getInt("runtime"),
+                mainCast,
+                director,
+                movieDetails.getBoolean("adult")
+            );
         }
-
-        return new Film(
-            movieDetails.getInt("id"),
-            movieDetails.getString("title"),
-            movieDetails.getString("overview"),
-            movieDetails.getString("release_date"),
-            movieDetails.getString("poster_path"),
-            genres,
-            movieDetails.getInt("runtime"),
-            movieDetails.getBoolean("adult"));
-      }
     } catch (IOException e) {
-      log.error("Errore durante il recupero dei dettagli del film", e);
-      e.printStackTrace();
+        log.error("Errore durante il recupero dei dettagli del film", e);
+        e.printStackTrace();
     }
-
     return null;
-  }
-
+ }
   // recupero film settimanali
   public List<Film> getWeeklyMovies() {
     return new ArrayList<>(weeklyMovies);

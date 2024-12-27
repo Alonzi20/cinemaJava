@@ -13,11 +13,13 @@ public class App {
 
     for (var movie : weeklyMovies) {
       System.out.println("Titolo: " + movie.getTitle());
+      System.out.println("Regista: " + movie.getDirector());
       System.out.println("Descrizione: " + movie.getOverview());
       System.out.println("Generi: " + movie.getGenres());
       System.out.println("Durata: " + movie.getDuration() + " minuti");
       System.out.println("Vietato ai minori: " + movie.isAdult());
       System.out.println("Poster: " + movie.getPosterPath());
+      System.out.println("Cast principale: " + movie.getCast());
       System.out.println("----------------------------");
     }
   }
