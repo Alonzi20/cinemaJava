@@ -1,5 +1,6 @@
 package it.unibo.samplejavafx.cinema.services;
 
+import it.unibo.samplejavafx.cinema.models.Film;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,7 +9,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import it.unibo.samplejavafx.cinema.models.Film;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
