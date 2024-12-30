@@ -3,6 +3,7 @@ package it.unibo.samplejavafx.ui;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -50,11 +51,18 @@ public class CinemaSchedule extends Application {
         box.setPadding(new Insets(10));
         box.setMaxWidth(Double.MAX_VALUE); 
 
-        // Poster del film
+        // Container per poster e bottone
+        VBox posterContainer = new VBox(5);
         ImageView poster = new ImageView(new Image("https://image.tmdb.org/t/p/w154" + movie.getPosterPath()));
         poster.setFitWidth(100);
         poster.setFitHeight(150);
 
+        // Bottone per accedere ai dettagli del film
+        Button detailButton = new Button("SCHEDA FILM");
+        detailButton.setStyle("-fx-background-color: #003366; -fx-text-fill: white;");
+        detailButton.setOnAction(e -> openMovieDetail(movie));
+
+        posterContainer.getChildren().addAll(poster, detailButton);
         // Informazioni film
         VBox info = new VBox(5);
         Label title = new Label(movie.getTitle());
@@ -72,7 +80,7 @@ public class CinemaSchedule extends Application {
         GridPane schedule = createScheduleGrid(movie);
 
         info.getChildren().addAll(title, director, genre, duration, cast, schedule);
-        box.getChildren().addAll(poster, info);
+        box.getChildren().addAll(posterContainer,info);
 
         return box;
     }
@@ -94,6 +102,12 @@ public class CinemaSchedule extends Application {
         }
 
         return grid;
+    }
+
+    private void openMovieDetail(Film movie) {
+        Stage detailStage = new Stage();
+        MovieDetail movieDetail = new MovieDetail(movie);
+        movieDetail.start(detailStage);
     }
 
     public static void main(String[] args) {
