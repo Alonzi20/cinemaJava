@@ -15,28 +15,38 @@ import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import it.unibo.samplejavafx.cinema.models.Film;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
+import java.util.List;
 
 public class CinemaSchedule extends Application {
     private static final String[] DAYS = {"GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ"};
     private final MovieProjections movieService = new MovieProjections();
+    private VBox container;
 
     @Override
     public void start(Stage primaryStage) {
         ScrollPane root = new ScrollPane();
         root.setFitToWidth(true); 
         root.setFitToHeight(true); 
-        VBox container = new VBox(10);
+        container = new VBox(10);
         container.setPadding(new Insets(20));
         container.setStyle("-fx-background-color: #00008B;");
         container.setPrefWidth(Region.USE_COMPUTED_SIZE); 
         container.setMaxWidth(Double.MAX_VALUE);          
 
-        for (Film movie : movieService.getWeeklyMovies()) {
-            HBox movieBox = createMovieBox(movie);
-            movieBox.setMaxWidth(Double.MAX_VALUE); 
-            movieBox.setPrefWidth(Region.USE_COMPUTED_SIZE);
-            container.getChildren().add(movieBox);
-        }
+        // for (Film movie : movieService.getWeeklyMovies()) {
+        //     HBox movieBox = createMovieBox(movie);
+        //     movieBox.setMaxWidth(Double.MAX_VALUE); 
+        //     movieBox.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        //     container.getChildren().add(movieBox);
+        // }
+
+        MovieSearchInterface searchInterface = new MovieSearchInterface(
+            movieService.getWeeklyMovies(),
+            this::visualizzaFilmFiltrati
+        );
+        container.getChildren().add(searchInterface);
+
+        visualizzaFilmFiltrati(movieService.getWeeklyMovies());
 
         root.setContent(container);
         Scene scene = new Scene(root);
@@ -45,6 +55,33 @@ public class CinemaSchedule extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+    private void visualizzaFilmFiltrati(List<Film> films) {
+        // Rimossi tutti gli elementi tranne i componenti di ricerca
+        container.getChildren().removeIf(node -> !(node instanceof MovieSearchInterface));
+    
+        // Controllo se la lista è vuota
+        if (films.isEmpty()) {
+            Label nessunRisultato = new Label("Nessun risultato");
+            nessunRisultato.setId("nessunRisultatoLabel"); // Imposta un ID univoco
+            nessunRisultato.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+            
+            container.getChildren().removeIf(node -> node.getId() != null && node.getId().equals("nessunRisultatoLabel"));
+            container.getChildren().add(nessunRisultato);
+        } else {
+            // Rimossa vecchia etichetta "Nessun risultato" se presente
+            container.getChildren().removeIf(node -> node.getId() != null && node.getId().equals("nessunRisultatoLabel"));
+            
+            // Aggiunti film trovati
+            for (Film film : films) {
+                HBox boxFilm = createMovieBox(film);
+                boxFilm.setMaxWidth(Double.MAX_VALUE);
+                container.getChildren().add(boxFilm);
+            }
+        }
+    }
+    
+    
 
     private HBox createMovieBox(Film movie) {
         HBox box = new HBox(15);
