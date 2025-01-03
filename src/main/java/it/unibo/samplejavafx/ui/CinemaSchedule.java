@@ -29,7 +29,7 @@ public class CinemaSchedule extends Application {
         root.setFitToHeight(true); 
         container = new VBox(10);
         container.setPadding(new Insets(20));
-        container.setStyle("-fx-background-color: #00008B;");
+        container.getStyleClass().add("container");
         container.setPrefWidth(Region.USE_COMPUTED_SIZE); 
         container.setMaxWidth(Double.MAX_VALUE);          
 
@@ -50,6 +50,7 @@ public class CinemaSchedule extends Application {
 
         root.setContent(container);
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setMaximized(true); 
         primaryStage.setTitle("Programmazione Cinema");
         primaryStage.setScene(scene);
@@ -64,7 +65,7 @@ public class CinemaSchedule extends Application {
         if (films.isEmpty()) {
             Label nessunRisultato = new Label("Nessun risultato");
             nessunRisultato.setId("nessunRisultatoLabel"); // Imposta un ID univoco
-            nessunRisultato.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+            nessunRisultato.getStyleClass().add("nessun-risultato-label");
             
             container.getChildren().removeIf(node -> node.getId() != null && node.getId().equals("nessunRisultatoLabel"));
             container.getChildren().add(nessunRisultato);
@@ -96,23 +97,22 @@ public class CinemaSchedule extends Application {
 
         // Bottone per accedere ai dettagli del film
         Button detailButton = new Button("SCHEDA FILM");
-        detailButton.setStyle("-fx-background-color: #003366; -fx-text-fill: white;");
+        detailButton.getStyleClass().add("detail-button");
         detailButton.setOnAction(e -> openMovieDetail(movie));
 
         posterContainer.getChildren().addAll(poster, detailButton);
         // Informazioni film
         VBox info = new VBox(5);
         Label title = new Label(movie.getTitle());
-        title.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
+        title.getStyleClass().add("movie-title");
         Label director = new Label("Regia: " + movie.getDirector()); 
-        director.setStyle("-fx-text-fill: white;");
+        director.getStyleClass().add("movie-info");
         Label genre = new Label("Genere: " + String.join(", ", movie.getGenres()));
-        genre.setStyle("-fx-text-fill: white;");
+        genre.getStyleClass().add("movie-info");
         Label duration = new Label("Durata: " + movie.getDuration() + "'");
-        duration.setStyle("-fx-text-fill: white;");
+        duration.getStyleClass().add("movie-info");
         Label cast = new Label("Cast: " + String.join(", ", movie.getCast()));
-        cast.setStyle("-fx-text-fill: white;");
-
+        cast.getStyleClass().add("movie-info");
         // Griglia orari
         GridPane schedule = createScheduleGrid(movie);
 
@@ -129,12 +129,12 @@ public class CinemaSchedule extends Application {
 
         for (int i = 0; i < DAYS.length; i++) {
             Label day = new Label(DAYS[i]);
-            day.setStyle("-fx-text-fill: white;");
+            day.getStyleClass().add("schedule-grid-label");
             grid.add(day, 0, i);
 
             // TODO: Aggiungere la logica degli orari
             Label time = new Label("n.d.");
-            time.setStyle("-fx-text-fill: white;");
+            time.getStyleClass().add("schedule-grid-label");
             grid.add(time, 1, i);
         }
 

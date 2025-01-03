@@ -1,9 +1,11 @@
 package it.unibo.samplejavafx.ui;
 
 import javafx.scene.control.TextField;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.collections.FXCollections;
 import it.unibo.samplejavafx.cinema.models.Film;
 import javafx.collections.transformation.FilteredList;
@@ -20,13 +22,13 @@ public class MovieSearchInterface extends HBox {
 
     public MovieSearchInterface(List<Film> films, Consumer<List<Film>> onSearchUpdated) {
         super(10);
-        this.setStyle("-fx-background-color: #003366; -fx-padding: 10px;");
+        this.getStyleClass().add("movie-search-interface");
         this.onSearchUpdated = onSearchUpdated;
         this.filmFiltrati = new FilteredList<>(FXCollections.observableArrayList(films));
         
         campoRicerca = new TextField();
         campoRicerca.setPromptText("Cerca film...");
-        campoRicerca.setStyle("-fx-background-color: white;");
+        campoRicerca.getStyleClass().add("text-field");
         campoRicerca.textProperty().addListener((obs, old, newValue) -> applicaFiltri());
         
         Set<String> tuttiGeneri = films.stream()
@@ -34,12 +36,12 @@ public class MovieSearchInterface extends HBox {
             .collect(Collectors.toSet());
         filtroGenere = new ComboBox<>(FXCollections.observableArrayList(tuttiGeneri));
         filtroGenere.setPromptText("Filtra per genere");
-        filtroGenere.setStyle("-fx-background-color: white;");
+        filtroGenere.getStyleClass().add("combo-box");
         filtroGenere.valueProperty().addListener((obs, old, newValue) -> applicaFiltri());
         
         // Bottone per resettare i filtri
         Button resetButton = new Button("Cancella filtri");
-        resetButton.setStyle("-fx-background-color: white; -fx-font-weight: bold;");
+        resetButton.getStyleClass().add("reset-button");
         resetButton.setOnAction(e -> resetFiltri());
 
         this.getChildren().addAll(campoRicerca, filtroGenere, resetButton);

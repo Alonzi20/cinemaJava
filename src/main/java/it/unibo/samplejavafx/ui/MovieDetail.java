@@ -22,7 +22,7 @@ public class MovieDetail extends Application {
     public void start(Stage stage) {
         VBox root = new VBox(10);
         root.setPadding(new Insets(20));
-        root.setStyle("-fx-background-color: #00008B;");
+        root.getStyleClass().add("detail-root");
 
         Button backButton = new Button("Indietro");
         backButton.setOnAction(e -> stage.close());
@@ -31,33 +31,34 @@ public class MovieDetail extends Application {
         poster.setFitWidth(200);
         poster.setFitHeight(300);
 
-        Label adultLabel = createLabel("Vietato ai minori: " + (movie.isAdult() ? "Si" : "No")); 
-        Label tramaLabel = createLabel("Trama: " + movie.getOverview());
+        Label adultLabel = createLabel("Vietato ai minori: " + (movie.isAdult() ? "Si" : "No"), "detail-label"); 
+        Label tramaLabel = createLabel("Trama: " + movie.getOverview(), "detail-label");
             tramaLabel.setWrapText(true);
             tramaLabel.setMaxWidth(600);   
 
         root.getChildren().addAll(
             backButton,
             poster,
-            createLabel(movie.getTitle(), "-fx-font-size: 24; -fx-font-weight: bold;"),
-            createLabel("Regia: " + movie.getDirector()),
-            createLabel("Durata: " + movie.getDuration() + "'"),
-            createLabel("Genere: " + String.join(", ", movie.getGenres())),
-            createLabel("Cast: " + String.join(", ", movie.getCast())),
-            createLabel("Anno: " + movie.getReleaseDate()), // TODO: Valutare formato data
+            createLabel(movie.getTitle(), "detail-title"),
+            createLabel("Regia: " + movie.getDirector(), "detail-label"),
+            createLabel("Durata: " + movie.getDuration() + "'", "detail-label"),
+            createLabel("Genere: " + String.join(", ", movie.getGenres()), "detail-label"),
+            createLabel("Cast: " + String.join(", ", movie.getCast()), "detail-label"),
+            createLabel("Anno: " + movie.getReleaseDate(), "detail-label"), // TODO: Valutare formato data
             adultLabel,
             tramaLabel
         );
 
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         stage.setTitle("Dettagli Film");
         stage.setScene(scene);
         stage.show();
     }
 
-    private Label createLabel(String text, String... styles) {
+    private Label createLabel(String text, String... styleClasses) {
         Label label = new Label(text);
-        label.setStyle("-fx-text-fill: white;" + String.join(";", styles));
+        label.getStyleClass().addAll(styleClasses);
         return label;
     }
 }

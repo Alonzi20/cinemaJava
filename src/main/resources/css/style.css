@@ -1,0 +1,71 @@
+.container {
+    -fx-background-color: #00008B;
+}
+
+.nessun-risultato-label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.detail-button {
+    -fx-background-color: #003366;
+    -fx-text-fill: white;
+}
+
+.movie-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.movie-info {
+    -fx-text-fill: white;
+}
+
+.schedule-grid-label {
+    -fx-text-fill: white;
+}
+
+.detail-root {
+    -fx-background-color: #00008B;
+    -fx-padding: 20px;
+}
+
+.detail-poster {
+    -fx-fit-width: 200px;
+    -fx-fit-height: 300px;
+}
+
+.detail-label {
+    -fx-text-fill: white;
+}
+
+.detail-title {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.detail-trama {
+    -fx-text-fill: white;
+    -fx-wrap-text: true;
+    -fx-max-width: 600px;
+}
+
+.movie-search-interface {
+    -fx-background-color: #003366;
+    -fx-padding: 10px;
+}
+
+.text-field {
+    -fx-background-color: white;
+}
+
+.combo-box {
+    -fx-background-color: white;
+}
+
+.reset-button {
+    -fx-background-color: white;
+    -fx-font-weight: bold;
+}
