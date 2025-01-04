@@ -105,8 +105,8 @@ public class MovieProjections {
           genres.add(genresArray.getJSONObject(i).getString("name"));
         }
 
-        return new Film(
-            movieDetails.getInt("id"),
+        return Film.of(
+            movieDetails.getLong("id"),
             movieDetails.getString("title"),
             movieDetails.getString("overview"),
             movieDetails.getString("release_date"),
