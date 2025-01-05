@@ -18,7 +18,7 @@ public class ClienteController {
   private final ClienteService clienteService;
 
   @GetMapping
-  public Cliente findCliente(@RequestParam int id) {
+  public Cliente findCliente(@RequestParam Long id) {
     try {
       return clienteService.findClienteById(id);
     } catch (Exception e) {

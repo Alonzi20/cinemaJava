@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 import lombok.*;
 
@@ -26,25 +28,8 @@ public class Proiezione {
 
   Long filmId;
   Long salaId;
-  String orario;
+  Date data;
+  Time orario;
 
-  @Builder.Default
-  List<Long> postiPrenotatiIds = List.of();
-
-  /*public int postiLiberi() {
-    return sala.getPosti() - postiPrenotati.size();
-  }
-
-  public boolean isPrenotabile() {
-    return postiLiberi() > 0;
-  }
-
-  // TODO Alex: [17/12/2024] implementare il metodo prenota, questo è solo uno scheletro
-  public boolean prenota(@NotNull Posto posto) {
-    if (isPrenotabile()) {
-      this.postiPrenotati.add(posto);
-      return true;
-    }
-    return false;
-  }*/
+  @Builder.Default List<Long> postiPrenotatiIds = List.of();
 }

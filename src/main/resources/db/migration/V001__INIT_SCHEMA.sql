@@ -73,16 +73,17 @@ CREATE TABLE Proiezione (
                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
                       film_id BIGINT NOT NULL,
                       sala_id BIGINT,
-                      orario VARCHAR(16),
+                      data DATE,
+                      orario TIME,
                       posti_disponibili BIGINT
 );
 
-INSERT INTO Proiezione (id, film_id, sala_id, orario, posti_disponibili)
+INSERT INTO Proiezione (id, film_id, sala_id, data, orario, posti_disponibili)
 VALUES
-    (0, 0, 0, '2025-01-01 20:00', 20),
-    (1, 1, 1, '2025-02-02 21:00', 20),
-    (2, 2, 2, '2025-03-03 20:30', 20),
-    (3, 3, 0, '2025-04-04 17:30', 20);
+    (0, 0, 0, 2025-01-01, 20:00:00, 20),
+    (1, 1, 1, 2025-02-02, 21:00:00, 20),
+    (2, 2, 2, 2025-03-03, 20:30:00, 20),
+    (3, 3, 0, 2025-04-04, 17:30:00, 20);
 
 CREATE TABLE Biglietto (
                            id BIGINT AUTO_INCREMENT PRIMARY KEY,

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Integer> {}
+public interface ClienteRepository extends JpaRepository<Cliente, Long> {}
 /*private static ClienteRepository instance;
 // Classe generale di connessione al db a cui passare il tipo Client, da mettere nel costruttore
 ORMHelper<Cliente> ormHelper;

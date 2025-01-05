@@ -5,4 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProiezioneRepository extends JpaRepository<Proiezione, Integer> {}
+public interface ProiezioneRepository extends JpaRepository<Proiezione, Long> {}

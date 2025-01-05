@@ -17,8 +17,8 @@ import lombok.*;
 @AllArgsConstructor(staticName = "of", access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Biglietto {
-  private static final double PREZZO_INTERO = 8.0;
-  private static final double PREZZO_RIDOTTO = 5.0;
+  public static final double PREZZO_INTERO = 8.0;
+  public static final double PREZZO_RIDOTTO = 5.0;
 
   @Id
   @DomainAggregateId
@@ -29,14 +29,14 @@ public class Biglietto {
   Long proiezioneId;
   @Builder.Default boolean ridotto = false;
 
-  // Posto posto;
+  @Builder.Default Double prezzo = prezzo();
+
+  // INFO POSTO
+  Long numero;
+  String fila;
+  int sala;
 
   public double prezzo() {
     return ridotto ? PREZZO_RIDOTTO : PREZZO_INTERO;
   }
-
-  // TODO Alex: [17/12/2024]
-  /*public void compra() {
-    if (proiezione.isPrenotabile()) {}
-  }*/
 }

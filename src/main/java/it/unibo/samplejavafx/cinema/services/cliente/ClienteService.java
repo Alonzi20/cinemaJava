@@ -4,7 +4,7 @@ import it.unibo.samplejavafx.cinema.application.models.Cliente;
 import java.util.List;
 
 public interface ClienteService {
-  Cliente findClienteById(int id);
+  Cliente findClienteById(Long id);
 
   List<Cliente> findAllClienti();
 
