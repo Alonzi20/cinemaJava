@@ -2,9 +2,11 @@ package it.unibo.samplejavafx.cinema.services.biglietto;
 
 import it.unibo.samplejavafx.cinema.application.models.Biglietto;
 import it.unibo.samplejavafx.cinema.repositories.BigliettoRepository;
+import it.unibo.samplejavafx.cinema.services.exceptions.BigliettoNotFoundException;
 import it.unibo.samplejavafx.cinema.services.posto.PostoService;
 import it.unibo.samplejavafx.cinema.services.proiezione.ProiezioneService;
 import it.unibo.samplejavafx.cinema.services.sala.SalaService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,18 @@ public class BigliettoServiceImpl implements BigliettoService {
   private final PostoService postoService;
   private final ProiezioneService proiezioneService;
   private final SalaService salaService;
+
+  @Override
+  public Biglietto findBigliettoById(Long id) {
+    return bigliettoRepository
+        .findById(id)
+        .orElseThrow(() -> new BigliettoNotFoundException(String.valueOf(id)));
+  }
+
+  @Override
+  public List<Biglietto> findAllBiglietti() {
+    return bigliettoRepository.findAll();
+  }
 
   // Commento per Luca:
   // non recupero più la Proiezione perché il controllo
