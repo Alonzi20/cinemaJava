@@ -32,12 +32,14 @@ public class BigliettoController {
     return bigliettoService.findAllBiglietti();
   }
 
+  @GetMapping("/all/{idCliente}")
+  public List<Biglietto> findAllBigliettiByCliente(@PathVariable long idCliente) {
+    return bigliettoService.findAllBigliettiByCliente(idCliente);
+  }
+
   @PostMapping("/compra")
   public Biglietto compra(
-      @RequestParam long idProiezione,
-      @RequestParam long idSala,
-      @RequestParam long idPosto,
-      @RequestParam boolean ridotto) {
-    return bigliettoService.compra(idProiezione, idSala, idPosto, ridotto);
+      @RequestParam long idProiezione, @RequestParam long idPosto, @RequestParam boolean ridotto) {
+    return bigliettoService.compra(idProiezione, idPosto, ridotto);
   }
 }

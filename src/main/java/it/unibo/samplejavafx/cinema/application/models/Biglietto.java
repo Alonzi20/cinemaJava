@@ -36,6 +36,8 @@ public class Biglietto {
   String fila;
   int sala;
 
+  Long clienteId;
+
   public double prezzo() {
     return ridotto ? PREZZO_RIDOTTO : PREZZO_INTERO;
   }

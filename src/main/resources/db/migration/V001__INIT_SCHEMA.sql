@@ -87,12 +87,16 @@ VALUES
 
 CREATE TABLE Biglietto (
                            id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                           proiezioneId BIGINT NOT NULL,
-                           ridotto BOOLEAN
+                           proiezione_id BIGINT NOT NULL,
+                           ridotto BOOLEAN,
+                           prezzo FLOAT,
+                           numero BIGINT,
+                           sala INT,
+                           cliente_id BIGINT
 );
 
-INSERT INTO Biglietto (id, proiezioneId, ridotto)
+INSERT INTO Biglietto (id, proiezioneId, ridotto, prezzo, numero, sala, cliente_id)
 VALUES
-    (0, 0, false),
-    (1, 1, true),
-    (2, 2, false);
+    (0, 0, false, 8.0, 4, 1, 1),
+    (1, 1, true, 5.0, 16, 1, 2),
+    (2, 2, false, 8.0, 2, 2, 3);

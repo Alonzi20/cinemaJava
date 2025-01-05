@@ -1,7 +1,6 @@
 package it.unibo.samplejavafx.cinema.services.biglietto;
 
 import it.unibo.samplejavafx.cinema.application.models.Biglietto;
-
 import java.util.List;
 
 public interface BigliettoService {
@@ -9,5 +8,7 @@ public interface BigliettoService {
 
   List<Biglietto> findAllBiglietti();
 
-  Biglietto compra(long idProiezione, long idSala, long idPosto, boolean ridotto);
+  List<Biglietto> findAllBigliettiByCliente(long idCliente);
+
+  Biglietto compra(long idProiezione, long idPosto, boolean ridotto);
 }

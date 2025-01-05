@@ -35,13 +35,21 @@ public class BigliettoServiceImpl implements BigliettoService {
     return bigliettoRepository.findAll();
   }
 
-  // Commento per Luca:
-  // non recupero più la Proiezione perché il controllo
-  // che esisteva viene fatto internamente al metodo prenota()
-  // stessa cosa per Sala e Posto ma li recupero dopo per avere le info
   @Override
-  public Biglietto compra(long idProiezione, long idSala, long idPosto, boolean ridotto) {
-    var idPostoPrenotato = proiezioneService.prenota(idPosto, idProiezione, idSala);
+  public List<Biglietto> findAllBigliettiByCliente(long idCliente) {
+    return bigliettoRepository.findAllByClienteId(idCliente);
+  }
+
+  // Commento per Luca:
+  // non chiedo salaId perché lo recupero dalla Proiezione
+  // Per Sala e Posto non serve il controllo che sia null
+  // perché è fatto già dentro al metodo di recupero ById.
+  // Li recupero per avere le info
+  @Override
+  public Biglietto compra(long idProiezione, long idPosto, boolean ridotto) {
+    var proiezione = proiezioneService.findProiezioneById(idProiezione);
+
+    var idPostoPrenotato = proiezioneService.prenota(idPosto, idProiezione, proiezione.getSalaId());
     if (idPostoPrenotato != null) {
       Biglietto biglietto = new Biglietto();
       biglietto.setProiezioneId(idProiezione);
@@ -54,7 +62,7 @@ public class BigliettoServiceImpl implements BigliettoService {
       biglietto.setFila(posto.getFila());
 
       // INFO SALA
-      var sala = salaService.findSalaById(idSala);
+      var sala = salaService.findSalaById(proiezione.getSalaId());
       biglietto.setSala(sala.getNumero());
 
       return bigliettoRepository.save(biglietto);
