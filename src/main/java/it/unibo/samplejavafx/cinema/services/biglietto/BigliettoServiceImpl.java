@@ -36,7 +36,7 @@ public class BigliettoServiceImpl implements BigliettoService {
   }
 
   @Override
-  public List<Biglietto> findAllBigliettiByCliente(long idCliente) {
+  public List<Biglietto> findAllBigliettiByClienteId(long idCliente) {
     return bigliettoRepository.findAllByClienteId(idCliente);
   }
 

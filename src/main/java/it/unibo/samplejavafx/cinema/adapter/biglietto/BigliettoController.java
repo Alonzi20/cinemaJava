@@ -33,8 +33,8 @@ public class BigliettoController {
   }
 
   @GetMapping("/all/{idCliente}")
-  public List<Biglietto> findAllBigliettiByCliente(@PathVariable long idCliente) {
-    return bigliettoService.findAllBigliettiByCliente(idCliente);
+  public List<Biglietto> findAllBigliettiByClienteId(@PathVariable long idCliente) {
+    return bigliettoService.findAllBigliettiByClienteId(idCliente);
   }
 
   @PostMapping("/compra")

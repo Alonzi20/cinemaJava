@@ -8,7 +8,7 @@ public interface BigliettoService {
 
   List<Biglietto> findAllBiglietti();
 
-  List<Biglietto> findAllBigliettiByCliente(long idCliente);
+  List<Biglietto> findAllBigliettiByClienteId(long idCliente);
 
   Biglietto compra(long idProiezione, long idPosto, boolean ridotto);
 }
