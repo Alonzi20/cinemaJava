@@ -40,6 +40,11 @@ public class BigliettoServiceImpl implements BigliettoService {
     return bigliettoRepository.findAllByClienteId(idCliente);
   }
 
+  @Override
+  public Double importoBiglietto(boolean ridotto) {
+    return ridotto ? Biglietto.PREZZO_RIDOTTO : Biglietto.PREZZO_INTERO;
+  }
+
   // Commento per Luca:
   // non chiedo salaId perché lo recupero dalla Proiezione
   // Per Sala e Posto non serve il controllo che sia null

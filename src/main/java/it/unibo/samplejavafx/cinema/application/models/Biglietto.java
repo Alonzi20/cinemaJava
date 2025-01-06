@@ -29,7 +29,7 @@ public class Biglietto {
   Long proiezioneId;
   @Builder.Default boolean ridotto = false;
 
-  @Builder.Default Double prezzo = prezzo();
+  Double prezzo;
 
   // INFO POSTO
   Long numero;
@@ -37,8 +37,4 @@ public class Biglietto {
   int sala;
 
   Long clienteId;
-
-  public double prezzo() {
-    return ridotto ? PREZZO_RIDOTTO : PREZZO_INTERO;
-  }
 }

@@ -37,6 +37,11 @@ public class BigliettoController {
     return bigliettoService.findAllBigliettiByClienteId(idCliente);
   }
 
+  @GetMapping("/importo")
+  public Double importoBiglietto(@RequestParam boolean ridotto) {
+    return bigliettoService.importoBiglietto(ridotto);
+  }
+
   @PostMapping("/compra")
   public Biglietto compra(
       @RequestParam long idProiezione, @RequestParam long idPosto, @RequestParam boolean ridotto) {

@@ -63,6 +63,19 @@ public class BffService {
     }
   }
 
+  public Double importoBiglietto(boolean ridotto) throws Exception {
+    String url = BASE_URL + "/biglietto/importo?ridotto=" + ridotto;
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return Double.parseDouble(response.body());
+    } else {
+      throw new RuntimeException(
+          "Errore durante il calcolo dell'importo del biglietto: " + response.statusCode());
+    }
+  }
+
   public Biglietto compraBiglietto(long idProiezione, long idPosto, boolean ridotto)
       throws Exception {
     String url =
