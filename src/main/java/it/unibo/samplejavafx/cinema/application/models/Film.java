@@ -30,5 +30,7 @@ public class Film {
   String posterPath;
   List<String> genres;
   int duration;
+  List<String> cast;
+  String director;
   boolean adult;
 }

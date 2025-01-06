@@ -1,8 +1,6 @@
 package it.unibo.samplejavafx;
 
-import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -21,24 +19,26 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableJpaRepositories(basePackages = "it.unibo.samplejavafx.cinema.repositories")
 @EntityScan(basePackages = "it.unibo.samplejavafx.cinema.application.models")
 public class App {
+  // public static void main(String[] args) {
+  // var projections = new MovieProjections();
+
+  // var weeklyMovies = projections.getWeeklyMovies();
+
+  // System.out.println("Film della settimana:");
+  // System.out.println("Numero totale di film: " + weeklyMovies.size());
+
+  // for (var movie : weeklyMovies) {
+  // System.out.println("Titolo: " + movie.getTitle());
+  // System.out.println("Descrizione: " + movie.getOverview());
+  // System.out.println("Generi: " + movie.getGenres());
+  // System.out.println("Durata: " + movie.getDuration() + " minuti");
+  // System.out.println("Vietato ai minori: " + movie.isAdult());
+  // System.out.println("Poster: " + movie.getPosterPath());
+  // System.out.println("----------------------------");
+  // }
+  // }
+
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
-
-    var projections = new MovieProjections();
-
-    var weeklyMovies = projections.getWeeklyMovies();
-
-    log.info("Film della settimana:");
-    log.info("Numero totale di film: {}", weeklyMovies.size());
-
-    for (var movie : weeklyMovies) {
-      log.info("Titolo: {}", movie.getTitle());
-      log.info("Descrizione: {}", movie.getOverview());
-      log.info("Generi: {}", movie.getGenres());
-      log.info("Durata: {} minuti", movie.getDuration());
-      log.info("Vietato ai minori: {}", movie.isAdult());
-      log.info("Poster: {}", movie.getPosterPath());
-      log.info("----------------------------");
-    }
+    CinemaSchedule.main(args);
   }
 }

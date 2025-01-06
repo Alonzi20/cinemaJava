@@ -16,6 +16,12 @@ plugins {
     // Spring Boot plugin
     id("org.springframework.boot") version "3.4.0"
     id("io.spring.dependency-management") version "1.1.3"
+    id("org.openjfx.javafxplugin") version "0.1.0"
+}
+
+javafx {
+   version = "17"
+   modules = listOf("javafx.base", "javafx.controls", "javafx.fxml", "javafx.swing", "javafx.graphics")
 }
 
 repositories {
@@ -39,9 +45,6 @@ dependencies {
     // Lombok dependencies
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
-
-    // DB
-    // runtimeOnly("com.h2database:h2:2.2.224")
 
     // JavaFX dependencies
     val javaFxVersion = 15

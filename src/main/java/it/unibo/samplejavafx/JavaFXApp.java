@@ -13,7 +13,7 @@ public final class JavaFXApp extends Application {
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
-        final Label message = new Label("Hello, PORCODIO FINALMENTE DOPO 2 ORE!"); 
+        final Label message = new Label("Hello, JavaFX!"); 
         message.setFont(new Font(100));
         primaryStage.setScene(new Scene(message));
         primaryStage.setTitle("Hello");
