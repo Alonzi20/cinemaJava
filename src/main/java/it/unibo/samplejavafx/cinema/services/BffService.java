@@ -161,6 +161,21 @@ public class BffService {
     }
   }
 
+  // Da usare per aggiungere gli orari delle proiezioni nei dettagli di ciascun film
+  // Poi da usare per comprare un biglietto scegliendo la proiezione sulla base dell'orario
+  public List<Proiezione> findAllProiezioniByFilmId(long idFilm) throws Exception {
+    String url = BASE_URL + "/proiezione/all" + idFilm;
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return objectMapper.readValue(response.body(), new TypeReference<>() {});
+    } else {
+      throw new RuntimeException(
+          "Errore durante il recupero delle proiezioni per film: " + response.statusCode());
+    }
+  }
+
   public boolean isSalaPrenotabile(long idProiezione, long idSala) throws Exception {
     String url =
         BASE_URL + "/proiezione/prenotabile?idProiezione=" + idProiezione + "&idSala=" + idSala;

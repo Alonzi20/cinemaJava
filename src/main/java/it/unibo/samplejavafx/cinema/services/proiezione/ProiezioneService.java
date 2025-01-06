@@ -9,6 +9,8 @@ public interface ProiezioneService {
 
   List<Proiezione> findAllProiezioni();
 
+  List<Proiezione> findAllProiezioniByFilmId(Long idFilm);
+
   Proiezione createProiezione();
 
   int quantitaPostiLiberi(long idProiezione, long idSala);

@@ -27,13 +27,18 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   @Override
   public Proiezione findProiezioneById(Long id) {
     return proiezioneRepository
-            .findById(id)
-            .orElseThrow(() -> new ProiezioneNotFoundException(String.valueOf(id)));
+        .findById(id)
+        .orElseThrow(() -> new ProiezioneNotFoundException(String.valueOf(id)));
   }
 
   @Override
   public List<Proiezione> findAllProiezioni() {
     return proiezioneRepository.findAll();
+  }
+
+  @Override
+  public List<Proiezione> findAllProiezioniByFilmId(Long idFilm) {
+    return proiezioneRepository.findAllByFilmId(idFilm);
   }
 
   @Override

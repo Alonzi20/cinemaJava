@@ -33,6 +33,11 @@ public class ProiezioneController {
     return proiezioneService.findAllProiezioni();
   }
 
+  @GetMapping("/all/{idFilm}")
+  public List<Proiezione> findAllProiezioniByFilmId(@PathVariable Long idFilm) {
+    return proiezioneService.findAllProiezioniByFilmId(idFilm);
+  }
+
   @PostMapping
   public Proiezione createProiezione() {
     return proiezioneService.createProiezione();

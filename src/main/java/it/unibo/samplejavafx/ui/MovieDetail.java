@@ -1,5 +1,6 @@
 package it.unibo.samplejavafx.ui;
 
+import it.unibo.samplejavafx.cinema.application.models.Film;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -9,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import it.unibo.samplejavafx.cinema.models.Film;
 
 public class MovieDetail extends Application {
     private final Film movie;
