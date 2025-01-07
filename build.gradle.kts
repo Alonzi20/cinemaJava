@@ -59,6 +59,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.13")
     implementation("ch.qos.logback:logback-classic:1.4.14")
 
+    // Dipendenze per Jackson (JSON)
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.15.2")
+
     // JUnit for testing
     val jUnitVersion = "5.11.2"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")

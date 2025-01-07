@@ -15,15 +15,119 @@ import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import it.unibo.samplejavafx.cinema.models.Film;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 public class CinemaSchedule extends Application {
-    private static final String[] DAYS = {"GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ"};
+    // private static final String[] DAYS = {"GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ"};
     private final MovieProjections movieService = new MovieProjections();
     private VBox container;
+    private ScheduleData scheduleData;
+
+    private static class ScheduleData {
+        public List<String> DAYS;
+        public List<List<String>> WEEKDAY_PATTERNS;
+        public List<List<String>> WEEKEND_PATTERNS;
+        public List<List<String>> WEEKEND_MORNING_PATTERNS;
+    }
+
+    private void loadScheduleData() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            scheduleData = mapper.readValue(
+                getClass().getResourceAsStream("/schedulePatterns.json"), 
+                ScheduleData.class
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Errore durante il caricamento dei pattern di programmazione: " + e.getMessage(), e);
+        }
+    }
+
+
+    //   // Pattern di orari per giorni feriali
+    // private final String[][] WEEKDAY_PATTERNS = {
+    //     {"16:30", "19:00", "21:30"},
+    //     {"17:00", "20:00", "22:30"},
+    //     {"15:45", "18:15", "21:00"},
+    //     {"16:15", "18:45", "21:15"},
+    //     {"17:30", "20:30"},
+    //     {"16:00", "19:30", "22:00"},
+    //     {"15:30", "18:00", "20:30", "22:45"},
+    //     {"17:15", "19:45", "22:15"}
+    // };
+
+    // // Pattern di orari per il weekend (più spettacoli)
+    // private final String[][] WEEKEND_PATTERNS = {
+    //     {"15:00", "17:30", "20:00", "22:30"},
+    //     {"14:30", "17:00", "19:30", "22:00", "00:30"},
+    //     {"15:15", "17:45", "20:15", "22:45"},
+    //     {"14:45", "16:45", "18:45", "20:45", "22:45"},
+    //     {"15:30", "18:00", "20:30", "23:00"},
+    //     {"14:15", "16:30", "19:00", "21:30", "00:00"},
+    //     {"15:45", "18:15", "20:45", "23:15"}
+    // };
+
+    // // Pattern mattutini per il weekend
+    // private final String[][] WEEKEND_MORNING_PATTERNS = {
+    //     {"10:30", "12:45"},
+    //     {"11:00", "13:15"},
+    //     {"10:15", "12:30"},
+    //     {"11:30", "13:45"}
+    // };
+
+    private Map<String, List<String>> generateScheduleForMovie(int movieIndex) {
+        Map<String, List<String>> schedule = new HashMap<>();
+        
+        // Genera un seed basato sull'indice del film per mantenere consistenza
+        Random movieRandom = new Random(movieIndex * 31L);
+        
+        for (int i = 0; i < scheduleData.DAYS.size(); i++) {
+            String day = scheduleData.DAYS.get(i);
+            List<String> times = new ArrayList<>();
+            
+            if (day.equals("SABATO") || day.equals("DOMENICA")) {
+                // 40% di probabilità di aggiungere spettacoli mattutini
+                if (movieRandom.nextDouble() < 0.4) {
+                    List<String> morningPattern = scheduleData.WEEKEND_MORNING_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKEND_MORNING_PATTERNS.size()));
+                    times.addAll(morningPattern);
+                }
+                
+                List<String> mainPattern = scheduleData.WEEKEND_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKEND_PATTERNS.size()));
+                times.addAll(mainPattern);
+            }
+           
+            else if (day.equals("VENERDÌ")) {
+                List<String> pattern = scheduleData.WEEKDAY_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKDAY_PATTERNS.size()));
+                times.addAll(pattern);
+                // 30% di probabilità di aggiungere uno spettacolo notturno
+                if (movieRandom.nextDouble() < 0.3) {
+                    times.add("00:15");
+                }
+            }
+         
+            else {
+                List<String> pattern = scheduleData.WEEKDAY_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKDAY_PATTERNS.size()));
+                times.addAll(pattern);
+            }
+            
+            // Ordina gli orari
+            Collections.sort(times);
+            schedule.put(day, times);
+        }
+        
+        return schedule;
+    }
 
     @Override
     public void start(Stage primaryStage) {
+        loadScheduleData();
         ScrollPane root = new ScrollPane();
         root.setFitToWidth(true); 
         root.setFitToHeight(true); 
@@ -127,15 +231,20 @@ public class CinemaSchedule extends Application {
         grid.setHgap(10);
         grid.setVgap(5);
 
-        for (int i = 0; i < DAYS.length; i++) {
-            Label day = new Label(DAYS[i]);
-            day.getStyleClass().add("schedule-grid-label");
-            grid.add(day, 0, i);
+        List<Film> weeklyMovies = movieService.getWeeklyMovies();
+        int movieIndex = weeklyMovies.indexOf(movie);
+        Map<String, List<String>> movieSchedule = generateScheduleForMovie(movieIndex);
 
-            // TODO: Aggiungere la logica degli orari
-            Label time = new Label("n.d.");
-            time.getStyleClass().add("schedule-grid-label");
-            grid.add(time, 1, i);
+        for (int i = 0; i < scheduleData.DAYS.size(); i++) {
+            String day = scheduleData.DAYS.get(i);
+            Label dayLabel = new Label(day);
+            dayLabel.getStyleClass().add("schedule-grid-label");
+            grid.add(dayLabel, 0, i);
+
+            String times = String.join(" ", movieSchedule.get(day));
+            Label timeLabel = new Label(times);
+            timeLabel.getStyleClass().add("schedule-grid-label");
+            grid.add(timeLabel, 1, i);
         }
 
         return grid;
