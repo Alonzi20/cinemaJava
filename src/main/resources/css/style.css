@@ -108,3 +108,32 @@
 .purchase-button:hover {
     -fx-background-color: #003399;
 }
+
+.quick-purchase-section {
+    -fx-background-color: #0a1940;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-max-width: 1000px;
+}
+
+.quick-purchase-title {
+    -fx-text-fill: yellow;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.quick-purchase-combo-box {
+    -fx-background-color: white;
+    -fx-pref-width: 200px;
+}
+
+.quick-purchase-button {
+    -fx-background-color: #002366;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+}
+
+.quick-purchase-button:hover {
+    -fx-background-color: #003399;
+}

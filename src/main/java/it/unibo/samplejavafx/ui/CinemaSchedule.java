@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,14 +14,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import it.unibo.samplejavafx.ScheduleManager;
 import it.unibo.samplejavafx.cinema.models.Film;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 // import java.util.ArrayList;
 // import java.util.Collections;
 // import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 // import java.util.Random;
 // import com.fasterxml.jackson.databind.ObjectMapper;
@@ -151,6 +157,9 @@ public class CinemaSchedule extends Application {
             this::visualizzaFilmFiltrati
         );
         container.getChildren().add(searchInterface);
+        
+        HBox quickPurchaseSection = createQuickPurchaseSection();
+        container.getChildren().add(quickPurchaseSection);
 
         visualizzaFilmFiltrati(movieService.getWeeklyMovies());
 
@@ -163,9 +172,117 @@ public class CinemaSchedule extends Application {
         primaryStage.show();
     }
 
+    private HBox createQuickPurchaseSection() {
+        HBox purchaseSection = new HBox(10);
+        purchaseSection.setPadding(new Insets(20, 0, 0, 0));
+        purchaseSection.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        purchaseSection.getStyleClass().add("quick-purchase-section");
+        
+        Label titleLabel = new Label("ACQUISTA IL BIGLIETTO!");
+        titleLabel.getStyleClass().add("quick-purchase-title");
+        
+        ComboBox<Film> movieSelector = new ComboBox<>();
+        movieSelector.setPromptText("Scegli il FILM");
+        movieSelector.setPrefWidth(300);
+        
+        ComboBox<String> daySelector = new ComboBox<>();
+        daySelector.setPromptText("Scegli il GIORNO");
+        daySelector.setPrefWidth(200);
+        daySelector.setDisable(true);
+        
+        ComboBox<String> timeSelector = new ComboBox<>();
+        timeSelector.setPromptText("Scegli l'ORA");
+        timeSelector.setPrefWidth(150);
+        timeSelector.setDisable(true);
+        
+        movieSelector.getItems().addAll(movieService.getWeeklyMovies());
+        movieSelector.setConverter(new StringConverter<Film>() {
+            @Override
+            public String toString(Film film) {
+                return film != null ? film.getTitle() : "";
+            }
+            
+            @Override
+            public Film fromString(String string) {
+                return null;
+            }
+        });
+        
+        movieSelector.setOnAction(e -> {
+            Film selectedMovie = movieSelector.getValue();
+            daySelector.getItems().clear();
+            timeSelector.getItems().clear();
+            
+            if (selectedMovie != null) {
+                daySelector.setDisable(false);
+                populateDaySelector(daySelector);
+            } else {
+                daySelector.setDisable(true);
+                timeSelector.setDisable(true);
+            }
+        });
+        
+        daySelector.setOnAction(e -> {
+            String selectedDay = daySelector.getValue();
+            timeSelector.getItems().clear();
+            
+            if (selectedDay != null && movieSelector.getValue() != null) {
+                timeSelector.setDisable(false);
+                updateTimeSelector(timeSelector, selectedDay, movieSelector.getValue());
+            } else {
+                timeSelector.setDisable(true);
+            }
+        });
+        
+        Button purchaseButton = new Button("SCEGLI IL POSTO");
+        purchaseButton.getStyleClass().add("purchase-button");
+        purchaseButton.setDisable(true);
+        
+        timeSelector.setOnAction(e -> {
+            purchaseButton.setDisable(movieSelector.getValue() == null || 
+                                    daySelector.getValue() == null || 
+                                    timeSelector.getValue() == null);
+        });
+        
+        purchaseSection.getChildren().addAll(titleLabel, movieSelector, daySelector, 
+                                           timeSelector, purchaseButton);
+        
+        return purchaseSection;
+    }
+
+    private void populateDaySelector(ComboBox<String> daySelector) {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd/MM", 
+                                    Locale.forLanguageTag("it-IT"));
+        
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = today.plusDays(i);
+            String formattedDate = date.format(formatter).toUpperCase();
+            daySelector.getItems().add(formattedDate);
+        }
+    }
+
+    private void updateTimeSelector(ComboBox<String> timeSelector, String selectedDay, Film movie) {
+        timeSelector.getItems().clear();
+        
+        String dayOfWeek = selectedDay.split(" ")[0];
+        Map<String, List<String>> movieSchedule = scheduleManager.getScheduleForMovie(
+            movie, 
+            movieService.getWeeklyMovies()
+        );
+        
+        List<String> times = movieSchedule.getOrDefault(dayOfWeek, new ArrayList<>());
+        timeSelector.getItems().addAll(times);
+    }
+
     private void visualizzaFilmFiltrati(List<Film> films) {
-        // Rimossi tutti gli elementi tranne i componenti di ricerca
-        container.getChildren().removeIf(node -> !(node instanceof MovieSearchInterface));
+        // Rimuovi tutti gli elementi tranne l'interfaccia di ricerca e la sezione di acquisto rapido
+        container.getChildren().removeIf(node -> 
+            !(node instanceof MovieSearchInterface) && 
+            !(node instanceof HBox && ((HBox)node).getChildren().size() > 0 && 
+              ((HBox)node).getChildren().get(0) instanceof Label && 
+              ((Label)((HBox)node).getChildren().get(0)).getText().equals("ACQUISTA IL BIGLIETTO!"))
+        );
     
         // Controllo se la lista è vuota
         if (films.isEmpty()) {
