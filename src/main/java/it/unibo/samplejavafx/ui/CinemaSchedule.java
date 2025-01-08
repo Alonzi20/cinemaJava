@@ -13,42 +13,44 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
+import it.unibo.samplejavafx.ScheduleManager;
 import it.unibo.samplejavafx.cinema.models.Film;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+// import java.util.ArrayList;
+// import java.util.Collections;
+// import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// import java.util.Random;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class CinemaSchedule extends Application {
     // private static final String[] DAYS = {"GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ"};
     private final MovieProjections movieService = new MovieProjections();
     private VBox container;
-    private ScheduleData scheduleData;
+    private final ScheduleManager scheduleManager = ScheduleManager.getInstance();
+    // private ScheduleData scheduleData;
 
-    private static class ScheduleData {
-        public List<String> DAYS;
-        public List<List<String>> WEEKDAY_PATTERNS;
-        public List<List<String>> WEEKEND_PATTERNS;
-        public List<List<String>> WEEKEND_MORNING_PATTERNS;
-    }
+    // private static class ScheduleData {
+    //     public List<String> DAYS;
+    //     public List<List<String>> WEEKDAY_PATTERNS;
+    //     public List<List<String>> WEEKEND_PATTERNS;
+    //     public List<List<String>> WEEKEND_MORNING_PATTERNS;
+    // }
 
-    private void loadScheduleData() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            scheduleData = mapper.readValue(
-                getClass().getResourceAsStream("/schedulePatterns.json"), 
-                ScheduleData.class
-            );
-        } catch (Exception e) {
-            throw new RuntimeException("Errore durante il caricamento dei pattern di programmazione: " + e.getMessage(), e);
-        }
-    }
+    // private void loadScheduleData() {
+    //     try {
+    //         ObjectMapper mapper = new ObjectMapper();
+    //         scheduleData = mapper.readValue(
+    //             getClass().getResourceAsStream("/schedulePatterns.json"), 
+    //             ScheduleData.class
+    //         );
+    //     } catch (Exception e) {
+    //         throw new RuntimeException("Errore durante il caricamento dei pattern di programmazione: " + e.getMessage(), e);
+    //     }
+    // }
 
 
     //   // Pattern di orari per giorni feriali
@@ -82,52 +84,52 @@ public class CinemaSchedule extends Application {
     //     {"11:30", "13:45"}
     // };
 
-    private Map<String, List<String>> generateScheduleForMovie(int movieIndex) {
-        Map<String, List<String>> schedule = new HashMap<>();
+    // private Map<String, List<String>> generateScheduleForMovie(int movieIndex) {
+    //     Map<String, List<String>> schedule = new HashMap<>();
         
-        // Genera un seed basato sull'indice del film per mantenere consistenza
-        Random movieRandom = new Random(movieIndex * 31L);
+    //     // Genera un seed basato sull'indice del film per mantenere consistenza
+    //     Random movieRandom = new Random(movieIndex * 31L);
         
-        for (int i = 0; i < scheduleData.DAYS.size(); i++) {
-            String day = scheduleData.DAYS.get(i);
-            List<String> times = new ArrayList<>();
+    //     for (int i = 0; i < scheduleData.DAYS.size(); i++) {
+    //         String day = scheduleData.DAYS.get(i);
+    //         List<String> times = new ArrayList<>();
             
-            if (day.equals("SABATO") || day.equals("DOMENICA")) {
-                // 40% di probabilità di aggiungere spettacoli mattutini
-                if (movieRandom.nextDouble() < 0.4) {
-                    List<String> morningPattern = scheduleData.WEEKEND_MORNING_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKEND_MORNING_PATTERNS.size()));
-                    times.addAll(morningPattern);
-                }
+    //         if (day.equals("SABATO") || day.equals("DOMENICA")) {
+    //             // 40% di probabilità di aggiungere spettacoli mattutini
+    //             if (movieRandom.nextDouble() < 0.4) {
+    //                 List<String> morningPattern = scheduleData.WEEKEND_MORNING_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKEND_MORNING_PATTERNS.size()));
+    //                 times.addAll(morningPattern);
+    //             }
                 
-                List<String> mainPattern = scheduleData.WEEKEND_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKEND_PATTERNS.size()));
-                times.addAll(mainPattern);
-            }
+    //             List<String> mainPattern = scheduleData.WEEKEND_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKEND_PATTERNS.size()));
+    //             times.addAll(mainPattern);
+    //         }
            
-            else if (day.equals("VENERDÌ")) {
-                List<String> pattern = scheduleData.WEEKDAY_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKDAY_PATTERNS.size()));
-                times.addAll(pattern);
-                // 30% di probabilità di aggiungere uno spettacolo notturno
-                if (movieRandom.nextDouble() < 0.3) {
-                    times.add("00:15");
-                }
-            }
+    //         else if (day.equals("VENERDÌ")) {
+    //             List<String> pattern = scheduleData.WEEKDAY_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKDAY_PATTERNS.size()));
+    //             times.addAll(pattern);
+    //             // 30% di probabilità di aggiungere uno spettacolo notturno
+    //             if (movieRandom.nextDouble() < 0.3) {
+    //                 times.add("00:15");
+    //             }
+    //         }
          
-            else {
-                List<String> pattern = scheduleData.WEEKDAY_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKDAY_PATTERNS.size()));
-                times.addAll(pattern);
-            }
+    //         else {
+    //             List<String> pattern = scheduleData.WEEKDAY_PATTERNS.get(movieRandom.nextInt(scheduleData.WEEKDAY_PATTERNS.size()));
+    //             times.addAll(pattern);
+    //         }
             
-            // Ordina gli orari
-            Collections.sort(times);
-            schedule.put(day, times);
-        }
+    //         // Ordina gli orari
+    //         Collections.sort(times);
+    //         schedule.put(day, times);
+    //     }
         
-        return schedule;
-    }
+    //     return schedule;
+    // }
 
     @Override
     public void start(Stage primaryStage) {
-        loadScheduleData();
+        // loadScheduleData();
         ScrollPane root = new ScrollPane();
         root.setFitToWidth(true); 
         root.setFitToHeight(true); 
@@ -221,7 +223,7 @@ public class CinemaSchedule extends Application {
         GridPane schedule = createScheduleGrid(movie);
 
         info.getChildren().addAll(title, director, genre, duration, cast, schedule);
-        box.getChildren().addAll(posterContainer,info);
+        box.getChildren().addAll(posterContainer, info);
 
         return box;
     }
@@ -231,12 +233,14 @@ public class CinemaSchedule extends Application {
         grid.setHgap(10);
         grid.setVgap(5);
 
-        List<Film> weeklyMovies = movieService.getWeeklyMovies();
-        int movieIndex = weeklyMovies.indexOf(movie);
-        Map<String, List<String>> movieSchedule = generateScheduleForMovie(movieIndex);
+        Map<String, List<String>> movieSchedule = scheduleManager.getScheduleForMovie(
+            movie, 
+            movieService.getWeeklyMovies()
+        );
 
-        for (int i = 0; i < scheduleData.DAYS.size(); i++) {
-            String day = scheduleData.DAYS.get(i);
+        List<String> days = scheduleManager.getDays();
+        for (int i = 0; i < days.size(); i++) {
+            String day = days.get(i);
             Label dayLabel = new Label(day);
             dayLabel.getStyleClass().add("schedule-grid-label");
             grid.add(dayLabel, 0, i);
