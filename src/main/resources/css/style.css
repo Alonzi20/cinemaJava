@@ -137,3 +137,53 @@
 .quick-purchase-button:hover {
     -fx-background-color: #003399;
 }
+
+.search-section {
+    -fx-background-color: #0a1940;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-max-width: 1000px;
+    -fx-alignment: center-left; 
+}
+
+.search-title {
+    -fx-text-fill: yellow;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px 5px 0; 
+}
+
+.search-text-field {
+    -fx-background-color: white;
+    -fx-pref-width: 300px;
+}
+
+.search-combo-box {
+    -fx-background-color: white;
+    -fx-pref-width: 200px;
+}
+
+.search-button {
+    -fx-background-color: #002366;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+}
+
+.search-button:hover {
+    -fx-background-color: #003399;
+}
+
+.detail-ticket-section {
+    -fx-background-color: #0a1940;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-max-width: 400px;
+    -fx-alignment: center-left;
+}
+
+.detail-ticket-title {
+    -fx-text-fill: yellow;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}

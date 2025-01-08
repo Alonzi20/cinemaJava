@@ -82,16 +82,21 @@ public class MovieDetail extends Application {
         section.setPadding(new Insets(20, 0, 0, 0));
         section.setMaxWidth(400);
         section.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        Label titleLabel = createLabel("Acquista biglietto", "ticket-section-title");
+        section.getStyleClass().add("detail-ticket-section");
+        
+        Label titleLabel = new Label("ACQUISTA IL BIGLIETTO!");
+        titleLabel.getStyleClass().add("detail-ticket-title");
         
         ComboBox<String> daySelector = new ComboBox<>();
         daySelector.setPromptText("Scegli il GIORNO");
         daySelector.setMaxWidth(300);
+        daySelector.getStyleClass().add("quick-purchase-combo-box");
         populateDaySelector(daySelector);
         
         ComboBox<String> timeSelector = new ComboBox<>();
         timeSelector.setPromptText("Scegli l'ORA");
         timeSelector.setMaxWidth(300);
+        timeSelector.getStyleClass().add("quick-purchase-combo-box");
         
         daySelector.setOnAction(e -> {
             String selectedDay = daySelector.getValue();
@@ -101,7 +106,7 @@ public class MovieDetail extends Application {
         });
         
         Button purchaseButton = new Button("SCEGLI IL POSTO");
-        purchaseButton.getStyleClass().add("purchase-button");
+        purchaseButton.getStyleClass().add("quick-purchase-button");
         purchaseButton.setDisable(true);
         
         timeSelector.setOnAction(e -> {
@@ -109,6 +114,7 @@ public class MovieDetail extends Application {
         });
         
         HBox selectors = new HBox(10);
+        selectors.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         selectors.getChildren().addAll(daySelector, timeSelector);
         
         section.getChildren().addAll(titleLabel, selectors, purchaseButton);
