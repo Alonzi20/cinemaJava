@@ -1,10 +1,12 @@
 package it.unibo.samplejavafx.cinema.services.proiezione;
 
+import it.unibo.samplejavafx.cinema.application.models.Posto;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
 import it.unibo.samplejavafx.cinema.repositories.PostoRepository;
 import it.unibo.samplejavafx.cinema.repositories.ProiezioneRepository;
 import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
+import it.unibo.samplejavafx.cinema.services.posto.PostoService;
 import it.unibo.samplejavafx.cinema.services.sala.SalaService;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
 
   private final ProiezioneRepository proiezioneRepository;
   private final PostoRepository postoRepository;
+  private final PostoService postoService;
   private final SalaService salaService;
 
   @Override
@@ -48,9 +51,8 @@ public class ProiezioneServiceImpl implements ProiezioneService {
 
   @Override
   public int quantitaPostiLiberi(long idProiezione, long idSala) {
-    Proiezione proiezione = findProiezioneById(idProiezione);
     Sala sala = salaService.findSalaById(idSala);
-    return sala.getPosti() - proiezione.getPostiPrenotatiIds().size();
+    return sala.getPosti() - postoService.postiPrenotatiByProiezioneId(idProiezione);
   }
 
   @Override
@@ -61,20 +63,19 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   // isSalaPrenotabile controlla solo se la quantità di posti liberi era maggiore di 0
   // isPostoPrenotabile controlla anche se il posto che si vuole prenotare è libero
   @Override
-  public boolean isPostoPrenotabile(long idPosto, long idProiezione, long idSala) {
+  public boolean isPostoPrenotabile(long numero, String fila, long idProiezione, long idSala) {
     if (!isSalaPrenotabile(idProiezione, idSala)) {
       return false;
     }
 
-    var proiezione = findProiezioneById(idProiezione);
-    return !proiezione.getPostiPrenotatiIds().contains(idPosto);
+    return postoService.isPostoPrenotabile(numero, fila, idProiezione);
   }
 
   // Ritorna una mappa di posti liberi con chiave "fila" e valore "numero"
   @Override
   public Map<String, Long> postiLiberi(long idProiezione, long idSala) {
     if (isSalaPrenotabile(idProiezione, idSala)) {
-      var postiLiberiIds = postoRepository.findAllBySalaId(idSala);
+      var postiLiberiIds = postoRepository.findAllByProiezione_Id(idProiezione);
 
       var postiLiberi = new HashMap<String, Long>();
       for (var postoId : postiLiberiIds) {
@@ -93,13 +94,19 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   // perché serve avere le info del posto nel biglietto
   // e per aggiornare i dati nel db ricordati di fare la save (r.96)
   @Override
-  public Long prenota(long idPosto, long idProiezione, long idSala) {
-    if (isPostoPrenotabile(idPosto, idProiezione, idSala)) {
-      Proiezione proiezione = findProiezioneById(idProiezione);
-      proiezione.getPostiPrenotatiIds().add(idPosto);
-      proiezioneRepository.save(proiezione);
+  public Long prenota(long numero, String fila, long idProiezione, long idSala) {
+    if (isPostoPrenotabile(numero, fila, idProiezione, idSala)) {
+      Posto posto = new Posto();
+      posto.setNumero(numero);
+      posto.setFila(fila);
+      posto.setProiezione(this.findProiezioneById(idProiezione));
+      postoRepository.save(posto);
 
-      return idPosto;
+      if (posto.getProiezione() != null && posto.getProiezione().getId() == idProiezione) {
+        return posto.getId();
+      }
+
+      throw new ProiezioneNotFoundException(String.valueOf(idProiezione));
     } else {
       return null;
     }

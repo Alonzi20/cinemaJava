@@ -1,13 +1,9 @@
 package it.unibo.samplejavafx.cinema.application.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@DomainAggregate
 @Data
 @Builder(toBuilder = true)
 @ToString(onlyExplicitlyIncluded = true)
@@ -18,12 +14,14 @@ import lombok.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Posto {
   @Id
-  @DomainAggregateId
   @EqualsAndHashCode.Include
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
   Long numero;
   String fila;
-  Long salaId;
+
+  @ManyToOne
+  @JoinColumn(name = "proiezione_id", nullable = false) // Collega il posto a una proiezione
+  private Proiezione proiezione;
 }

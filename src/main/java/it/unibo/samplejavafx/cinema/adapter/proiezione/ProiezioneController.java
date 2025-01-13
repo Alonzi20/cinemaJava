@@ -43,15 +43,18 @@ public class ProiezioneController {
     return proiezioneService.createProiezione();
   }
 
-  @GetMapping("/prenotabile")
+  @GetMapping("/prenotabile/sala")
   public boolean isSalaPrenotabile(@RequestParam long idProiezione, @RequestParam long idSala) {
     return proiezioneService.isSalaPrenotabile(idProiezione, idSala);
   }
 
-  @GetMapping("/prenotabile")
+  @GetMapping("/prenotabile/posto")
   public boolean isPostoPrenotabile(
-      @RequestParam long idPosto, @RequestParam long idProiezione, @RequestParam long idSala) {
-    return proiezioneService.isPostoPrenotabile(idPosto, idProiezione, idSala);
+      @RequestParam long numero,
+      @RequestParam String fila,
+      @RequestParam long idProiezione,
+      @RequestParam long idSala) {
+    return proiezioneService.isPostoPrenotabile(numero, fila, idProiezione, idSala);
   }
 
   @GetMapping("/postiLiberi")

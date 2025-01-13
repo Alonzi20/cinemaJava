@@ -1,26 +1,12 @@
 package it.unibo.samplejavafx;
 
 import it.unibo.samplejavafx.ui.CinemaSchedule;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.scheduling.annotation.EnableAsync;
 
-@Slf4j
-@EnableAsync
-@SpringBootApplication(
-    scanBasePackages = "it.unibo.samplejavafx.cinema",
-    exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication
 @EnableConfigurationProperties({CinemaConfigurationProperties.class})
-@EnableAspectJAutoProxy(exposeProxy = true)
-@EnableJpaRepositories(basePackages = "it.unibo.samplejavafx.cinema.repositories")
-@EntityScan(basePackages = "it.unibo.samplejavafx.cinema.application.models")
 public class App {
   // public static void main(String[] args) {
   // var projections = new MovieProjections();
@@ -42,7 +28,7 @@ public class App {
   // }
 
   public static void main(String[] args) {
-    //SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args);
 
     CinemaSchedule.main(args);
   }

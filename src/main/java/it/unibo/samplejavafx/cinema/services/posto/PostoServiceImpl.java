@@ -25,14 +25,29 @@ public class PostoServiceImpl implements PostoService {
   }
 
   @Override
+  public Posto findPostoByIdAndProiezioneId(Long id, Long proiezioneId) {
+    return postoRepository.findByIdAndProiezione_Id(id, proiezioneId);
+  }
+
+  @Override
   public List<Posto> findAllPosti() {
     return postoRepository.findAll();
   }
 
   @Override
-  public Posto createPosto() {
-    Posto posto = new Posto();
-    // TODO Alex: [05/01/2025]
-    return postoRepository.save(posto);
+  public void savePosto(Posto posto) {
+    postoRepository.save(posto);
+  }
+
+  @Override
+  public int postiPrenotatiByProiezioneId(Long idProiezione) {
+    return postoRepository.countByProiezione_Id(idProiezione);
+  }
+
+  @Override
+  public boolean isPostoPrenotabile(long numero, String fila, long idProiezione) {
+    return postoRepository
+        .findAllByNumeroAndFilaAndProiezione_Id(numero, fila, idProiezione)
+        .isEmpty();
   }
 }

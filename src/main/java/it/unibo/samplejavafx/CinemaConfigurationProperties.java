@@ -3,8 +3,6 @@ package it.unibo.samplejavafx;
 import java.time.Duration;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 @Data
 @ConfigurationProperties(prefix = "cinema")
@@ -25,10 +23,5 @@ public class CinemaConfigurationProperties {
   @Data
   public static class SSE {
     private Duration pingerInterval = Duration.ofSeconds(60);
-  }
-
-  @Bean(name = "entityManagerFactory")
-  public LocalSessionFactoryBean sessionFactory() {
-    return new LocalSessionFactoryBean();
   }
 }

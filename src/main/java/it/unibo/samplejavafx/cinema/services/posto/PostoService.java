@@ -6,7 +6,13 @@ import java.util.List;
 public interface PostoService {
   Posto findPostoById(Long id);
 
+  Posto findPostoByIdAndProiezioneId(Long id, Long proiezioneId);
+
   List<Posto> findAllPosti();
 
-  Posto createPosto();
+  void savePosto(Posto posto);
+
+  int postiPrenotatiByProiezioneId(Long idProiezione);
+
+  boolean isPostoPrenotabile(long numero, String fila, long idProiezione);
 }

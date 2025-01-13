@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 @Entity
-@DomainAggregate
 @Data
 @Builder(toBuilder = true)
 @ToString(onlyExplicitlyIncluded = true)
@@ -21,7 +20,6 @@ public class Biglietto {
   public static final double PREZZO_RIDOTTO = 5.0;
 
   @Id
-  @DomainAggregateId
   @EqualsAndHashCode.Include
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
@@ -34,7 +32,6 @@ public class Biglietto {
   // INFO POSTO
   Long numero;
   String fila;
-  int sala;
 
   Long clienteId;
 }

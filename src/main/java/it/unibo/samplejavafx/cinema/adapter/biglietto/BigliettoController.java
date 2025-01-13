@@ -44,7 +44,10 @@ public class BigliettoController {
 
   @PostMapping("/compra")
   public Biglietto compra(
-      @RequestParam long idProiezione, @RequestParam long idPosto, @RequestParam boolean ridotto) {
-    return bigliettoService.compra(idProiezione, idPosto, ridotto);
+      @RequestParam long idProiezione,
+      @RequestParam long numero,
+      @RequestParam String fila,
+      @RequestParam boolean ridotto) {
+    return bigliettoService.compra(idProiezione, numero, fila, ridotto);
   }
 }

@@ -20,8 +20,8 @@ plugins {
 }
 
 javafx {
-   version = "17"
-   modules = listOf("javafx.base", "javafx.controls", "javafx.fxml", "javafx.swing", "javafx.graphics")
+    version = "17"
+    modules = listOf("javafx.base", "javafx.controls", "javafx.fxml", "javafx.swing", "javafx.graphics")
 }
 
 repositories {
@@ -80,7 +80,7 @@ dependencies {
     val querydslVersion = "5.1.0"
     compileOnly("com.querydsl:querydsl-jpa:$querydslVersion:jakarta")
     compileOnly("com.querydsl:querydsl-apt:$querydslVersion:jakarta")
-    implementation("jakarta.persistence:jakarta.persistence-api:3.2.0")
+    // implementation("jakarta.persistence:jakarta.persistence-api:3.2.0")
 
     // MapStruct
     implementation("org.mapstruct:mapstruct:1.6.3")
@@ -88,8 +88,8 @@ dependencies {
 
     // Database dependencies
     implementation("com.mysql:mysql-connector-j:9.1.0")
-    implementation("org.flywaydb:flyway-core:11.1.0")
-    implementation("org.hibernate.orm:hibernate-core:6.6.4.Final")
+    implementation("org.liquibase:liquibase-core:4.30.0")
+    // implementation("org.hibernate.orm:hibernate-core:6.6.4.Final")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.2.0")
 
     // JUnit for testing

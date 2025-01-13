@@ -1,5 +1,5 @@
 server:
-  port: 8081 # Sostituisci con la porta desiderata
+  port: 8080 # Sostituisci con la porta desiderata
 
 spring:
   #application:
@@ -7,15 +7,10 @@ spring:
   #profiles:
   #  active: default
   datasource:
-    url: jdbc:mariadb://127.0.0.1:3306/cinema_db # Sostituisci "cinema_db" con il nome del tuo database
+    url: jdbc:mariadb://localhost:3306/cinema_db # Sostituisci "cinema_db" con il nome del tuo database
     username: root                             # L'utente di default di MySQL in XAMPP è "root"
     password: ""                               # Lascia vuoto se non hai impostato una password
     driver-class-name: org.mariadb.jdbc.Driver
-  flyway:
-    enabled: true          # Assicurati che Flyway sia abilitato
-    locations: classpath:db/migration  # Posizione dei file di migrazione
-    baseline-on-migrate: true  # Crea una base di riferimento se il DB non ha migrazioni applicate
-    clean-on-validation-error: false
   jpa:
     hibernate:
       ddl-auto: validate
@@ -23,6 +18,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
+  liquibase:
+    enabled: true
+    #secureParsing: false
+    change-log: classpath:db/changelog/db.changelog-master.xml # Percorso del file master di Liquibase
+    url: jdbc:mariadb://localhost:3306/cinema_db  # La URL del database (coerente con quello nel liquibase.properties)
+    user: root
+    password: ""
+    driver-class-name: org.mariadb.jdbc.Driver  # Driver per MariaDB
+    #liquibase-schema: public   Se necessario, specifica lo schema (altrimenti lascia vuoto)
+    contexts: dev, prod  # Se usi contesti diversi per le migrazioni
 
 domain:
   name: cinema

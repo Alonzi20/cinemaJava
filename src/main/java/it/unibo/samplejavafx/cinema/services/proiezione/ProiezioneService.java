@@ -17,9 +17,9 @@ public interface ProiezioneService {
 
   boolean isSalaPrenotabile(long idProiezione, long idSala);
 
-  boolean isPostoPrenotabile(long idPosto, long idProiezione, long idSala);
+  boolean isPostoPrenotabile(long numero, String fila, long idProiezione, long idSala);
 
   Map<String, Long> postiLiberi(long idProiezione, long idSala);
 
-  Long prenota(long idPosto, long idProiezione, long idSala);
+  Long prenota(long numero, String fila, long idProiezione, long idSala);
 }

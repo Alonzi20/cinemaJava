@@ -8,5 +8,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostoRepository extends JpaRepository<Posto, Long> {
 
-  List<Long> findAllBySalaId(Long salaId);
+  Posto findByIdAndProiezione_Id(Long id, Long proiezioneId);
+
+  List<Long> findAllByProiezione_Id(Long proiezioneId);
+
+  int countByProiezione_Id(Long proiezioneId);
+
+  List<Posto> findAllByNumeroAndFilaAndProiezione_Id(Long numero, String fila, Long proiezioneId);
 }

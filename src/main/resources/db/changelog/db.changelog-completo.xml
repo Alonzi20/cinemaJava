@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <!-- Creazione tabella Cliente -->
+    <changeSet id="1" author="user">
+        <createTable tableName="Cliente">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nome" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cognome" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Creazione tabella Sala -->
+    <changeSet id="2" author="user">
+        <createTable tableName="Sala">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="numero" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="posti" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Creazione tabella Film -->
+    <changeSet id="3" author="user">
+        <createTable tableName="Film">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="overview" type="VARCHAR(500)"/>
+            <column name="release_date" type="VARCHAR(10)"/>
+            <column name="poster_path" type="VARCHAR(100)"/>
+            <column name="genres" type="VARBINARY(1000)"/>
+            <column name="duration" type="INT"/>
+            <column name="cast" type="VARBINARY(1000)"/>
+            <column name="director" type="VARCHAR(100)"/>
+            <column name="adult" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Creazione tabella Proiezione -->
+    <changeSet id="4" author="user">
+        <createTable tableName="Proiezione">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="film_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sala_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="DATE"/>
+            <column name="orario" type="TIME"/>
+        </createTable>
+
+        <!-- Aggiunta vincoli di chiave esterna -->
+        <addForeignKeyConstraint
+                baseTableName="Proiezione"
+                baseColumnNames="film_id"
+                referencedTableName="Film"
+                referencedColumnNames="id"
+                constraintName="fk_proiezione_film"/>
+        <addForeignKeyConstraint
+                baseTableName="Proiezione"
+                baseColumnNames="sala_id"
+                referencedTableName="Sala"
+                referencedColumnNames="id"
+                constraintName="fk_proiezione_sala"/>
+    </changeSet>
+
+    <!-- Creazione tabella Posto -->
+    <changeSet id="5" author="user">
+        <createTable tableName="Posto">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="numero" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fila" type="VARCHAR(1)"/>
+            <column name="proiezione_id" type="BIGINT"/>
+        </createTable>
+
+        <!-- Aggiunta vincoli di chiave esterna -->
+        <addForeignKeyConstraint
+                baseTableName="Posto"
+                baseColumnNames="proiezione_id"
+                referencedTableName="Proiezione"
+                referencedColumnNames="id"
+                constraintName="fk_posto_proiezione"/>
+    </changeSet>
+
+    <changeSet id="6" author="user">
+        <createTable tableName="Biglietto">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="proiezione_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cliente_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ridotto" type="BOOLEAN"/>
+            <column name="prezzo" type="FLOAT"/>
+            <column name="numero" type="BIGINT"/>
+            <column name="fila" type="VARCHAR(1)"/>
+        </createTable>
+
+        <!-- Aggiunta vincoli di chiave esterna -->
+        <addForeignKeyConstraint
+                baseTableName="Biglietto"
+                baseColumnNames="proiezione_id"
+                referencedTableName="Proiezione"
+                referencedColumnNames="id"
+                constraintName="fk_biglietto_proiezione"/>
+        <addForeignKeyConstraint
+                baseTableName="Biglietto"
+                baseColumnNames="cliente_id"
+                referencedTableName="Cliente"
+                referencedColumnNames="id"
+                constraintName="fk_biglietto_cliente"/>
+    </changeSet>
+
+    <!-- Inserimento dati Cliente -->
+    <changeSet id="7" author="user">
+        <insert tableName="Cliente">
+            <column name="nome" value="Mario"/>
+            <column name="cognome" value="Rossi"/>
+            <column name="email" value="mario.rossi@email.it"/>
+        </insert>
+        <insert tableName="Cliente">
+            <column name="nome" value="Luca"/>
+            <column name="cognome" value="Verdi"/>
+            <column name="email" value="luca.verdi@email.it"/>
+        </insert>
+        <insert tableName="Cliente">
+            <column name="nome" value="Gianni"/>
+            <column name="cognome" value="Barba"/>
+            <column name="email" value="gianni.barba@email.it"/>
+        </insert>
+    </changeSet>
+
+    <!-- Inserimento dati Sala -->
+    <changeSet id="8" author="user">
+        <insert tableName="Sala">
+            <column name="numero" value="1"/>
+            <column name="posti" value="20"/>
+        </insert>
+        <insert tableName="Sala">
+            <column name="numero" value="2"/>
+            <column name="posti" value="20"/>
+        </insert>
+        <insert tableName="Sala">
+            <column name="numero" value="3"/>
+            <column name="posti" value="20"/>
+        </insert>
+    </changeSet>
+
+    <!-- Inserimento dati Film -->
+    <changeSet id="9" author="user">
+        <insert tableName="Film">
+            <column name="title" value="Titanic"/>
+            <column name="overview" value="bellino"/>
+            <column name="release_date" value="1970-01-01"/>
+            <column name="poster_path" value="poster"/>
+            <column name="genres" value="drammatico"/>
+            <column name="duration" value="120"/>
+            <column name="cast" value="Brad Pitt"/>
+            <column name="director" value="Regista 1"/>
+            <column name="adult" value="true"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Avatar"/>
+            <column name="overview" value="figo"/>
+            <column name="release_date" value="2020-06-01"/>
+            <column name="poster_path" value="poster"/>
+            <column name="genres" value="fantasy"/>
+            <column name="duration" value="180"/>
+            <column name="cast" value="Zoe Saldana"/>
+            <column name="director" value="Regista 2"/>
+            <column name="adult" value="false"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Terminator"/>
+            <column name="overview" value="non ho visto"/>
+            <column name="release_date" value="1975-01-01"/>
+            <column name="poster_path" value="poster"/>
+            <column name="genres" value="drammatico"/>
+            <column name="duration" value="150"/>
+            <column name="cast" value="Arnold Schwarzenegger"/>
+            <column name="director" value="Regista 3"/>
+            <column name="adult" value="false"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Inception"/>
+            <column name="overview" value="bel trip"/>
+            <column name="release_date" value="2013-09-25"/>
+            <column name="poster_path" value="poster"/>
+            <column name="genres" value="fantasy"/>
+            <column name="duration" value="160"/>
+            <column name="cast" value="Leonardo Di Caprio"/>
+            <column name="director" value="Regista 4"/>
+            <column name="adult" value="false"/>
+        </insert>
+    </changeSet>
+
+    <!-- Inserimento dati Proiezione -->
+    <changeSet id="10" author="user">
+        <insert tableName="Proiezione">
+            <column name="film_id" value="1"/>
+            <column name="sala_id" value="1"/>
+            <column name="data" value="2025-01-01"/>
+            <column name="orario" value="20:00:00"/>
+        </insert>
+        <insert tableName="Proiezione">
+            <column name="film_id" value="1"/>
+            <column name="sala_id" value="1"/>
+            <column name="data" value="2025-02-02"/>
+            <column name="orario" value="21:00:00"/>
+        </insert>
+        <insert tableName="Proiezione">
+            <column name="film_id" value="2"/>
+            <column name="sala_id" value="2"/>
+            <column name="data" value="2025-03-03"/>
+            <column name="orario" value="20:30:00"/>
+        </insert>
+        <insert tableName="Proiezione">
+            <column name="film_id" value="3"/>
+            <column name="sala_id" value="3"/>
+            <column name="data" value="2025-04-04"/>
+            <column name="orario" value="17:30:00"/>
+        </insert>
+    </changeSet>
+
+    <!-- Inserimento dati Posto -->
+    <changeSet id="11" author="user">
+        <insert tableName="Posto">
+            <column name="numero" value="1"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="1"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="2"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="1"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="3"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="1"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="1"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="1"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="2"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="2"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="3"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="1"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="1"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="2"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="2"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="2"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="3"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="2"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="1"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="2"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="2"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="2"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="3"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="3"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="1"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="3"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="2"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="3"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="3"/>
+            <column name="fila" value="A"/>
+            <column name="proiezione_id" value="3"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="1"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="4"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="2"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="4"/>
+        </insert>
+        <insert tableName="Posto">
+            <column name="numero" value="3"/>
+            <column name="fila" value="B"/>
+            <column name="proiezione_id" value="4"/>
+        </insert>
+    </changeSet>
+
+    <!-- Inserimento dati Biglietto -->
+    <changeSet id="12" author="user">
+        <insert tableName="Biglietto">
+            <column name="proiezione_id" value="1"/>
+            <column name="ridotto" value="false"/>
+            <column name="prezzo" value="8.0"/>
+            <column name="numero" value="4"/>
+            <column name="fila" value="A"/>
+            <column name="cliente_id" value="1"/>
+        </insert>
+        <insert tableName="Biglietto">
+            <column name="proiezione_id" value="2"/>
+            <column name="ridotto" value="true"/>
+            <column name="prezzo" value="5.0"/>
+            <column name="numero" value="16"/>
+            <column name="fila" value="B"/>
+            <column name="cliente_id" value="2"/>
+        </insert>
+        <insert tableName="Biglietto">
+            <column name="proiezione_id" value="3"/>
+            <column name="ridotto" value="false"/>
+            <column name="prezzo" value="8.0"/>
+            <column name="numero" value="2"/>
+            <column name="fila" value="B"/>
+            <column name="cliente_id" value="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
