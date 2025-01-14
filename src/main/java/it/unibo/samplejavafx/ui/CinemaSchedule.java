@@ -159,6 +159,9 @@ public class CinemaSchedule extends Application {
         new MovieSearchInterface(movieService.getWeeklyMovies(), this::visualizzaFilmFiltrati);
     container.getChildren().add(searchInterface);
 
+    HBox quickPurchaseSection = createQuickPurchaseSection();
+    container.getChildren().add(quickPurchaseSection);
+
     visualizzaFilmFiltrati(movieService.getWeeklyMovies());
 
         root.setContent(container);
