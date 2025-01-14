@@ -6,16 +6,33 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import it.unibo.samplejavafx.ScheduleManager;
+import it.unibo.samplejavafx.cinema.services.MovieProjections;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class MovieDetail extends Application {
     private final Film movie;
-    
+    private final MovieProjections movieService = new MovieProjections();
+    private final Map<String, List<String>> scheduleCache;
+
     public MovieDetail(Film movie) {
         this.movie = movie;
+        this.scheduleCache = ScheduleManager.getInstance().getScheduleForMovie(
+            movie, 
+            movieService.getWeeklyMovies()
+        );
     }
     
     @Override
@@ -33,8 +50,11 @@ public class MovieDetail extends Application {
 
         Label adultLabel = createLabel("Vietato ai minori: " + (movie.isAdult() ? "Si" : "No"), "detail-label"); 
         Label tramaLabel = createLabel("Trama: " + movie.getOverview(), "detail-label");
-            tramaLabel.setWrapText(true);
-            tramaLabel.setMaxWidth(600);   
+        tramaLabel.setWrapText(true);
+        tramaLabel.setMaxWidth(600);   
+
+        VBox ticketSection = createTicketPurchaseSection();
+        ticketSection.getStyleClass().add("ticket-section");
 
         root.getChildren().addAll(
             backButton,
@@ -44,9 +64,10 @@ public class MovieDetail extends Application {
             createLabel("Durata: " + movie.getDuration() + "'", "detail-label"),
             createLabel("Genere: " + String.join(", ", movie.getGenres()), "detail-label"),
             createLabel("Cast: " + String.join(", ", movie.getCast()), "detail-label"),
-            createLabel("Anno: " + movie.getReleaseDate(), "detail-label"), // TODO: Valutare formato data
+            createLabel("Anno: " + movie.getReleaseDate(), "detail-label"),
             adultLabel,
-            tramaLabel
+            tramaLabel,
+            ticketSection
         );
 
         Scene scene = new Scene(root);
@@ -56,6 +77,71 @@ public class MovieDetail extends Application {
         stage.show();
     }
 
+    private VBox createTicketPurchaseSection() {
+        VBox section = new VBox(10);
+        section.setPadding(new Insets(20, 0, 0, 0));
+        section.setMaxWidth(400);
+        section.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        section.getStyleClass().add("detail-ticket-section");
+        
+        Label titleLabel = new Label("ACQUISTA IL BIGLIETTO!");
+        titleLabel.getStyleClass().add("detail-ticket-title");
+        
+        ComboBox<String> daySelector = new ComboBox<>();
+        daySelector.setPromptText("Scegli il GIORNO");
+        daySelector.setMaxWidth(300);
+        daySelector.getStyleClass().add("quick-purchase-combo-box");
+        populateDaySelector(daySelector);
+        
+        ComboBox<String> timeSelector = new ComboBox<>();
+        timeSelector.setPromptText("Scegli l'ORA");
+        timeSelector.setMaxWidth(300);
+        timeSelector.getStyleClass().add("quick-purchase-combo-box");
+        
+        daySelector.setOnAction(e -> {
+            String selectedDay = daySelector.getValue();
+            if (selectedDay != null) {
+                updateTimeSelector(timeSelector, selectedDay);
+            }
+        });
+        
+        Button purchaseButton = new Button("SCEGLI IL POSTO");
+        purchaseButton.getStyleClass().add("quick-purchase-button");
+        purchaseButton.setDisable(true);
+        
+        timeSelector.setOnAction(e -> {
+            purchaseButton.setDisable(daySelector.getValue() == null || timeSelector.getValue() == null);
+        });
+        
+        HBox selectors = new HBox(10);
+        selectors.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        selectors.getChildren().addAll(daySelector, timeSelector);
+        
+        section.getChildren().addAll(titleLabel, selectors, purchaseButton);
+        return section;
+    }
+    
+    private void populateDaySelector(ComboBox<String> daySelector) {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd/MM", Locale.forLanguageTag("it-IT"));
+        
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = today.plusDays(i);
+            String formattedDate = date.format(formatter).toUpperCase();
+            daySelector.getItems().add(formattedDate);
+        }
+    }
+    
+    private void updateTimeSelector(ComboBox<String> timeSelector, String selectedDay) {
+        timeSelector.getItems().clear();
+        
+        // Estrai il giorno della settimana dal formato "GIORNO dd/MM"
+        String dayOfWeek = selectedDay.split(" ")[0];
+        
+        // Usa gli orari dalla cache
+        List<String> times = scheduleCache.getOrDefault(dayOfWeek, new ArrayList<>());
+        timeSelector.getItems().addAll(times);
+    }
     private Label createLabel(String text, String... styleClasses) {
         Label label = new Label(text);
         label.getStyleClass().addAll(styleClasses);
