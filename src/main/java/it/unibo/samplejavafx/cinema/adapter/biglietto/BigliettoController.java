@@ -3,6 +3,7 @@ package it.unibo.samplejavafx.cinema.adapter.biglietto;
 import it.unibo.samplejavafx.cinema.application.models.Biglietto;
 import it.unibo.samplejavafx.cinema.services.biglietto.BigliettoService;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -35,6 +36,14 @@ public class BigliettoController {
   @GetMapping("/all/{idCliente}")
   public List<Biglietto> findAllBigliettiByClienteId(@PathVariable long idCliente) {
     return bigliettoService.findAllBigliettiByClienteId(idCliente);
+  }
+
+  @PostMapping("/create")
+  public List<Biglietto> createBiglietti(
+      @RequestParam long idProiezione,
+      @RequestParam Map<Long, String> posti,
+      @RequestParam boolean ridotto) {
+    return bigliettoService.createBiglietti(idProiezione, posti, ridotto);
   }
 
   @GetMapping("/importo")
