@@ -1,14 +1,21 @@
 package it.unibo.samplejavafx.cinema.adapter.proiezione;
 
-import it.unibo.samplejavafx.cinema.application.models.Proiezione;
-import it.unibo.samplejavafx.cinema.services.proiezione.ProiezioneService;
 import java.util.List;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.services.proiezione.ProiezioneService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Validated
 @RestController
@@ -61,4 +68,9 @@ public class ProiezioneController {
   public Map<String, Long> postiLiberi(@RequestParam long idProiezione, @RequestParam long idSala) {
     return proiezioneService.postiLiberi(idProiezione, idSala);
   }
+
+  @PostMapping("/populate")
+public List<Proiezione> populateWeeklyProiezioni() {
+    return proiezioneService.createProiezioniFromApi();
+}
 }

@@ -1,20 +1,29 @@
 package it.unibo.samplejavafx.cinema.services.proiezione;
 
-import it.unibo.samplejavafx.cinema.application.models.Posto;
-import it.unibo.samplejavafx.cinema.application.models.Proiezione;
-import it.unibo.samplejavafx.cinema.application.models.Sala;
-import it.unibo.samplejavafx.cinema.repositories.PostoRepository;
-import it.unibo.samplejavafx.cinema.repositories.ProiezioneRepository;
-import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
-import it.unibo.samplejavafx.cinema.services.posto.PostoService;
-import it.unibo.samplejavafx.cinema.services.sala.SalaService;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.Posto;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.application.models.Sala;
+import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
+import it.unibo.samplejavafx.cinema.repositories.PostoRepository;
+import it.unibo.samplejavafx.cinema.repositories.ProiezioneRepository;
+import it.unibo.samplejavafx.cinema.services.MovieProjections;
+import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
+import it.unibo.samplejavafx.cinema.services.posto.PostoService;
+import it.unibo.samplejavafx.cinema.services.sala.SalaService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +35,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   private final PostoRepository postoRepository;
   private final PostoService postoService;
   private final SalaService salaService;
+  private final FilmRepository filmRepository;
 
   @Override
   public Proiezione findProiezioneById(Long id) {
@@ -111,4 +121,33 @@ public class ProiezioneServiceImpl implements ProiezioneService {
       return null;
     }
   }
+
+  @Override
+  public List<Proiezione> createProiezioniFromApi() {
+      MovieProjections movieProjections = new MovieProjections();
+      List<Film> films = movieProjections.getWeeklyMovies();
+      List<Proiezione> nuoveProiezioni = new ArrayList<>();
+  
+      for (Film film : films) {
+          //check se film già presente su db
+          Film filmEsistente = filmRepository.findById(film.getId()).orElse(null);
+  
+          if (filmEsistente == null) {
+              
+              filmEsistente = filmRepository.save(film);
+          }
+  
+          //film su database creo proiezione con film linkato
+          Proiezione proiezione = new Proiezione();
+          proiezione.setFilmId(filmEsistente.getId());  
+          proiezione.setData(Date.valueOf(filmEsistente.getReleaseDate()));  
+          proiezione.setOrario(Time.valueOf("20:00:00"));  
+          proiezione.setSalaId(1L);  
+  
+          nuoveProiezioni.add(proiezioneRepository.save(proiezione));  
+      }
+  
+      return nuoveProiezioni;  
+  }
+  
 }

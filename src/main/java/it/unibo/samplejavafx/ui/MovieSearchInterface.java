@@ -1,16 +1,17 @@
 package it.unibo.samplejavafx.ui;
 
-import it.unibo.samplejavafx.cinema.application.models.Film;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import it.unibo.samplejavafx.cinema.application.models.Film;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Label;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
@@ -36,8 +37,8 @@ public class MovieSearchInterface extends HBox {
         campoRicerca.textProperty().addListener((obs, old, newValue) -> applicaFiltri());
         
         Set<String> tuttiGeneri = films.stream()
-            .flatMap(m -> m.getGenres().stream())
-            .collect(Collectors.toSet());
+        .flatMap(m -> m.getGenresList().stream())
+        .collect(Collectors.toSet());
         filtroGenere = new ComboBox<>(FXCollections.observableArrayList(tuttiGeneri));
         filtroGenere.setPromptText("Filtra per genere");
         filtroGenere.getStyleClass().add("search-combo-box");
@@ -52,21 +53,21 @@ public class MovieSearchInterface extends HBox {
         this.getChildren().addAll(titleLabel, campoRicerca, filtroGenere, resetButton);
     }
 
-  private void applicaFiltri() {
-    filmFiltrati.setPredicate(
-        film -> {
-          boolean corrispondenzaRicerca =
-              campoRicerca.getText() == null
-                  || campoRicerca.getText().isEmpty()
-                  || film.getTitle().toLowerCase().contains(campoRicerca.getText().toLowerCase());
-
-          boolean corrispondenzaGenere =
-              filtroGenere.getValue() == null || film.getGenres().contains(filtroGenere.getValue());
-
-          return corrispondenzaRicerca && corrispondenzaGenere;
-        });
-
-    onSearchUpdated.accept(new ArrayList<>(filmFiltrati));
+    private void applicaFiltri() {
+      filmFiltrati.setPredicate(
+          film -> {
+            boolean corrispondenzaRicerca =
+                campoRicerca.getText() == null
+                    || campoRicerca.getText().isEmpty()
+                    || film.getTitle().toLowerCase().contains(campoRicerca.getText().toLowerCase());
+  
+            boolean corrispondenzaGenere =
+                filtroGenere.getValue() == null || film.getGenresList().contains(filtroGenere.getValue());
+  
+            return corrispondenzaRicerca && corrispondenzaGenere;
+          });
+  
+      onSearchUpdated.accept(new ArrayList<>(filmFiltrati));
   }
 
   public void resetFiltri() {

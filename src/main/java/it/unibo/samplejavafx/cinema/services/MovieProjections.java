@@ -1,17 +1,19 @@
 package it.unibo.samplejavafx.cinema.services;
 
-import it.unibo.samplejavafx.cinema.application.models.Film;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import it.unibo.samplejavafx.cinema.application.models.Film;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 @Slf4j
 @Data
@@ -129,17 +131,17 @@ public class MovieProjections {
             }
 
             return Film.of(
-                movieDetails.getLong("id"),
-                movieDetails.getString("title"),
-                movieDetails.getString("overview"),
-                movieDetails.getString("release_date"),
-                movieDetails.getString("poster_path"),
-                genres,
-                movieDetails.getInt("runtime"),
-                mainCast,
-                director,
-                movieDetails.getBoolean("adult")
-            );
+              movieDetails.getLong("id"),
+              movieDetails.getString("title"),
+              movieDetails.getString("overview"),
+              movieDetails.getString("release_date"),
+              movieDetails.getString("poster_path"),
+              String.join(",", genres),         
+              movieDetails.getInt("runtime"),
+              String.join(",", mainCast),       
+              director,
+              movieDetails.getBoolean("adult")
+);
         }
     } catch (IOException e) {
         log.error("Errore durante il recupero dei dettagli del film", e);
