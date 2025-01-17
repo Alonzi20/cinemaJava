@@ -7,7 +7,6 @@ import it.unibo.samplejavafx.cinema.application.models.Cliente;
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -24,6 +23,11 @@ public class BffService {
       "http://localhost:8080"; // Modifica con l'URL corretto del tuo backend
   private final HttpClient httpClient;
   private final ObjectMapper objectMapper;
+
+  public BffService() {
+    this.httpClient = HttpClient.newHttpClient(); // Istanza predefinita
+    this.objectMapper = new ObjectMapper(); // Istanza predefinita
+  }
 
   // --- BIGLIETTO ENDPOINTS ---
 
@@ -63,6 +67,31 @@ public class BffService {
     } else {
       throw new RuntimeException(
           "Errore durante il recupero dei biglietti per cliente: " + response.statusCode());
+    }
+  }
+
+  public List<Biglietto> createBiglietti(
+      long idProiezione, Map<Long, String> posti, boolean ridotto) throws Exception {
+    String url =
+        BASE_URL
+            + "/biglietto/create?idProiezione="
+            + idProiezione
+            + "&posti="
+            + posti
+            + "&ridotto="
+            + ridotto;
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .POST(HttpRequest.BodyPublishers.noBody())
+            .build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return objectMapper.readValue(response.body(), new TypeReference<>() {});
+    } else {
+      throw new RuntimeException(
+          "Errore durante la creazione dei biglietti: " + response.statusCode());
     }
   }
 
@@ -106,7 +135,7 @@ public class BffService {
 
   // --- FILM ENDPOINTS ---
 
-  public Film findByFilmId(long id) throws Exception{
+  public Film findByFilmId(long id) throws Exception {
     String url = BASE_URL + "/film?id=" + id;
     HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -114,14 +143,26 @@ public class BffService {
     if (response.statusCode() == 200) {
       return objectMapper.readValue(response.body(), Film.class);
     } else {
+      throw new RuntimeException("Errore durante il recupero del film: " + response.statusCode());
+    }
+  }
+
+  public List<Film> findAllFilm() throws Exception {
+    String url = BASE_URL + "/film/all";
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return objectMapper.readValue(response.body(), new TypeReference<>() {});
+    } else {
       throw new RuntimeException(
-          "Errore durante il recupero del film: " + response.statusCode());
+          "Errore durante il recupero di tutti i film: " + response.statusCode());
     }
   }
 
   // --- SALA ENDPOINTS ---
 
-  public Sala findBySalaId(long id) throws Exception{
+  public Sala findBySalaId(long id) throws Exception {
     String url = BASE_URL + "/sala?id=" + id;
     HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -129,8 +170,20 @@ public class BffService {
     if (response.statusCode() == 200) {
       return objectMapper.readValue(response.body(), Sala.class);
     } else {
+      throw new RuntimeException("Errore durante il recupero della sala: " + response.statusCode());
+    }
+  }
+
+  public List<Sala> findAllSale() throws Exception {
+    String url = BASE_URL + "/sala/all";
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return objectMapper.readValue(response.body(), new TypeReference<>() {});
+    } else {
       throw new RuntimeException(
-          "Errore durante il recupero della sala: " + response.statusCode());
+          "Errore durante il recupero di tutti le sale: " + response.statusCode());
     }
   }
 
@@ -224,7 +277,11 @@ public class BffService {
 
   public boolean isSalaPrenotabile(long idProiezione, long idSala) throws Exception {
     String url =
-        BASE_URL + "/proiezione/prenotabile?idProiezione=" + idProiezione + "&idSala=" + idSala;
+        BASE_URL
+            + "/proiezione/prenotabile/sala?idProiezione="
+            + idProiezione
+            + "&idSala="
+            + idSala;
     HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -233,6 +290,29 @@ public class BffService {
     } else {
       throw new RuntimeException(
           "Errore durante la verifica della sala prenotabile: " + response.statusCode());
+    }
+  }
+
+  public boolean isPostoPrenotabile(long numero, String fila, long idProiezione, long idSala)
+      throws Exception {
+    String url =
+        BASE_URL
+            + "/proiezione/prenotabile/posto?numero="
+            + numero
+            + "&fila="
+            + fila
+            + "&idProiezione="
+            + idProiezione
+            + "&idSala="
+            + idSala;
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return Boolean.parseBoolean(response.body());
+    } else {
+      throw new RuntimeException(
+          "Errore durante la verifica del posto prenotabile: " + response.statusCode());
     }
   }
 
