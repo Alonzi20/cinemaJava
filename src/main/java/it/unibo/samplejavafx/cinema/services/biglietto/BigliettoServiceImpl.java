@@ -5,7 +5,9 @@ import it.unibo.samplejavafx.cinema.repositories.BigliettoRepository;
 import it.unibo.samplejavafx.cinema.services.exceptions.BigliettoNotFoundException;
 import it.unibo.samplejavafx.cinema.services.posto.PostoService;
 import it.unibo.samplejavafx.cinema.services.proiezione.ProiezioneService;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,25 @@ public class BigliettoServiceImpl implements BigliettoService {
   @Override
   public List<Biglietto> findAllBigliettiByClienteId(long idCliente) {
     return bigliettoRepository.findAllByClienteId(idCliente);
+  }
+
+  @Override
+  public List<Biglietto> createBiglietti(
+      long idProiezione, Map<Long, String> posti, boolean ridotto) {
+    var biglietti = new ArrayList<Biglietto>();
+
+    for (var entry : posti.entrySet()) {
+      var numero = entry.getKey();
+      var fila = entry.getValue();
+      var biglietto = new Biglietto();
+      biglietto.setProiezioneId(idProiezione);
+      biglietto.setNumero(numero);
+      biglietto.setFila(fila);
+      biglietto.setPrezzo(importoBiglietto(ridotto));
+      biglietti.add(biglietto);
+    }
+
+    return biglietti;
   }
 
   @Override
