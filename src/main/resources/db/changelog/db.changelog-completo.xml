@@ -48,9 +48,9 @@
             <column name="overview" type="VARCHAR(500)"/>
             <column name="release_date" type="VARCHAR(10)"/>
             <column name="poster_path" type="VARCHAR(100)"/>
-            <column name="genres" type="VARBINARY(1000)"/>
+            <column name="genres" type="VARCHAR(1000)"/>
             <column name="duration" type="INT"/>
-            <column name="cast" type="VARBINARY(1000)"/>
+            <column name="cast" type="VARCHAR(1000)"/>
             <column name="director" type="VARCHAR(100)"/>
             <column name="adult" type="BOOLEAN"/>
         </createTable>
