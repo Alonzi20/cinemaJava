@@ -126,6 +126,8 @@ public class ProiezioneServiceImpl implements ProiezioneService {
 
   @Override
   public List<Proiezione> createProiezioniFromApi() {
+
+    // TODO Rido: cambiare tabelle proiezione e sala , ora errore che salaid non esiste in tabella sala
     MovieProjections movieProjections = new MovieProjections();
     List<Film> films = movieProjections.getWeeklyMovies();
     List<Proiezione> nuoveProiezioni = new ArrayList<>();
@@ -190,15 +192,36 @@ public class ProiezioneServiceImpl implements ProiezioneService {
           proiezione.setData(Date.valueOf(releaseDate));
           proiezione.setOrario(Time.valueOf(orario + ":00"));
 
-          // Assegna dinamicamente l'ID della sala
+          //assegnazione dinamica id sala
           proiezione.setSalaId(salaIds.get(salaIndex));
           salaIndex = (salaIndex + 1) % salaIds.size();
 
-          nuoveProiezioni.add(proiezioneRepository.save(proiezione));
+          Proiezione savedProiezione = proiezioneRepository.save(proiezione);
+          nuoveProiezioni.add(savedProiezione);
+
+          //generazione posti per proiezione
+          generateAndSavePosti(savedProiezione);
         }
       }
     }
 
     return nuoveProiezioni;
   }
+
+  private void generateAndSavePosti(Proiezione proiezione) {
+    //strutturata 10x10 cambiabile
+    int numeroFile = 10;
+    int postiPerFila = 10;
+
+    for (int fila = 1; fila <= numeroFile; fila++) {
+      for (int numero = 1; numero <= postiPerFila; numero++) {
+        Posto posto = new Posto();
+        posto.setNumero((long) numero);
+        posto.setFila(String.valueOf((char) ('A' + fila - 1)));
+        posto.setProiezione(proiezione);
+        postoRepository.save(posto);
+      }
+    }
+  }
 }
+
