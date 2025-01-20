@@ -163,15 +163,10 @@ public class ProiezioneServiceImpl implements ProiezioneService {
             Arrays.asList("11:30", "13:45")));
 
     for (Film film : films) {
-      // FIXME Alex: [19/01/2025]
-      //  Per Rido: quando crei un'entità non deve già avere un id perché lo
-      //  deve poter settare il framework che si occupa di creare le robe nel db
-      //  fai una query per cercare se il film esiste (findByTitle)
-      /*var filmEsistente = filmRepository.findById(film.getId()).orElse(null);
+      Film filmEsistente = filmRepository.findByTitle(film.getTitle()).orElse(null);
       if (filmEsistente == null) {
           filmEsistente = filmRepository.save(film);
-      }*/
-      var filmEsistente = filmRepository.save(film);
+      }
 
       LocalDate releaseDate = LocalDate.parse(filmEsistente.getReleaseDate());
       DayOfWeek dayOfWeek = releaseDate.getDayOfWeek();
