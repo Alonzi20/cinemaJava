@@ -3,6 +3,7 @@ package it.unibo.samplejavafx.cinema.application.models;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Time;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,4 +25,7 @@ public class OrariProiezioni {
 
     @Column(nullable = false)
     private Time startTime;
+
+    @OneToMany(mappedBy = "orarioProiezione")
+    private List<Proiezione> proiezioni;
 }
