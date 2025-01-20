@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import lombok.Setter;
 
-public class SeatSelection /*extends Application*/ {
+public class SeatSelection {
 
   private static final int COLUMNS = 5; // Numero di colonne
   private static final String[] ROWS = {"A", "B", "C", "D"}; // Righe rappresentate da lettere
@@ -120,9 +120,27 @@ public class SeatSelection /*extends Application*/ {
   public Map<Long, String> getSelectedSeats() {
     Map<Long, String> selectedSeatsMap = new HashMap<>();
     for (ToggleButton seat : selectedSeats) {
-      int col = Integer.parseInt(seat.getText()) - 1;
-      int row = Arrays.asList(seatButtons).indexOf(seat.getParent());
-      selectedSeatsMap.put((long) (col + 1), ROWS[row]);
+      int row = -1;
+      int col = -1;
+
+      // Trova la posizione del pulsante nella matrice seatButtons
+      for (int i = 0; i < ROWS.length; i++) {
+        for (int j = 0; j < COLUMNS; j++) {
+          if (seatButtons[i][j] == seat) {
+            row = i;
+            col = j;
+            break;
+          }
+        }
+        if (row != -1) {
+          break;
+        }
+      }
+
+      if (row != -1 && col != -1) {
+        // Aggiungi la riga e la colonna selezionata alla mappa
+        selectedSeatsMap.put((long) (col + 1), ROWS[row]);
+      }
     }
     return selectedSeatsMap;
   }

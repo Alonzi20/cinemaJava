@@ -121,7 +121,7 @@ public class MovieDetail extends Application {
     //  Recuperare proiezione tramite BffService e passarlo nel costruttore di BuyTicket
     //  qui ne ho creata una a caso che mi serviva per provare
     var proiezione = new Proiezione();
-    proiezione.setId(5L);
+    proiezione.setId(1L);
     proiezione.setData(Date.valueOf(LocalDate.now()));
     proiezione.setOrario(Time.valueOf(LocalTime.now()));
     proiezione.setFilmId(1L);

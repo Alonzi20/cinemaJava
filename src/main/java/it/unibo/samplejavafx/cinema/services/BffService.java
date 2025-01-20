@@ -2,6 +2,7 @@ package it.unibo.samplejavafx.cinema.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.unibo.samplejavafx.cinema.application.dto.BigliettoBuyDto;
 import it.unibo.samplejavafx.cinema.application.models.Biglietto;
 import it.unibo.samplejavafx.cinema.application.models.Cliente;
 import it.unibo.samplejavafx.cinema.application.models.Film;
@@ -11,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -72,19 +74,24 @@ public class BffService {
 
   public List<Biglietto> createBiglietti(
       long idProiezione, Map<Long, String> posti, boolean ridotto) throws Exception {
-    String url =
-        BASE_URL
-            + "/biglietto/create?idProiezione="
-            + idProiezione
-            + "&posti="
-            + posti
-            + "&ridotto="
-            + ridotto;
+    // Crea un oggetto contenente i dati della richiesta
+    Map<String, Object> requestBody = new HashMap<>();
+    requestBody.put("idProiezione", idProiezione);
+    requestBody.put("posti", posti);
+    requestBody.put("ridotto", ridotto);
+
+    // Serializza l'oggetto in JSON
+    String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+    // Costruisci la richiesta HTTP
     HttpRequest request =
         HttpRequest.newBuilder()
-            .uri(URI.create(url))
-            .POST(HttpRequest.BodyPublishers.noBody())
+            .uri(URI.create(BASE_URL + "/biglietto/create"))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
             .build();
+
+    // Invia la richiesta e gestisci la risposta
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
     if (response.statusCode() == 200) {
@@ -108,21 +115,25 @@ public class BffService {
     }
   }
 
-  public Biglietto compraBiglietto(long idProiezione, long idPosto, boolean ridotto)
-      throws Exception {
-    String url =
-        BASE_URL
-            + "/biglietto/compra?idProiezione="
-            + idProiezione
-            + "&idPosto="
-            + idPosto
-            + "&ridotto="
-            + ridotto;
+  public Biglietto compraBiglietto(Biglietto biglietto, boolean ridotto) throws Exception {
+    String url = BASE_URL + "/biglietto/compra";
+
+    // Crea un oggetto BigliettoBuyDto
+    BigliettoBuyDto requestDto = new BigliettoBuyDto();
+    requestDto.setBiglietto(biglietto);
+    requestDto.setRidotto(ridotto);
+
+    // Serializza il DTO in JSON
+    String requestBody = objectMapper.writeValueAsString(requestDto);
+
+    // Crea e invia la richiesta POST
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
-            .POST(HttpRequest.BodyPublishers.noBody())
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
             .build();
+
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
     if (response.statusCode() == 200) {

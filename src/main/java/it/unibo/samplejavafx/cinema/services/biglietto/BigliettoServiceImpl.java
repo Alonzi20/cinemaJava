@@ -70,21 +70,21 @@ public class BigliettoServiceImpl implements BigliettoService {
   // perché è fatto già dentro al metodo di recupero ById.
   // Li recupero per avere le info
   @Override
-  public Biglietto compra(long idProiezione, long numero, String fila, boolean ridotto) {
-    var proiezione = proiezioneService.findProiezioneById(idProiezione);
+  public Biglietto compra(Biglietto biglietto, boolean ridotto) {
+    var proiezione = proiezioneService.findProiezioneById(biglietto.getProiezioneId());
 
     var idPostoPrenotato =
-        proiezioneService.prenota(numero, fila, idProiezione, proiezione.getSalaId());
+        proiezioneService.prenota(
+            biglietto.getNumero(),
+            biglietto.getFila(),
+            biglietto.getProiezioneId(),
+            proiezione.getSalaId());
     if (idPostoPrenotato != null) {
-      Biglietto biglietto = new Biglietto();
-      biglietto.setProiezioneId(idProiezione);
-      biglietto.setRidotto(ridotto);
       biglietto.setPrezzo(ridotto ? Biglietto.PREZZO_RIDOTTO : Biglietto.PREZZO_INTERO);
+      biglietto.setRidotto(ridotto);
 
-      // INFO POSTO
-      var posto = postoService.findPostoById(idPostoPrenotato);
-      biglietto.setNumero(posto.getNumero());
-      biglietto.setFila(posto.getFila());
+      // TODO Alex: [20/01/2025] Aggiungere idCliente
+      biglietto.setClienteId(1L); // se non lo setti va in errore, è obbligatorio
 
       return bigliettoRepository.save(biglietto);
     } else {

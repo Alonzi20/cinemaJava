@@ -15,5 +15,5 @@ public interface BigliettoService {
 
   Double importoBiglietto(boolean ridotto);
 
-  Biglietto compra(long idProiezione, long numero, String fila, boolean ridotto);
+  Biglietto compra(Biglietto biglietto, boolean ridotto); // TODO Alex: [20/01/2025] idCliente
 }
