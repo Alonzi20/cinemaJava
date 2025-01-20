@@ -2,6 +2,8 @@ package it.unibo.samplejavafx.ui;
 
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
+import it.unibo.samplejavafx.cinema.services.orari_proiezioni.OrariProiezioniService;
+
 import java.util.List;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -34,12 +36,19 @@ import java.util.Map;
 // import java.util.Random;
 // import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 public class CinemaSchedule extends Application {
     // private static final String[] DAYS = {"GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ"};
     private final MovieProjections movieService = new MovieProjections();
+    private final OrariProiezioniService orariProiezioniService;
     private VBox container;
-    private final ScheduleManager scheduleManager = ScheduleManager.getInstance();
+    private final ScheduleManager scheduleManager;
+    public CinemaSchedule(OrariProiezioniService orariProiezioniService) {
+        this.orariProiezioniService = orariProiezioniService;
+        this.scheduleManager = ScheduleManager.getInstance(orariProiezioniService);
+    }
     // private ScheduleData scheduleData;
 
     // private static class ScheduleData {
@@ -374,10 +383,10 @@ public class CinemaSchedule extends Application {
   }
 
   private void openMovieDetail(Film movie) {
-    Stage detailStage = new Stage();
-    MovieDetail movieDetail = new MovieDetail(movie);
-    movieDetail.start(detailStage);
-  }
+        Stage detailStage = new Stage();
+        MovieDetail movieDetail = new MovieDetail(movie, orariProiezioniService);
+        movieDetail.start(detailStage);
+    }
 
   public static void main(String[] args) {
     launch(args);
