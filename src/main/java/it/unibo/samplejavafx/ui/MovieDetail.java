@@ -4,6 +4,8 @@ import it.unibo.samplejavafx.ScheduleManager;
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
+import it.unibo.samplejavafx.cinema.services.orari_proiezioni.OrariProiezioniService;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -25,14 +27,15 @@ import javafx.stage.Stage;
 public class MovieDetail extends Application {
   private final Film movie;
   private final Map<String, List<String>> scheduleCache;
+  private final OrariProiezioniService orariProiezioniService;
 
-  public MovieDetail(Film movie) {
-    this.movie = movie;
-    MovieProjections movieService = new MovieProjections();
-    this.scheduleCache =
-        ScheduleManager.getInstance().getScheduleForMovie(movie, movieService.getWeeklyMovies());
+  public MovieDetail(Film movie, OrariProiezioniService orariProiezioniService) {
+      this.movie = movie;
+      this.orariProiezioniService = orariProiezioniService;
+      MovieProjections movieService = new MovieProjections();
+      this.scheduleCache = ScheduleManager.getInstance(orariProiezioniService)
+          .getScheduleForMovie(movie, movieService.getWeeklyMovies());
   }
-
   @Override
   public void start(Stage stage) {
     VBox root = new VBox(10);
@@ -123,7 +126,7 @@ public class MovieDetail extends Application {
     var proiezione = new Proiezione();
     proiezione.setId(5L);
     proiezione.setData(Date.valueOf(LocalDate.now()));
-    proiezione.setOrario(Time.valueOf(LocalTime.now()));
+    // proiezione.setOrario(Time.valueOf(LocalTime.now()));
     proiezione.setFilmId(1L);
     proiezione.setSalaId(1L);
     purchaseButton.setOnAction(e -> new BuyTicket(proiezione).start(new Stage()));
