@@ -5,6 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
+
     <!-- Creazione tabella Cliente -->
     <changeSet id="1" author="user">
         <createTable tableName="Cliente">
@@ -379,4 +380,133 @@
             <column name="cliente_id" value="3"/>
         </insert>
     </changeSet>
+    
+    <changeSet id="13" author="user">
+        <createTable tableName="orari_proiezioni">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="pattern_type" type="VARCHAR(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="start_time" type="TIME">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <!-- Pattern Settimanali -->
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="16:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="19:00" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="21:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="17:00" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="20:00" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="22:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="15:45" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="18:15" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKDAY" />
+            <column name="start_time" value="21:00" />
+        </insert>
+
+        <!-- Pattern Weekend -->
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="15:00" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="17:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="20:00" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="22:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="14:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="17:00" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="19:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND" />
+            <column name="start_time" value="22:00" />
+        </insert>
+
+        <!-- Pattern Weekend Morning -->
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND_MORNING" />
+            <column name="start_time" value="10:30" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND_MORNING" />
+            <column name="start_time" value="12:45" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND_MORNING" />
+            <column name="start_time" value="11:00" />
+        </insert>
+        <insert tableName="orari_proiezioni">
+            <column name="pattern_type" value="WEEKEND_MORNING" />
+            <column name="start_time" value="13:15" />
+        </insert>
+    </changeSet>
+    <changeSet id="14" author="user">
+        <!-- Eliminiamo i dati dalle tabelle che dipendono da Proiezione -->
+        <sql>DELETE FROM Biglietto</sql>
+        <sql>DELETE FROM Posto</sql>
+        
+        <!-- Poi eliminiamo i dati da Proiezione -->
+        <sql>DELETE FROM Proiezione</sql>
+        
+        <!-- Aggiungiamo la nuova colonna -->
+        <addColumn tableName="Proiezione">
+            <column name="orario_proiezione_id" type="BIGINT">
+                <constraints 
+                    foreignKeyName="fk_proiezione_orario"
+                    references="orari_proiezioni(id)"
+                    nullable="false"/>
+            </column>
+        </addColumn>
+
+        <!-- Rimuoviamo la vecchia colonna orario -->
+        <dropColumn tableName="Proiezione">
+            <column name="orario"/>
+        </dropColumn>
+    </changeSet>
+
+    <include file="changes/movies-update.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

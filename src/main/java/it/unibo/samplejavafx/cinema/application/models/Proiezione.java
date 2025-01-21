@@ -2,7 +2,6 @@ package it.unibo.samplejavafx.cinema.application.models;
 
 import jakarta.persistence.*;
 import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 import lombok.*;
 
@@ -24,8 +23,11 @@ public class Proiezione {
   Long filmId;
   Long salaId;
   Date data;
-  Time orario;
 
   @OneToMany(mappedBy = "proiezione", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Posto> postiPrenotati;
+
+  @ManyToOne
+  @JoinColumn(name = "orario_proiezione_id")
+  private OrariProiezioni orarioProiezione;
 }

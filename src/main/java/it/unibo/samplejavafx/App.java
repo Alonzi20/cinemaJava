@@ -4,6 +4,9 @@ import it.unibo.samplejavafx.ui.CinemaSchedule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableConfigurationProperties({CinemaConfigurationProperties.class})
@@ -28,8 +31,10 @@ public class App {
   // }
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
-
-    CinemaSchedule.main(args);
+      ApplicationContext context = new SpringApplicationBuilder(App.class)
+          .headless(false)
+          .run(args);
+      
+      JavaFXApplication.launch(context);
   }
 }

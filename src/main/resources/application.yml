@@ -28,6 +28,8 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver  # Driver per MariaDB
     #liquibase-schema: public   Se necessario, specifica lo schema (altrimenti lascia vuoto)
     contexts: dev, prod  # Se usi contesti diversi per le migrazioni
+    parameters:
+      encoding: UTF-8  # Imposta la codifica UTF-8
 
 domain:
   name: cinema

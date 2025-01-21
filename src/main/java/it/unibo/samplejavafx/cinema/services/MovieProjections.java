@@ -138,7 +138,7 @@ public class MovieProjections {
         }
 
         return Film.of(
-            movieDetails.getLong("id"),
+                null,
             movieDetails.getString("title"),
             movieDetails.getString("overview"),
             movieDetails.getString("release_date"),
