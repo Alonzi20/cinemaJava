@@ -5,13 +5,13 @@ import it.unibo.samplejavafx.cinema.repositories.ClienteRepository;
 import it.unibo.samplejavafx.cinema.services.exceptions.ClienteNotFoundException;
 import it.unibo.samplejavafx.cinema.services.exceptions.EmailUsed;
 import jakarta.servlet.http.HttpSession;
-
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class ClienteServiceImpl implements ClienteService {
 
   @Override
   public Cliente createCliente(String nome, String cognome, String email, String password) {
-    if(clienteRepository.findClienteByEmail(email) != null){
+    if (clienteRepository.findClienteByEmail(email) != null) {
       throw new EmailUsed(email);
     }
     Cliente cliente = new Cliente();
@@ -48,10 +48,10 @@ public class ClienteServiceImpl implements ClienteService {
   }
 
   @Override
-  public Cliente logInCliente(String email, String password){
-    Cliente cliente = clienteRepository.findClienteByEmail(email);  
+  public Cliente logInCliente(String email, String password) {
+    Cliente cliente = clienteRepository.findClienteByEmail(email);
 
-    if(cliente == null || !pswEncoder.matches(password, cliente.getPassword())){
+    if (cliente == null || !pswEncoder.matches(password, cliente.getPassword())) {
       throw new RuntimeException("Email o password errati");
     }
 
@@ -59,19 +59,22 @@ public class ClienteServiceImpl implements ClienteService {
   }
 
   @Override
-  public Cliente findClienteByEmail(String email){
+  public Cliente findClienteByEmail(String email) {
     List<Cliente> clienti = clienteRepository.findAll();
-    for(Cliente cliente : clienti){
-      if(email == cliente.getEmail()){
+    for (Cliente cliente : clienti) {
+      if (Objects.equals(email, cliente.getEmail())) {
         return cliente;
       }
     }
     return null;
+
+    // perché non usare direttamente il metodo findClienteByEmail?
+    // return clienteRepository.findClienteByEmail(email);
   }
 
   @Override
-  public void logOutCliente(HttpSession session){
-    if(session != null){
+  public void logOutCliente(HttpSession session) {
+    if (session != null) {
       session.invalidate();
     }
   }
