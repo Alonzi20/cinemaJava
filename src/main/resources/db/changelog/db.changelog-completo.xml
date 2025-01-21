@@ -5,6 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
+
     <!-- Creazione tabella Cliente -->
     <changeSet id="1" author="user">
         <createTable tableName="Cliente">
@@ -500,4 +501,6 @@
             <column name="orario"/>
         </dropColumn>
     </changeSet>
+
+    <include file="changes/movies-update.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

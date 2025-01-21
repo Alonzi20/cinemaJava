@@ -1,5 +1,18 @@
 package it.unibo.samplejavafx.cinema.services.proiezione;
 
+import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Posto;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
@@ -11,20 +24,8 @@ import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
 import it.unibo.samplejavafx.cinema.services.posto.PostoService;
 import it.unibo.samplejavafx.cinema.services.sala.SalaService;
-import java.sql.Date;
-import java.sql.Time;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -190,7 +191,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
           Proiezione proiezione = new Proiezione();
           proiezione.setFilmId(filmEsistente.getId());
           proiezione.setData(Date.valueOf(releaseDate));
-          proiezione.setOrario(Time.valueOf(orario + ":00"));
+          //proiezione.setOrario(Time.valueOf(orario + ":00"));
 
           //assegnazione dinamica id sala
           proiezione.setSalaId(salaIds.get(salaIndex));
