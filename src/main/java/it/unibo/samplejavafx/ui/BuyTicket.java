@@ -1,10 +1,14 @@
 package it.unibo.samplejavafx.ui;
 
+import static it.unibo.samplejavafx.cinema.application.models.Biglietto.PREZZO_INTERO;
+import static it.unibo.samplejavafx.cinema.application.models.Biglietto.PREZZO_RIDOTTO;
+
 import it.unibo.samplejavafx.cinema.application.models.Biglietto;
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
 import it.unibo.samplejavafx.cinema.services.BffService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,16 +20,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BuyTicket extends Application {
   private static final String INTERO = "Intero";
   private static final String RIDOTTO = "Ridotto";
+  private static final Logger log = LoggerFactory.getLogger(BuyTicket.class);
 
   private final BffService bffService = new BffService();
   private final Proiezione proiezione;
   private final Film movie;
   private final Sala sala;
-  private List<Biglietto> biglietti;
+  private final List<Biglietto> biglietti = new ArrayList<>();
   private final Label totalLabel = new Label("Totale: 0€");
   private final SeatSelection seatSelection;
 
@@ -36,6 +43,7 @@ public class BuyTicket extends Application {
       this.movie = bffService.findByFilmId(proiezione.getFilmId());
       this.sala = bffService.findBySalaId(proiezione.getSalaId());
     } catch (Exception e) {
+      log.error("Errore durante il recupero dei dati: {}", e.getMessage());
       throw new RuntimeException("Errore durante il recupero dei dati");
     }
   }
@@ -57,12 +65,12 @@ public class BuyTicket extends Application {
 
     // Aggiungi il pannello di selezione posti
     VBox seatSelectionPane = seatSelection.createSeatSelectionPane();
-    seatSelection.setOnConfirm(() -> handleSeatSelection());
+    seatSelection.setOnConfirm(() -> this.handleSeatSelection(root));
 
     root.getChildren()
         .addAll(
             backButton,
-            poster,
+            /*poster,*/
             createLabel("Film: " + movie.getTitle()),
             createLabel("Genere: " + movie.getGenres()),
             createLabel("Sala " + sala.getNumero()),
@@ -72,8 +80,10 @@ public class BuyTicket extends Application {
 
     root.getChildren().add(createLabel("Biglietti"));
 
-    for (Biglietto biglietto : biglietti) {
-      root.getChildren().add(createSelezione(biglietto));
+    if (!biglietti.isEmpty()) {
+      for (Biglietto biglietto : biglietti) {
+        root.getChildren().add(createSelezione(biglietto));
+      }
     }
 
     root.getChildren().add(totalLabel);
@@ -87,13 +97,20 @@ public class BuyTicket extends Application {
     stage.show();
   }
 
-  private void handleSeatSelection() {
+  private void handleSeatSelection(VBox root) {
     Map<Long, String> posti = seatSelection.getSelectedSeats();
     try {
       List<Biglietto> createdBiglietti =
           bffService.createBiglietti(proiezione.getId(), posti, false);
       biglietti.addAll(createdBiglietti);
-      updateTotal();
+
+      // Creazione selezione ridotto
+      if (!biglietti.isEmpty()) {
+        for (Biglietto biglietto : biglietti) {
+          root.getChildren().add(createSelezione(biglietto));
+        }
+      }
+      // updateTotal(); da fare dopo scelta del ridotto e basta, giusto?
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,
@@ -109,27 +126,42 @@ public class BuyTicket extends Application {
     return label;
   }
 
+  // TODO Alex: [20/01/2025] ora al click su conferma selezione di SeatSelection, si aggiungono
+  //  biglietti senza cancellare quelli che già ci sono, da fixare
   private VBox createSelezione(Biglietto biglietto) {
-    Label bigliettoLabel = createLabel(biglietto.getFila() + biglietto.getNumero());
-    ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll(INTERO, RIDOTTO);
+    VBox tipoBiglietto = new VBox();
+    if (!movie.isAdult() && biglietto != null) {
+      Label bigliettoLabel =
+          createLabel("Fila: " + biglietto.getFila() + " Numero: " + biglietto.getNumero());
+      ComboBox<String> comboBox = new ComboBox<>();
+      comboBox.getItems().addAll(INTERO, RIDOTTO);
 
-    // imposta "Intero" come default
-    comboBox.getSelectionModel().select(INTERO);
+      // imposta "Intero" come default
+      comboBox.getSelectionModel().select(biglietto.isRidotto() ? RIDOTTO : INTERO);
 
-    comboBox.setOnAction(
-        event -> {
-          String selezione = comboBox.getSelectionModel().getSelectedItem();
-          if (Objects.equals(selezione, INTERO)) {
-            biglietto.setRidotto(false);
-          } else if (Objects.equals(selezione, RIDOTTO)) {
-            biglietto.setRidotto(true);
-          }
-          updateTotal();
-        });
+      comboBox.setOnAction(
+          event -> {
+            String selezione = comboBox.getSelectionModel().getSelectedItem();
+            if (Objects.equals(selezione, INTERO)) {
+              biglietto.setRidotto(false);
+              biglietto.setPrezzo(PREZZO_INTERO);
+            } else if (Objects.equals(selezione, RIDOTTO)) {
+              biglietto.setRidotto(true);
+              biglietto.setPrezzo(PREZZO_RIDOTTO);
+            }
+            updateTotal();
+          });
 
-    VBox tipoBiglietto = new VBox(5);
-    tipoBiglietto.getChildren().addAll(bigliettoLabel, comboBox);
+      updateTotal();
+
+      tipoBiglietto = new VBox(5);
+      tipoBiglietto.getChildren().addAll(bigliettoLabel, comboBox);
+    }
+    Button buyButton = new Button("COMPRA");
+    buyButton.getStyleClass().add("quick-purchase-button");
+    buyButton.setOnAction(e -> buyTicket());
+
+    tipoBiglietto.getChildren().add(buyButton);
     return tipoBiglietto;
   }
 
@@ -139,5 +171,21 @@ public class BuyTicket extends Application {
       totale = totale + (biglietto.getPrezzo() != null ? biglietto.getPrezzo() : 0);
     }
     totalLabel.setText("Totale: " + totale + "€");
+  }
+
+  private void buyTicket() {
+    try {
+      for (Biglietto biglietto : biglietti) {
+        bffService.compraBiglietto(biglietto, biglietto.isRidotto());
+      }
+      new Alert(Alert.AlertType.INFORMATION, "Biglietti acquistati con successo", ButtonType.OK)
+          .showAndWait();
+    } catch (Exception e) {
+      new Alert(
+              Alert.AlertType.ERROR,
+              "Errore durante l'acquisto dei biglietti: " + e.getMessage(),
+              ButtonType.OK)
+          .showAndWait();
+    }
   }
 }

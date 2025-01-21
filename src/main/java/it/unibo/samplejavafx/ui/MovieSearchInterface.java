@@ -60,13 +60,13 @@ public class MovieSearchInterface extends HBox {
                 campoRicerca.getText() == null
                     || campoRicerca.getText().isEmpty()
                     || film.getTitle().toLowerCase().contains(campoRicerca.getText().toLowerCase());
-  
+
             boolean corrispondenzaGenere =
                 filtroGenere.getValue() == null || film.getGenresList().contains(filtroGenere.getValue());
-  
+
             return corrispondenzaRicerca && corrispondenzaGenere;
           });
-  
+
       onSearchUpdated.accept(new ArrayList<>(filmFiltrati));
   }
 

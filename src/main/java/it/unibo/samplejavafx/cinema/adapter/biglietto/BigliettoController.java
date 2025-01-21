@@ -1,12 +1,14 @@
 package it.unibo.samplejavafx.cinema.adapter.biglietto;
 
+import it.unibo.samplejavafx.cinema.application.dto.BigliettoBuyDto;
+import it.unibo.samplejavafx.cinema.application.dto.BigliettoRequestDto;
 import it.unibo.samplejavafx.cinema.application.models.Biglietto;
 import it.unibo.samplejavafx.cinema.services.biglietto.BigliettoService;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,11 +41,12 @@ public class BigliettoController {
   }
 
   @PostMapping("/create")
-  public List<Biglietto> createBiglietti(
-      @RequestParam long idProiezione,
-      @RequestParam Map<Long, String> posti,
-      @RequestParam boolean ridotto) {
-    return bigliettoService.createBiglietti(idProiezione, posti, ridotto);
+  public ResponseEntity<List<Biglietto>> createBiglietti(@RequestBody BigliettoRequestDto request) {
+    // Esegui la logica per creare i biglietti usando i dati della richiesta
+    List<Biglietto> biglietti =
+        bigliettoService.createBiglietti(
+            request.getIdProiezione(), request.getPosti(), request.isRidotto());
+    return ResponseEntity.ok(biglietti);
   }
 
   @GetMapping("/importo")
@@ -51,12 +54,10 @@ public class BigliettoController {
     return bigliettoService.importoBiglietto(ridotto);
   }
 
+  // TODO Alex: [20/01/2025]
+  //  Passare in ingresso Biglietto direttamente e clienteId per acquistare
   @PostMapping("/compra")
-  public Biglietto compra(
-      @RequestParam long idProiezione,
-      @RequestParam long numero,
-      @RequestParam String fila,
-      @RequestParam boolean ridotto) {
-    return bigliettoService.compra(idProiezione, numero, fila, ridotto);
+  public Biglietto compra(@RequestBody BigliettoBuyDto request) {
+    return bigliettoService.compra(request.getBiglietto(), request.isRidotto());
   }
 }

@@ -34,15 +34,15 @@ public class Film {
     private String overview;
     private String releaseDate;
     private String posterPath;
-    
+
     @Column(columnDefinition = "TEXT")
     private String genres;
-    
+
     private int duration;
-    
+
     @Column(columnDefinition = "TEXT")
     private String cast;
-    
+
     private String director;
     private boolean adult;
 

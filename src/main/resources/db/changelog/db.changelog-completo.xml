@@ -21,6 +21,9 @@
             <column name="email" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
+            <column name="password" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
@@ -148,16 +151,19 @@
             <column name="nome" value="Mario"/>
             <column name="cognome" value="Rossi"/>
             <column name="email" value="mario.rossi@email.it"/>
+            <column name="password" value="$2a$10$jUPfF1CGWdABlCVhmeqRNekzIhjqMv4ycAlm1ikAxmY8xQn6Vh7gG"/>
         </insert>
         <insert tableName="Cliente">
             <column name="nome" value="Luca"/>
             <column name="cognome" value="Verdi"/>
             <column name="email" value="luca.verdi@email.it"/>
+            <column name="password" value="$2a$10$E8.9wvYFoagJA20SBSDDq.6YUE/1tG/zHVY5zjZLS8/..c1M5kJSm"/>
         </insert>
         <insert tableName="Cliente">
             <column name="nome" value="Gianni"/>
             <column name="cognome" value="Barba"/>
             <column name="email" value="gianni.barba@email.it"/>
+            <column name="password" value="$2a$10$xi3rBRMrRYeTe5WCfpovyOTJOwnhFFL5ZL7z30.dqaQuBUjyXFNIC"/>
         </insert>
     </changeSet>
 
