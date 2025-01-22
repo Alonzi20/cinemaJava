@@ -1,6 +1,8 @@
 package it.unibo.samplejavafx.ui;
 
 import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.services.BffService;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import it.unibo.samplejavafx.cinema.services.orari_proiezioni.OrariProiezioniService;
 
@@ -25,6 +27,7 @@ import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 // import java.util.ArrayList;
@@ -45,9 +48,11 @@ public class CinemaSchedule extends Application {
     private final OrariProiezioniService orariProiezioniService;
     private VBox container;
     private final ScheduleManager scheduleManager;
+    private final BffService bffService;
     public CinemaSchedule(OrariProiezioniService orariProiezioniService) {
         this.orariProiezioniService = orariProiezioniService;
         this.scheduleManager = ScheduleManager.getInstance(orariProiezioniService);
+        this.bffService = new BffService();
     }
     // private ScheduleData scheduleData;
 
@@ -252,6 +257,39 @@ public class CinemaSchedule extends Application {
             purchaseButton.setDisable(movieSelector.getValue() == null || 
                                     daySelector.getValue() == null || 
                                     timeSelector.getValue() == null);
+        });
+
+        purchaseButton.setOnAction(e -> {
+            try {
+                Film selectedMovie = movieSelector.getValue();
+                String selectedDay = daySelector.getValue();
+                String selectedTime = timeSelector.getValue();
+
+                // Estrai giorno e mese dalla stringa (ignorando il nome del giorno)
+                String[] parts = selectedDay.split(" ")[1].split("/");
+                int day = Integer.parseInt(parts[0]);
+                int month = Integer.parseInt(parts[1]); 
+                int year = LocalDate.now().getYear();
+
+                LocalDate selectedDate = LocalDate.of(year, month, day);
+                LocalTime time = LocalTime.parse(selectedTime);
+
+                List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(selectedMovie.getId());
+
+                Proiezione proiezione = proiezioni.stream()
+                    .filter(p -> {
+                        LocalDate proiezioneDate = p.getData().toLocalDate();
+                        LocalTime proiezioneTime = p.getOrarioProiezione().getStartTime().toLocalTime();
+                        return proiezioneDate.equals(selectedDate) && proiezioneTime.equals(time);
+                    })
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Nessuna proiezione trovata per la data e ora selezionate"));
+                    
+                new BuyTicket(proiezione).start(new Stage());
+                
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
         
         purchaseSection.getChildren().addAll(titleLabel, movieSelector, daySelector, 
