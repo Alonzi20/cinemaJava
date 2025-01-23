@@ -1,5 +1,6 @@
 package it.unibo.samplejavafx.cinema.application.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,8 @@ public class Posto {
 
   @ManyToOne
   @JoinColumn(name = "proiezione_id", nullable = false) // Collega il posto a una proiezione
+  @JsonIgnoreProperties(
+      "postiPrenotati") // Ignora il lato opposto della relazione, per evitare cicli
   private Proiezione proiezione;
 
   Long clienteId; // Id del cliente che ha prenotato il posto

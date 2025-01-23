@@ -121,6 +121,12 @@ public class BuyTicket extends Application {
           dynamicContent.getChildren().add(createSelezione(biglietto));
         }
       }
+
+      // Crea un unico pulsante Compra per tutti i biglietti
+      Button buyButton = new Button("COMPRA");
+      buyButton.getStyleClass().add("quick-purchase-button");
+      buyButton.setOnAction(e -> buyTickets());
+      dynamicContent.getChildren().add(buyButton);
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,
@@ -165,11 +171,7 @@ public class BuyTicket extends Application {
       tipoBiglietto = new VBox(5);
       tipoBiglietto.getChildren().addAll(bigliettoLabel, comboBox);
     }
-    Button buyButton = new Button("COMPRA");
-    buyButton.getStyleClass().add("quick-purchase-button");
-    buyButton.setOnAction(e -> buyTicket());
 
-    tipoBiglietto.getChildren().add(buyButton);
     return tipoBiglietto;
   }
 
@@ -181,8 +183,14 @@ public class BuyTicket extends Application {
     totalLabel.setText("Totale: " + totale + "€");
   }
 
-  private void buyTicket() {
+  private void buyTickets() {
     try {
+      if (biglietti.isEmpty()) {
+        new Alert(Alert.AlertType.ERROR, "Nessun biglietto selezionato", ButtonType.OK)
+            .showAndWait();
+        return;
+      }
+
       for (Biglietto biglietto : biglietti) {
         // TODO Alex: [23/01/2025] settare idCliente al biglietto per l'acquisto
         biglietto.setClienteId(1L);
@@ -190,6 +198,9 @@ public class BuyTicket extends Application {
       }
       new Alert(Alert.AlertType.INFORMATION, "Biglietti acquistati con successo", ButtonType.OK)
           .showAndWait();
+
+      // Chiudi la finestra e torna alla pagina precedente
+      closePage();
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,
@@ -197,5 +208,11 @@ public class BuyTicket extends Application {
               ButtonType.OK)
           .showAndWait();
     }
+  }
+
+  private void closePage() {
+    // Questo chiuderà la finestra attuale (acquisto biglietti)
+    Stage stage = (Stage) totalLabel.getScene().getWindow();
+    stage.close();
   }
 }
