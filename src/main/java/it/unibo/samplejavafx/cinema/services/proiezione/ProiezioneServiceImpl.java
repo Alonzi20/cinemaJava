@@ -20,6 +20,7 @@ import it.unibo.samplejavafx.cinema.application.models.Sala;
 import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
 import it.unibo.samplejavafx.cinema.repositories.PostoRepository;
 import it.unibo.samplejavafx.cinema.repositories.ProiezioneRepository;
+import it.unibo.samplejavafx.cinema.repositories.SalaRepository;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
 import it.unibo.samplejavafx.cinema.services.posto.PostoService;
@@ -38,7 +39,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   private final PostoService postoService;
   private final SalaService salaService;
   private final FilmRepository filmRepository;
-  private final FilmRepository salaRepository;
+  private final SalaRepository salaRepository;
 
   @Override
   public Proiezione findProiezioneById(Long id) {
