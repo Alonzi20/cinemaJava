@@ -1,9 +1,9 @@
 package it.unibo.samplejavafx.cinema.services.proiezione;
 
+import it.unibo.samplejavafx.cinema.application.dto.CreaProiezione;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import java.util.List;
 import java.util.Map;
-
-import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 
 public interface ProiezioneService {
   Proiezione findProiezioneById(Long id);
@@ -12,7 +12,7 @@ public interface ProiezioneService {
 
   List<Proiezione> findAllProiezioniByFilmId(Long idFilm);
 
-  Proiezione createProiezione();
+  Proiezione createProiezione(CreaProiezione creaProiezione);
 
   int quantitaPostiLiberi(long idProiezione, long idSala);
 

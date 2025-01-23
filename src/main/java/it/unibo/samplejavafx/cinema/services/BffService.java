@@ -274,7 +274,7 @@ public class BffService {
   // Da usare per aggiungere gli orari delle proiezioni nei dettagli di ciascun film
   // Poi da usare per comprare un biglietto scegliendo la proiezione sulla base dell'orario
   public List<Proiezione> findAllProiezioniByFilmId(long idFilm) throws Exception {
-    String url = BASE_URL + "/proiezione/all" + idFilm;
+    String url = BASE_URL + "/proiezione/all/" + idFilm;
     HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 

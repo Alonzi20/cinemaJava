@@ -1,9 +1,9 @@
 package it.unibo.samplejavafx.cinema.application.models;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.sql.Time;
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Data
@@ -15,17 +15,17 @@ import java.util.List;
 @AllArgsConstructor(staticName = "of", access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class OrariProiezioni {
-    @Id
-    @EqualsAndHashCode.Include
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @EqualsAndHashCode.Include
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private String patternType;
+  @Column(nullable = false)
+  private String patternType;
 
-    @Column(nullable = false)
-    private Time startTime;
+  @Column(nullable = false)
+  private Time startTime;
 
-    @OneToMany(mappedBy = "orarioProiezione")
-    private List<Proiezione> proiezioni;
+  @OneToMany(mappedBy = "orarioProiezione", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Proiezione> proiezioni;
 }

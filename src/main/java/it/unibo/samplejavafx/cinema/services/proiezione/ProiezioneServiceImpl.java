@@ -1,5 +1,15 @@
 package it.unibo.samplejavafx.cinema.services.proiezione;
 
+import it.unibo.samplejavafx.cinema.application.dto.CreaProiezione;
+import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.Posto;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.application.models.Sala;
+import it.unibo.samplejavafx.cinema.repositories.*;
+import it.unibo.samplejavafx.cinema.services.MovieProjections;
+import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
+import it.unibo.samplejavafx.cinema.services.posto.PostoService;
+import it.unibo.samplejavafx.cinema.services.sala.SalaService;
 import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -9,24 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import it.unibo.samplejavafx.cinema.application.models.Film;
-import it.unibo.samplejavafx.cinema.application.models.Posto;
-import it.unibo.samplejavafx.cinema.application.models.Proiezione;
-import it.unibo.samplejavafx.cinema.application.models.Sala;
-import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
-import it.unibo.samplejavafx.cinema.repositories.PostoRepository;
-import it.unibo.samplejavafx.cinema.repositories.ProiezioneRepository;
-import it.unibo.samplejavafx.cinema.repositories.SalaRepository;
-import it.unibo.samplejavafx.cinema.services.MovieProjections;
-import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
-import it.unibo.samplejavafx.cinema.services.posto.PostoService;
-import it.unibo.samplejavafx.cinema.services.sala.SalaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,6 +36,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   private final SalaService salaService;
   private final FilmRepository filmRepository;
   private final SalaRepository salaRepository;
+  private final OrariProiezioniRepository orariProiezioniRepository;
 
   @Override
   public Proiezione findProiezioneById(Long id) {
@@ -59,8 +56,18 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   }
 
   @Override
-  public Proiezione createProiezione() {
-    return null;
+  public Proiezione createProiezione(CreaProiezione creaProiezione) {
+    var orarioProiezione =
+        orariProiezioniRepository.findById(creaProiezione.getOrarioProiezioneId()).orElse(null);
+
+    var proiezione =
+        Proiezione.builder()
+            .filmId(creaProiezione.getFilmId())
+            .salaId(creaProiezione.getSalaId())
+            .data(creaProiezione.getData())
+            .orarioProiezione(orarioProiezione)
+            .build();
+    return proiezioneRepository.save(proiezione);
   }
 
   @Override
@@ -129,7 +136,8 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   @Override
   public List<Proiezione> createProiezioniFromApi() {
 
-    // TODO Rido: cambiare tabelle proiezione e sala , ora errore che salaid non esiste in tabella sala
+    // TODO Rido: cambiare tabelle proiezione e sala , ora errore che salaid non esiste in tabella
+    // sala
     MovieProjections movieProjections = new MovieProjections();
     List<Film> films = movieProjections.getWeeklyMovies();
     List<Proiezione> nuoveProiezioni = new ArrayList<>();
@@ -169,7 +177,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
     for (Film film : films) {
       Film filmEsistente = filmRepository.findByTitle(film.getTitle()).orElse(null);
       if (filmEsistente == null) {
-          filmEsistente = filmRepository.save(film);
+        filmEsistente = filmRepository.save(film);
       }
 
       LocalDate releaseDate = LocalDate.parse(filmEsistente.getReleaseDate());
@@ -192,16 +200,16 @@ public class ProiezioneServiceImpl implements ProiezioneService {
           Proiezione proiezione = new Proiezione();
           proiezione.setFilmId(filmEsistente.getId());
           proiezione.setData(Date.valueOf(releaseDate));
-          //proiezione.setOrario(Time.valueOf(orario + ":00"));
+          // proiezione.setOrario(Time.valueOf(orario + ":00"));
 
-          //assegnazione dinamica id sala
+          // assegnazione dinamica id sala
           proiezione.setSalaId(salaIds.get(salaIndex));
           salaIndex = (salaIndex + 1) % salaIds.size();
 
           Proiezione savedProiezione = proiezioneRepository.save(proiezione);
           nuoveProiezioni.add(savedProiezione);
 
-          //generazione posti per proiezione
+          // generazione posti per proiezione
           generateAndSavePosti(savedProiezione);
         }
       }
@@ -211,7 +219,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   }
 
   private void generateAndSavePosti(Proiezione proiezione) {
-    //strutturata 10x10 cambiabile
+    // strutturata 10x10 cambiabile
     int numeroFile = 10;
     int postiPerFila = 10;
 
@@ -226,4 +234,3 @@ public class ProiezioneServiceImpl implements ProiezioneService {
     }
   }
 }
-
