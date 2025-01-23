@@ -125,11 +125,11 @@ public class MovieDetail extends Application {
 
     purchaseButton.setOnAction(e -> {
       try {
-          // Queste sono le righe da sostituire nel tuo codice attuale
+         
           String selectedDay = daySelector.getValue();
           String selectedTime = timeSelector.getValue();
   
-          // Estrai giorno e mese dalla stringa (ignorando il nome del giorno)
+         
           String[] parts = selectedDay.split(" ")[1].split("/");
           int day = Integer.parseInt(parts[0]);
           int month = Integer.parseInt(parts[1]);
