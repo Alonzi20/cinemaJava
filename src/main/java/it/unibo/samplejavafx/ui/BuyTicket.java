@@ -65,7 +65,8 @@ public class BuyTicket extends Application {
 
     // Aggiungi il pannello di selezione posti
     VBox seatSelectionPane = seatSelection.createSeatSelectionPane();
-    seatSelection.setOnConfirm(() -> this.handleSeatSelection(root));
+    VBox dynamicContent = new VBox(10); // Contenitore per i biglietti
+    seatSelection.setOnConfirm(() -> this.handleSeatSelection(dynamicContent));
 
     root.getChildren()
         .addAll(
@@ -87,8 +88,14 @@ public class BuyTicket extends Application {
     }
 
     root.getChildren().add(totalLabel);
+    root.getChildren().add(dynamicContent);
 
-    Scene scene = new Scene(root);
+    // Inserisci VBox in un ScrollPane
+    ScrollPane scrollPane = new ScrollPane(root);
+    scrollPane.setFitToWidth(true); // Permette al contenuto di adattarsi alla larghezza
+    scrollPane.setFitToHeight(true); // Lascia che l'altezza venga determinata dal contenuto
+
+    Scene scene = new Scene(scrollPane);
     scene
         .getStylesheets()
         .add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
@@ -97,20 +104,23 @@ public class BuyTicket extends Application {
     stage.show();
   }
 
-  private void handleSeatSelection(VBox root) {
+  private void handleSeatSelection(VBox dynamicContent) {
     Map<Long, String> posti = seatSelection.getSelectedSeats();
     try {
+      dynamicContent.getChildren().clear();
+
       List<Biglietto> createdBiglietti =
           bffService.createBiglietti(proiezione.getId(), posti, false);
+      // Rimuovi i biglietti precedenti per evitare duplicati
+      biglietti.clear();
       biglietti.addAll(createdBiglietti);
 
       // Creazione selezione ridotto
       if (!biglietti.isEmpty()) {
         for (Biglietto biglietto : biglietti) {
-          root.getChildren().add(createSelezione(biglietto));
+          dynamicContent.getChildren().add(createSelezione(biglietto));
         }
       }
-      // updateTotal(); da fare dopo scelta del ridotto e basta, giusto?
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,
@@ -126,8 +136,6 @@ public class BuyTicket extends Application {
     return label;
   }
 
-  // TODO Alex: [20/01/2025] ora al click su conferma selezione di SeatSelection, si aggiungono
-  //  biglietti senza cancellare quelli che già ci sono, da fixare
   private VBox createSelezione(Biglietto biglietto) {
     VBox tipoBiglietto = new VBox();
     if (!movie.isAdult() && biglietto != null) {
@@ -176,6 +184,8 @@ public class BuyTicket extends Application {
   private void buyTicket() {
     try {
       for (Biglietto biglietto : biglietti) {
+        // TODO Alex: [23/01/2025] settare idCliente al biglietto per l'acquisto
+        biglietto.setClienteId(1L);
         bffService.compraBiglietto(biglietto, biglietto.isRidotto());
       }
       new Alert(Alert.AlertType.INFORMATION, "Biglietti acquistati con successo", ButtonType.OK)

@@ -78,13 +78,11 @@ public class BigliettoServiceImpl implements BigliettoService {
             biglietto.getNumero(),
             biglietto.getFila(),
             biglietto.getProiezioneId(),
-            proiezione.getSalaId());
+            proiezione.getSalaId(),
+            biglietto.getClienteId());
     if (idPostoPrenotato != null) {
       biglietto.setPrezzo(ridotto ? Biglietto.PREZZO_RIDOTTO : Biglietto.PREZZO_INTERO);
       biglietto.setRidotto(ridotto);
-
-      // TODO Alex: [20/01/2025] Aggiungere idCliente
-      biglietto.setClienteId(1L); // se non lo setti va in errore, è obbligatorio
 
       return bigliettoRepository.save(biglietto);
     } else {

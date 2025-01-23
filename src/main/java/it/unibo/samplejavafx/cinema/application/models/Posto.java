@@ -24,4 +24,6 @@ public class Posto {
   @ManyToOne
   @JoinColumn(name = "proiezione_id", nullable = false) // Collega il posto a una proiezione
   private Proiezione proiezione;
+
+  Long clienteId; // Id del cliente che ha prenotato il posto
 }

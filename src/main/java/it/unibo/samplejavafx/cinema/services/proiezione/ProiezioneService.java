@@ -22,7 +22,7 @@ public interface ProiezioneService {
 
   Map<String, Long> postiLiberi(long idProiezione, long idSala);
 
-  Long prenota(long numero, String fila, long idProiezione, long idSala);
+  Long prenota(long numero, String fila, long idProiezione, long idSala, long idCliente);
 
   List<Proiezione> createProiezioniFromApi();
 }

@@ -115,12 +115,13 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   // perché serve avere le info del posto nel biglietto
   // e per aggiornare i dati nel db ricordati di fare la save (r.96)
   @Override
-  public Long prenota(long numero, String fila, long idProiezione, long idSala) {
+  public Long prenota(long numero, String fila, long idProiezione, long idSala, long idCliente) {
     if (isPostoPrenotabile(numero, fila, idProiezione, idSala)) {
       Posto posto = new Posto();
       posto.setNumero(numero);
       posto.setFila(fila);
       posto.setProiezione(this.findProiezioneById(idProiezione));
+      posto.setClienteId(idCliente);
       postoRepository.save(posto);
 
       if (posto.getProiezione() != null && posto.getProiezione().getId() == idProiezione) {
