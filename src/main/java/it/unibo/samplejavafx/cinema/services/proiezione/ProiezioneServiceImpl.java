@@ -1,15 +1,12 @@
 package it.unibo.samplejavafx.cinema.services.proiezione;
 
 import java.sql.Date;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import it.unibo.samplejavafx.cinema.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +14,7 @@ import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Posto;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
-import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
-import it.unibo.samplejavafx.cinema.repositories.PostoRepository;
-import it.unibo.samplejavafx.cinema.repositories.ProiezioneRepository;
-import it.unibo.samplejavafx.cinema.services.MovieProjections;
+import it.unibo.samplejavafx.cinema.application.models.OrariProiezioni;
 import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
 import it.unibo.samplejavafx.cinema.services.posto.PostoService;
 import it.unibo.samplejavafx.cinema.services.sala.SalaService;
@@ -38,7 +32,8 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   private final PostoService postoService;
   private final SalaService salaService;
   private final FilmRepository filmRepository;
-  private final FilmRepository salaRepository;
+  private final SalaRepository salaRepository;
+  private final OrariProiezioniRepository orariProiezioniService;
 
   @Override
   public Proiezione findProiezioneById(Long id) {
@@ -126,94 +121,79 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   }
 
   @Override
-  public List<Proiezione> createProiezioniFromApi() {
+  public List<Proiezione> generateProjections() {
+    List<Film> films = filmRepository.findAll();
+    if (films.isEmpty()) {
+      throw new IllegalStateException("Non ci sono film disponibili nel database per creare proiezioni.");
+    }
 
-    // TODO Rido: cambiare tabelle proiezione e sala , ora errore che salaid non esiste in tabella sala
-    MovieProjections movieProjections = new MovieProjections();
-    List<Film> films = movieProjections.getWeeklyMovies();
     List<Proiezione> nuoveProiezioni = new ArrayList<>();
-
-    // Recupera tutti gli ID delle sale dal database usando lambda invece di method reference
-    List<Long> salaIds =
-        salaRepository.findAll().stream()
-            .map(sala -> sala.getId()) // Using lambda instead of method reference
+    List<Long> salaIds = salaRepository.findAll().stream()
+            .map(Sala::getId)
             .collect(Collectors.toList());
 
-    // Patterns di orari
-    Map<String, List<List<String>>> patterns = new HashMap<>();
-    patterns.put(
-        "WEEKDAY",
-        Arrays.asList(
-            Arrays.asList("16:30", "19:00", "21:30"),
-            Arrays.asList("17:00", "20:00", "22:30"),
-            Arrays.asList("15:45", "18:15", "21:00"),
-            Arrays.asList("16:15", "18:45", "21:15"),
-            Arrays.asList("17:30", "20:30")));
-    patterns.put(
-        "WEEKEND",
-        Arrays.asList(
-            Arrays.asList("15:00", "17:30", "20:00", "22:30"),
-            Arrays.asList("14:30", "17:00", "19:30", "22:00"),
-            Arrays.asList("15:15", "17:45", "20:15", "22:45"),
-            Arrays.asList("14:45", "16:45", "18:45", "20:45", "22:45"),
-            Arrays.asList("15:30", "18:00", "20:30", "23:00")));
-    patterns.put(
-        "WEEKEND_MORNING",
-        Arrays.asList(
-            Arrays.asList("10:30", "12:45"),
-            Arrays.asList("11:00", "13:15"),
-            Arrays.asList("10:15", "12:30"),
-            Arrays.asList("11:30", "13:45")));
-
     for (Film film : films) {
-      Film filmEsistente = filmRepository.findByTitle(film.getTitle()).orElse(null);
-      if (filmEsistente == null) {
-          filmEsistente = filmRepository.save(film);
-      }
+      LocalDate startDate = LocalDate.now();
 
-      LocalDate releaseDate = LocalDate.parse(filmEsistente.getReleaseDate());
-      DayOfWeek dayOfWeek = releaseDate.getDayOfWeek();
+      // Genera proiezioni per i prossimi 7 giorni
+      for (int i = 0; i < 7; i++) {
+        LocalDate currentDate = startDate.plusDays(i);
+        Map<Integer, Set<LocalTime>> salaOccupata = new HashMap<>();
 
-      List<List<String>> orari;
-      if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-        orari = patterns.get("WEEKEND");
-      } else {
-        orari = patterns.get("WEEKDAY");
-      }
+        // Determina il tipo di pattern (WEEKDAY o WEEKEND)
+        String patternType = currentDate.getDayOfWeek().getValue() >= 6 ? "WEEKEND" : "WEEKDAY";
+        List<OrariProiezioni> orari = orariProiezioniService.findByPatternType(patternType);
 
-      if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-        orari.addAll(patterns.get("WEEKEND_MORNING"));
-      }
+        // Aggiungi gli orari del mattino per i weekend con una probabilità del 40%
+        if (patternType.equals("WEEKEND") && Math.random() < 0.4) {
+          orari.addAll(orariProiezioniService.findByPatternType("WEEKEND_MORNING"));
+        }
 
-      int salaIndex = 0;
-      for (List<String> orariGiorno : orari) {
-        for (String orario : orariGiorno) {
-          Proiezione proiezione = new Proiezione();
-          proiezione.setFilmId(filmEsistente.getId());
-          proiezione.setData(Date.valueOf(releaseDate));
-          //proiezione.setOrario(Time.valueOf(orario + ":00"));
+        // Crea una proiezione per ogni orario disponibile
+        for (OrariProiezioni orario : orari) {
+          Optional<Long> availableSala = findAvailableSala(salaIds, salaOccupata,
+                  LocalTime.parse(orario.getStartTime().toString()), film.getDuration());
 
-          //assegnazione dinamica id sala
-          proiezione.setSalaId(salaIds.get(salaIndex));
-          salaIndex = (salaIndex + 1) % salaIds.size();
+          if (availableSala.isPresent()) {
+            Proiezione proiezione = new Proiezione();
+            proiezione.setFilmId(film.getId());
+            proiezione.setSalaId(availableSala.get());
+            proiezione.setData(Date.valueOf(currentDate));
+            proiezione.setOrarioProiezione(orario);
 
-          Proiezione savedProiezione = proiezioneRepository.save(proiezione);
-          nuoveProiezioni.add(savedProiezione);
+            // Salva la proiezione
+            Proiezione saved = proiezioneRepository.save(proiezione);
+            nuoveProiezioni.add(saved);
 
-          //generazione posti per proiezione
-          generateAndSavePosti(savedProiezione);
+            // Genera i posti per la proiezione
+            generateAndSavePosti(saved);
+
+            // Aggiorna la mappa di occupazione della sala
+            salaOccupata.computeIfAbsent(availableSala.get().intValue(), k -> new HashSet<>())
+                    .add(LocalTime.parse(orario.getStartTime().toString()));
+          }
         }
       }
     }
-
     return nuoveProiezioni;
   }
 
+
+  private Optional<Long> findAvailableSala(List<Long> salaIds, Map<Integer, Set<LocalTime>> salaOccupata,
+                                           LocalTime startTime, int duration) {
+    return salaIds.stream()
+            .filter(salaId -> {
+              Set<LocalTime> occupiedTimes = salaOccupata.getOrDefault(salaId.intValue(), new HashSet<>());
+              return occupiedTimes.stream().noneMatch(occupied ->
+                      !(startTime.plusMinutes(duration).isBefore(occupied) ||
+                              occupied.plusMinutes(duration).isBefore(startTime)));
+            })
+            .findFirst();
+  }
+
   private void generateAndSavePosti(Proiezione proiezione) {
-    //strutturata 10x10 cambiabile
     int numeroFile = 10;
     int postiPerFila = 10;
-
     for (int fila = 1; fila <= numeroFile; fila++) {
       for (int numero = 1; numero <= postiPerFila; numero++) {
         Posto posto = new Posto();
@@ -224,5 +204,6 @@ public class ProiezioneServiceImpl implements ProiezioneService {
       }
     }
   }
+
 }
 
