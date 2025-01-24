@@ -73,7 +73,7 @@ public class BffService {
   }
 
   public List<Biglietto> createBiglietti(
-      long idProiezione, Map<Long, String> posti, boolean ridotto) throws Exception {
+      long idProiezione, Map<Long, List<String>> posti, boolean ridotto) throws Exception {
     // Crea un oggetto contenente i dati della richiesta
     Map<String, Object> requestBody = new HashMap<>();
     requestBody.put("idProiezione", idProiezione);

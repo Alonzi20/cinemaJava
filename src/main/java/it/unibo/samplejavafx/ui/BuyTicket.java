@@ -8,10 +8,7 @@ import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
 import it.unibo.samplejavafx.cinema.services.BffService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -79,21 +76,22 @@ public class BuyTicket extends Application {
             seatSelectionPane // Aggiunge scelta posti
             );
 
-    root.getChildren().add(createLabel("Biglietti"));
-
-    if (!biglietti.isEmpty()) {
+    /*if (!biglietti.isEmpty()) {
       for (Biglietto biglietto : biglietti) {
         root.getChildren().add(createSelezione(biglietto));
       }
-    }
+    }*/
 
-    root.getChildren().add(totalLabel);
     root.getChildren().add(dynamicContent);
 
     // Inserisci VBox in un ScrollPane
     ScrollPane scrollPane = new ScrollPane(root);
     scrollPane.setFitToWidth(true); // Permette al contenuto di adattarsi alla larghezza
-    scrollPane.setFitToHeight(true); // Lascia che l'altezza venga determinata dal contenuto
+
+    // Rendi il contenitore principale adattabile all'altezza dello schermo
+    scrollPane.setPrefHeight(javafx.stage.Screen.getPrimary().getVisualBounds().getHeight() - 35);
+    // Permetti al contenuto di scrollare verticalmente solo quando necessario
+    scrollPane.setFitToHeight(false);
 
     Scene scene = new Scene(scrollPane);
     scene
@@ -107,26 +105,62 @@ public class BuyTicket extends Application {
   private void handleSeatSelection(VBox dynamicContent) {
     Map<Long, String> posti = seatSelection.getSelectedSeats();
     try {
+      // Pulisci solo il contenitore dinamico, non la lista dei biglietti
       dynamicContent.getChildren().clear();
 
+      /*// Ottieni i nuovi biglietti per i posti selezionati
+      List<Biglietto> nuoviBiglietti = bffService.createBiglietti(proiezione.getId(), posti, false);
+
+      // Aggiorna la lista dei biglietti:
+      // Rimuovi quelli che non sono più selezionati
+      biglietti.removeIf(
+          b ->
+              posti.entrySet().stream()
+                  .noneMatch(
+                      entry ->
+                          entry.getKey().equals(b.getNumero())
+                              && entry.getValue().equals(b.getFila())));
+
+      // Aggiungi i nuovi biglietti se non sono già presenti
+      for (Biglietto nuovoBiglietto : nuoviBiglietti) {
+        if (!biglietti.contains(nuovoBiglietto)) {
+          biglietti.add(nuovoBiglietto);
+        }
+      }*/
+
+      // Usa i posti selezionati per creare i biglietti
+      // Converte la stringa di righe in una lista di righe separate
+      Map<Long, List<String>> postiConListe = new HashMap<>();
+
+      // Converti la stringa delle righe selezionate in una lista di righe
+      for (Map.Entry<Long, String> entry : posti.entrySet()) {
+        Long colonna = entry.getKey();
+        String righeSelezionate = entry.getValue();
+        List<String> righe = List.of(righeSelezionate.split(","));
+        postiConListe.put(colonna, righe);
+      }
+
       List<Biglietto> createdBiglietti =
-          bffService.createBiglietti(proiezione.getId(), posti, false);
+          bffService.createBiglietti(proiezione.getId(), postiConListe, false);
       // Rimuovi i biglietti precedenti per evitare duplicati
       biglietti.clear();
       biglietti.addAll(createdBiglietti);
 
-      // Creazione selezione ridotto
+      // Se ci sono biglietti, mostra le selezioni e il pulsante Compra
       if (!biglietti.isEmpty()) {
+        Label bigliettiLabel = createLabel("Biglietti");
+        dynamicContent.getChildren().add(bigliettiLabel);
+
         for (Biglietto biglietto : biglietti) {
           dynamicContent.getChildren().add(createSelezione(biglietto));
         }
-      }
 
-      // Crea un unico pulsante Compra per tutti i biglietti
-      Button buyButton = new Button("COMPRA");
-      buyButton.getStyleClass().add("quick-purchase-button");
-      buyButton.setOnAction(e -> buyTickets());
-      dynamicContent.getChildren().add(buyButton);
+        Button buyButton = new Button("COMPRA");
+        buyButton.getStyleClass().add("quick-purchase-button");
+        buyButton.setOnAction(e -> buyTickets());
+        dynamicContent.getChildren().add(totalLabel); // Aggiungi il totale
+        dynamicContent.getChildren().add(buyButton); // Aggiungi il pulsante Compra
+      }
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,

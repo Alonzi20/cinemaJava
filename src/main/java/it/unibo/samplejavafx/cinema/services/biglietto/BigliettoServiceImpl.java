@@ -42,18 +42,19 @@ public class BigliettoServiceImpl implements BigliettoService {
 
   @Override
   public List<Biglietto> createBiglietti(
-      long idProiezione, Map<Long, String> posti, boolean ridotto) {
+      long idProiezione, Map<Long, List<String>> posti, boolean ridotto) {
     var biglietti = new ArrayList<Biglietto>();
 
     for (var entry : posti.entrySet()) {
       var numero = entry.getKey();
-      var fila = entry.getValue();
-      var biglietto = new Biglietto();
-      biglietto.setProiezioneId(idProiezione);
-      biglietto.setNumero(numero);
-      biglietto.setFila(fila);
-      biglietto.setPrezzo(importoBiglietto(ridotto));
-      biglietti.add(biglietto);
+      for (var fila : entry.getValue()) {
+        var biglietto = new Biglietto();
+        biglietto.setProiezioneId(idProiezione);
+        biglietto.setNumero(numero);
+        biglietto.setFila(fila);
+        biglietto.setPrezzo(importoBiglietto(ridotto));
+        biglietti.add(biglietto);
+      }
     }
 
     return biglietti;
