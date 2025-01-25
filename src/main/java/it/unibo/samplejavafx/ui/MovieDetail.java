@@ -3,6 +3,7 @@ package it.unibo.samplejavafx.ui;
 import it.unibo.samplejavafx.ScheduleManager;
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.services.BffService;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import it.unibo.samplejavafx.cinema.services.orari_proiezioni.OrariProiezioniService;
 
@@ -27,11 +28,13 @@ import javafx.stage.Stage;
 public class MovieDetail extends Application {
   private final Film movie;
   private final Map<String, List<String>> scheduleCache;
+  private final BffService bffService;
   private final OrariProiezioniService orariProiezioniService;
 
   public MovieDetail(Film movie, OrariProiezioniService orariProiezioniService) {
       this.movie = movie;
       this.orariProiezioniService = orariProiezioniService;
+      this.bffService = new BffService();
       MovieProjections movieService = new MovieProjections();
       this.scheduleCache = ScheduleManager.getInstance(orariProiezioniService)
           .getScheduleForMovie(movie, movieService.getWeeklyMovies());
@@ -120,16 +123,38 @@ public class MovieDetail extends Application {
             purchaseButton.setDisable(
                 daySelector.getValue() == null || timeSelector.getValue() == null));
 
-    // TODO Alex: [17/01/2025] Per Andrea
-    //  Recuperare proiezione tramite BffService e passarlo nel costruttore di BuyTicket
-    //  qui ne ho creata una a caso che mi serviva per provare
-    var proiezione = new Proiezione();
-    proiezione.setId(1L);
-    proiezione.setData(Date.valueOf(LocalDate.now()));
-    // proiezione.setOrario(Time.valueOf(LocalTime.now()));
-    proiezione.setFilmId(1L);
-    proiezione.setSalaId(1L);
-    purchaseButton.setOnAction(e -> new BuyTicket(proiezione).start(new Stage()));
+    purchaseButton.setOnAction(e -> {
+      try {
+         
+          String selectedDay = daySelector.getValue();
+          String selectedTime = timeSelector.getValue();
+  
+         
+          String[] parts = selectedDay.split(" ")[1].split("/");
+          int day = Integer.parseInt(parts[0]);
+          int month = Integer.parseInt(parts[1]);
+          int year = LocalDate.now().getYear();
+  
+          LocalDate selectedDate = LocalDate.of(year, month, day);
+          LocalTime time = LocalTime.parse(selectedTime);
+          
+          List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
+          
+          Proiezione proiezione = proiezioni.stream()
+              .filter(p -> {
+                  LocalDate proiezioneDate = p.getData().toLocalDate();
+                  LocalTime proiezioneTime = p.getOrarioProiezione().getStartTime().toLocalTime();
+                  return proiezioneDate.equals(selectedDate) && proiezioneTime.equals(time);
+              })
+              .findFirst()
+              .orElseThrow(() -> new RuntimeException("Nessuna proiezione trovata per la data e ora selezionate"));
+              
+          new BuyTicket(proiezione).start(new Stage());
+          
+      } catch (Exception ex) {
+          ex.printStackTrace();
+      }
+  });
 
     HBox selectors = new HBox(10);
     selectors.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
