@@ -11,7 +11,8 @@ public interface BigliettoService {
 
   List<Biglietto> findAllBigliettiByClienteId(long idCliente);
 
-  List<Biglietto> createBiglietti(long idProiezione, Map<Long, String> posti, boolean ridotto);
+  List<Biglietto> createBiglietti(
+      long idProiezione, Map<Long, List<String>> posti, boolean ridotto);
 
   Double importoBiglietto(boolean ridotto);
 

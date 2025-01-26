@@ -42,18 +42,19 @@ public class BigliettoServiceImpl implements BigliettoService {
 
   @Override
   public List<Biglietto> createBiglietti(
-      long idProiezione, Map<Long, String> posti, boolean ridotto) {
+      long idProiezione, Map<Long, List<String>> posti, boolean ridotto) {
     var biglietti = new ArrayList<Biglietto>();
 
     for (var entry : posti.entrySet()) {
       var numero = entry.getKey();
-      var fila = entry.getValue();
-      var biglietto = new Biglietto();
-      biglietto.setProiezioneId(idProiezione);
-      biglietto.setNumero(numero);
-      biglietto.setFila(fila);
-      biglietto.setPrezzo(importoBiglietto(ridotto));
-      biglietti.add(biglietto);
+      for (var fila : entry.getValue()) {
+        var biglietto = new Biglietto();
+        biglietto.setProiezioneId(idProiezione);
+        biglietto.setNumero(numero);
+        biglietto.setFila(fila);
+        biglietto.setPrezzo(importoBiglietto(ridotto));
+        biglietti.add(biglietto);
+      }
     }
 
     return biglietti;
@@ -78,13 +79,11 @@ public class BigliettoServiceImpl implements BigliettoService {
             biglietto.getNumero(),
             biglietto.getFila(),
             biglietto.getProiezioneId(),
-            proiezione.getSalaId());
+            proiezione.getSalaId(),
+            biglietto.getClienteId());
     if (idPostoPrenotato != null) {
       biglietto.setPrezzo(ridotto ? Biglietto.PREZZO_RIDOTTO : Biglietto.PREZZO_INTERO);
       biglietto.setRidotto(ridotto);
-
-      // TODO Alex: [20/01/2025] Aggiungere idCliente
-      biglietto.setClienteId(1L); // se non lo setti va in errore, è obbligatorio
 
       return bigliettoRepository.save(biglietto);
     } else {

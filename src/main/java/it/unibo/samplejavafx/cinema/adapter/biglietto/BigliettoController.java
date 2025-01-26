@@ -54,8 +54,6 @@ public class BigliettoController {
     return bigliettoService.importoBiglietto(ridotto);
   }
 
-  // TODO Alex: [20/01/2025]
-  //  Passare in ingresso Biglietto direttamente e clienteId per acquistare
   @PostMapping("/compra")
   public Biglietto compra(@RequestBody BigliettoBuyDto request) {
     return bigliettoService.compra(request.getBiglietto(), request.isRidotto());

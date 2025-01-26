@@ -8,10 +8,7 @@ import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
 import it.unibo.samplejavafx.cinema.services.BffService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -65,7 +62,8 @@ public class BuyTicket extends Application {
 
     // Aggiungi il pannello di selezione posti
     VBox seatSelectionPane = seatSelection.createSeatSelectionPane();
-    seatSelection.setOnConfirm(() -> this.handleSeatSelection(root));
+    VBox dynamicContent = new VBox(10); // Contenitore per i biglietti
+    seatSelection.setOnConfirm(() -> this.handleSeatSelection(dynamicContent));
 
     root.getChildren()
         .addAll(
@@ -78,17 +76,24 @@ public class BuyTicket extends Application {
             seatSelectionPane // Aggiunge scelta posti
             );
 
-    root.getChildren().add(createLabel("Biglietti"));
-
-    if (!biglietti.isEmpty()) {
+    /*if (!biglietti.isEmpty()) {
       for (Biglietto biglietto : biglietti) {
         root.getChildren().add(createSelezione(biglietto));
       }
-    }
+    }*/
 
-    root.getChildren().add(totalLabel);
+    root.getChildren().add(dynamicContent);
 
-    Scene scene = new Scene(root);
+    // Inserisci VBox in un ScrollPane
+    ScrollPane scrollPane = new ScrollPane(root);
+    scrollPane.setFitToWidth(true); // Permette al contenuto di adattarsi alla larghezza
+
+    // Rendi il contenitore principale adattabile all'altezza dello schermo
+    scrollPane.setPrefHeight(javafx.stage.Screen.getPrimary().getVisualBounds().getHeight() - 35);
+    // Permetti al contenuto di scrollare verticalmente solo quando necessario
+    scrollPane.setFitToHeight(false);
+
+    Scene scene = new Scene(scrollPane);
     scene
         .getStylesheets()
         .add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
@@ -97,20 +102,65 @@ public class BuyTicket extends Application {
     stage.show();
   }
 
-  private void handleSeatSelection(VBox root) {
+  private void handleSeatSelection(VBox dynamicContent) {
     Map<Long, String> posti = seatSelection.getSelectedSeats();
     try {
+      // Pulisci solo il contenitore dinamico, non la lista dei biglietti
+      dynamicContent.getChildren().clear();
+
+      /*// Ottieni i nuovi biglietti per i posti selezionati
+      List<Biglietto> nuoviBiglietti = bffService.createBiglietti(proiezione.getId(), posti, false);
+
+      // Aggiorna la lista dei biglietti:
+      // Rimuovi quelli che non sono più selezionati
+      biglietti.removeIf(
+          b ->
+              posti.entrySet().stream()
+                  .noneMatch(
+                      entry ->
+                          entry.getKey().equals(b.getNumero())
+                              && entry.getValue().equals(b.getFila())));
+
+      // Aggiungi i nuovi biglietti se non sono già presenti
+      for (Biglietto nuovoBiglietto : nuoviBiglietti) {
+        if (!biglietti.contains(nuovoBiglietto)) {
+          biglietti.add(nuovoBiglietto);
+        }
+      }*/
+
+      // Usa i posti selezionati per creare i biglietti
+      // Converte la stringa di righe in una lista di righe separate
+      Map<Long, List<String>> postiConListe = new HashMap<>();
+
+      // Converti la stringa delle righe selezionate in una lista di righe
+      for (Map.Entry<Long, String> entry : posti.entrySet()) {
+        Long colonna = entry.getKey();
+        String righeSelezionate = entry.getValue();
+        List<String> righe = List.of(righeSelezionate.split(","));
+        postiConListe.put(colonna, righe);
+      }
+
       List<Biglietto> createdBiglietti =
-          bffService.createBiglietti(proiezione.getId(), posti, false);
+          bffService.createBiglietti(proiezione.getId(), postiConListe, false);
+      // Rimuovi i biglietti precedenti per evitare duplicati
+      biglietti.clear();
       biglietti.addAll(createdBiglietti);
 
-      // Creazione selezione ridotto
+      // Se ci sono biglietti, mostra le selezioni e il pulsante Compra
       if (!biglietti.isEmpty()) {
+        Label bigliettiLabel = createLabel("Biglietti");
+        dynamicContent.getChildren().add(bigliettiLabel);
+
         for (Biglietto biglietto : biglietti) {
-          root.getChildren().add(createSelezione(biglietto));
+          dynamicContent.getChildren().add(createSelezione(biglietto));
         }
+
+        Button buyButton = new Button("COMPRA");
+        buyButton.getStyleClass().add("quick-purchase-button");
+        buyButton.setOnAction(e -> buyTickets());
+        dynamicContent.getChildren().add(totalLabel); // Aggiungi il totale
+        dynamicContent.getChildren().add(buyButton); // Aggiungi il pulsante Compra
       }
-      // updateTotal(); da fare dopo scelta del ridotto e basta, giusto?
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,
@@ -126,8 +176,6 @@ public class BuyTicket extends Application {
     return label;
   }
 
-  // TODO Alex: [20/01/2025] ora al click su conferma selezione di SeatSelection, si aggiungono
-  //  biglietti senza cancellare quelli che già ci sono, da fixare
   private VBox createSelezione(Biglietto biglietto) {
     VBox tipoBiglietto = new VBox();
     if (!movie.isAdult() && biglietto != null) {
@@ -157,11 +205,7 @@ public class BuyTicket extends Application {
       tipoBiglietto = new VBox(5);
       tipoBiglietto.getChildren().addAll(bigliettoLabel, comboBox);
     }
-    Button buyButton = new Button("COMPRA");
-    buyButton.getStyleClass().add("quick-purchase-button");
-    buyButton.setOnAction(e -> buyTicket());
 
-    tipoBiglietto.getChildren().add(buyButton);
     return tipoBiglietto;
   }
 
@@ -173,13 +217,24 @@ public class BuyTicket extends Application {
     totalLabel.setText("Totale: " + totale + "€");
   }
 
-  private void buyTicket() {
+  private void buyTickets() {
     try {
+      if (biglietti.isEmpty()) {
+        new Alert(Alert.AlertType.ERROR, "Nessun biglietto selezionato", ButtonType.OK)
+            .showAndWait();
+        return;
+      }
+
       for (Biglietto biglietto : biglietti) {
+        // TODO Alex: [23/01/2025] settare idCliente al biglietto per l'acquisto
+        biglietto.setClienteId(1L);
         bffService.compraBiglietto(biglietto, biglietto.isRidotto());
       }
       new Alert(Alert.AlertType.INFORMATION, "Biglietti acquistati con successo", ButtonType.OK)
           .showAndWait();
+
+      // Chiudi la finestra e torna alla pagina precedente
+      closePage();
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,
@@ -187,5 +242,11 @@ public class BuyTicket extends Application {
               ButtonType.OK)
           .showAndWait();
     }
+  }
+
+  private void closePage() {
+    // Questo chiuderà la finestra attuale (acquisto biglietti)
+    Stage stage = (Stage) totalLabel.getScene().getWindow();
+    stage.close();
   }
 }

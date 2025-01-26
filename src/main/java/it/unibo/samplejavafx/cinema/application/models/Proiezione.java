@@ -1,5 +1,6 @@
 package it.unibo.samplejavafx.cinema.application.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.sql.Date;
 import java.util.List;
@@ -27,7 +28,9 @@ public class Proiezione {
   @OneToMany(mappedBy = "proiezione", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Posto> postiPrenotati;
 
-  @ManyToOne
+  @ManyToOne(
+      fetch = FetchType.EAGER) // Per caricare l'entità OrariProiezioni, sennò non la risolveva
   @JoinColumn(name = "orario_proiezione_id")
+  @JsonIgnoreProperties("proiezioni") // Ignora il lato opposto della relazione, per evitare cicli
   private OrariProiezioni orarioProiezione;
 }

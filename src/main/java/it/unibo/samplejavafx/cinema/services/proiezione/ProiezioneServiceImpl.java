@@ -1,10 +1,22 @@
 package it.unibo.samplejavafx.cinema.services.proiezione;
 
+import it.unibo.samplejavafx.cinema.application.dto.CreaProiezione;
+import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.Posto;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.application.models.Sala;
+import it.unibo.samplejavafx.cinema.repositories.*;
+import it.unibo.samplejavafx.cinema.services.MovieProjections;
+import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
+import it.unibo.samplejavafx.cinema.services.posto.PostoService;
+import it.unibo.samplejavafx.cinema.services.sala.SalaService;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import it.unibo.samplejavafx.cinema.repositories.*;
 import org.springframework.stereotype.Service;
@@ -33,7 +45,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   private final SalaService salaService;
   private final FilmRepository filmRepository;
   private final SalaRepository salaRepository;
-  private final OrariProiezioniRepository orariProiezioniService;
+  private final OrariProiezioniRepository orariProiezioniRepository;
 
   @Override
   public Proiezione findProiezioneById(Long id) {
@@ -53,8 +65,18 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   }
 
   @Override
-  public Proiezione createProiezione() {
-    return null;
+  public Proiezione createProiezione(CreaProiezione creaProiezione) {
+    var orarioProiezione =
+        orariProiezioniRepository.findById(creaProiezione.getOrarioProiezioneId()).orElse(null);
+
+    var proiezione =
+        Proiezione.builder()
+            .filmId(creaProiezione.getFilmId())
+            .salaId(creaProiezione.getSalaId())
+            .data(creaProiezione.getData())
+            .orarioProiezione(orarioProiezione)
+            .build();
+    return proiezioneRepository.save(proiezione);
   }
 
   @Override
@@ -102,12 +124,13 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   // perché serve avere le info del posto nel biglietto
   // e per aggiornare i dati nel db ricordati di fare la save (r.96)
   @Override
-  public Long prenota(long numero, String fila, long idProiezione, long idSala) {
+  public Long prenota(long numero, String fila, long idProiezione, long idSala, long idCliente) {
     if (isPostoPrenotabile(numero, fila, idProiezione, idSala)) {
       Posto posto = new Posto();
       posto.setNumero(numero);
       posto.setFila(fila);
       posto.setProiezione(this.findProiezioneById(idProiezione));
+      posto.setClienteId(idCliente);
       postoRepository.save(posto);
 
       if (posto.getProiezione() != null && posto.getProiezione().getId() == idProiezione) {
@@ -142,11 +165,11 @@ public class ProiezioneServiceImpl implements ProiezioneService {
 
         // Determina il tipo di pattern (WEEKDAY o WEEKEND)
         String patternType = currentDate.getDayOfWeek().getValue() >= 6 ? "WEEKEND" : "WEEKDAY";
-        List<OrariProiezioni> orari = orariProiezioniService.findByPatternType(patternType);
+        List<OrariProiezioni> orari = orariProiezioniRepository.findByPatternType(patternType);
 
         // Aggiungi gli orari del mattino per i weekend con una probabilità del 40%
         if (patternType.equals("WEEKEND") && Math.random() < 0.4) {
-          orari.addAll(orariProiezioniService.findByPatternType("WEEKEND_MORNING"));
+          orari.addAll(orariProiezioniRepository.findByPatternType("WEEKEND_MORNING"));
         }
 
         // Crea una proiezione per ogni orario disponibile
@@ -175,6 +198,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
         }
       }
     }
+
     return nuoveProiezioni;
   }
 
@@ -194,6 +218,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
   private void generateAndSavePosti(Proiezione proiezione) {
     int numeroFile = 10;
     int postiPerFila = 10;
+
     for (int fila = 1; fila <= numeroFile; fila++) {
       for (int numero = 1; numero <= postiPerFila; numero++) {
         Posto posto = new Posto();

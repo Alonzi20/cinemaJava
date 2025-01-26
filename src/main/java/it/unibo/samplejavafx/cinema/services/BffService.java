@@ -73,7 +73,7 @@ public class BffService {
   }
 
   public List<Biglietto> createBiglietti(
-      long idProiezione, Map<Long, String> posti, boolean ridotto) throws Exception {
+      long idProiezione, Map<Long, List<String>> posti, boolean ridotto) throws Exception {
     // Crea un oggetto contenente i dati della richiesta
     Map<String, Object> requestBody = new HashMap<>();
     requestBody.put("idProiezione", idProiezione);
@@ -274,7 +274,7 @@ public class BffService {
   // Da usare per aggiungere gli orari delle proiezioni nei dettagli di ciascun film
   // Poi da usare per comprare un biglietto scegliendo la proiezione sulla base dell'orario
   public List<Proiezione> findAllProiezioniByFilmId(long idFilm) throws Exception {
-    String url = BASE_URL + "/proiezione/all" + idFilm;
+    String url = BASE_URL + "/proiezione/all/" + idFilm;
     HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 

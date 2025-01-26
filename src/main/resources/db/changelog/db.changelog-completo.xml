@@ -102,6 +102,7 @@
             </column>
             <column name="fila" type="VARCHAR(1)"/>
             <column name="proiezione_id" type="BIGINT"/>
+            <column name="cliente_id" type="BIGINT"/>
         </createTable>
 
         <!-- Aggiunta vincoli di chiave esterna -->
@@ -111,6 +112,13 @@
                 referencedTableName="Proiezione"
                 referencedColumnNames="id"
                 constraintName="fk_posto_proiezione"/>
+
+        <addForeignKeyConstraint
+                baseTableName="Posto"
+                baseColumnNames="cliente_id"
+                referencedTableName="Cliente"
+                referencedColumnNames="id"
+                constraintName="fk_posto_cliente"/>
     </changeSet>
 
     <changeSet id="6" author="user">
@@ -265,91 +273,109 @@
             <column name="numero" value="1"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="1"/>
+            <column name="cliente_id" value="1"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="1"/>
+            <column name="cliente_id" value="1"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="1"/>
+            <column name="cliente_id" value="1"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="1"/>
+            <column name="cliente_id" value="1"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="2"/>
+            <column name="cliente_id" value="1"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="1"/>
+            <column name="cliente_id" value="1"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="2"/>
+            <column name="cliente_id" value="1"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="2"/>
+            <column name="cliente_id" value="2"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="2"/>
+            <column name="cliente_id" value="2"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="2"/>
+            <column name="cliente_id" value="2"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="2"/>
+            <column name="cliente_id" value="2"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="3"/>
+            <column name="cliente_id" value="2"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="3"/>
+            <column name="cliente_id" value="2"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="3"/>
+            <column name="cliente_id" value="3"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="3"/>
+            <column name="cliente_id" value="3"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="4"/>
+            <column name="cliente_id" value="3"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="4"/>
+            <column name="cliente_id" value="3"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="4"/>
+            <column name="cliente_id" value="3"/>
         </insert>
     </changeSet>
 
@@ -380,125 +406,128 @@
             <column name="cliente_id" value="3"/>
         </insert>
     </changeSet>
-    
+
     <changeSet id="13" author="user">
         <createTable tableName="orari_proiezioni">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="pattern_type" type="VARCHAR(20)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="start_time" type="TIME">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
         <!-- Pattern Settimanali -->
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="16:30" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="16:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="19:00" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="19:00"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="21:30" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="21:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="17:00" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="17:00"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="20:00" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="20:00"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="22:30" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="22:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="15:45" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="15:45"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="18:15" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="18:15"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKDAY" />
-            <column name="start_time" value="21:00" />
+            <column name="pattern_type" value="WEEKDAY"/>
+            <column name="start_time" value="21:00"/>
         </insert>
 
         <!-- Pattern Weekend -->
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="15:00" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="15:00"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="17:30" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="17:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="20:00" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="20:00"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="22:30" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="22:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="14:30" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="14:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="17:00" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="17:00"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="19:30" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="19:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND" />
-            <column name="start_time" value="22:00" />
+            <column name="pattern_type" value="WEEKEND"/>
+            <column name="start_time" value="22:00"/>
         </insert>
 
         <!-- Pattern Weekend Morning -->
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND_MORNING" />
-            <column name="start_time" value="10:30" />
+            <column name="pattern_type" value="WEEKEND_MORNING"/>
+            <column name="start_time" value="10:30"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND_MORNING" />
-            <column name="start_time" value="12:45" />
+            <column name="pattern_type" value="WEEKEND_MORNING"/>
+            <column name="start_time" value="12:45"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND_MORNING" />
-            <column name="start_time" value="11:00" />
+            <column name="pattern_type" value="WEEKEND_MORNING"/>
+            <column name="start_time" value="11:00"/>
         </insert>
         <insert tableName="orari_proiezioni">
-            <column name="pattern_type" value="WEEKEND_MORNING" />
-            <column name="start_time" value="13:15" />
+            <column name="pattern_type" value="WEEKEND_MORNING"/>
+            <column name="start_time" value="13:15"/>
         </insert>
     </changeSet>
     <changeSet id="14" author="user">
         <!-- Eliminiamo i dati dalle tabelle che dipendono da Proiezione -->
-        <sql>DELETE FROM Biglietto</sql>
-        <sql>DELETE FROM Posto</sql>
-        
+        <sql>DELETE
+             FROM Biglietto</sql>
+        <sql>DELETE
+             FROM Posto</sql>
+
         <!-- Poi eliminiamo i dati da Proiezione -->
-        <sql>DELETE FROM Proiezione</sql>
-        
+        <sql>DELETE
+             FROM Proiezione</sql>
+
         <!-- Aggiungiamo la nuova colonna -->
         <addColumn tableName="Proiezione">
             <column name="orario_proiezione_id" type="BIGINT">
-                <constraints 
-                    foreignKeyName="fk_proiezione_orario"
-                    references="orari_proiezioni(id)"
-                    nullable="false"/>
+                <constraints
+                        foreignKeyName="fk_proiezione_orario"
+                        references="orari_proiezioni(id)"
+                        nullable="false"/>
             </column>
         </addColumn>
 

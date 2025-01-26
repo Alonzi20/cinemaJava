@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -18,6 +19,8 @@ public class SeatSelection {
   private static final String[] ROWS = {"A", "B", "C", "D"}; // Righe rappresentate da lettere
   private final ToggleButton[][] seatButtons = new ToggleButton[ROWS.length][COLUMNS];
   private final ObservableSet<ToggleButton> selectedSeats = FXCollections.observableSet();
+  private final ObservableSet<ToggleButton> confirmedSeats =
+      FXCollections.observableSet(); // Copia dei posti confermati
   private final ExecutorService executor =
       Executors.newCachedThreadPool(); // Per chiamate asincrone
   private final BffService bffService = new BffService(); // Istanza del servizio BFF
@@ -43,16 +46,28 @@ public class SeatSelection {
 
     // Pulsante di conferma
     Button confirmButton = new Button("Conferma Selezione");
-    confirmButton.setDisable(true);
+    confirmButton.setDisable(true); // Disabilita il pulsante all'avvio
     confirmButton.setOnAction(
         e -> {
           if (onConfirm != null) {
             onConfirm.run();
+            confirmedSeats.clear();
+            confirmedSeats.addAll(selectedSeats); // Aggiorna i posti confermati
+            confirmButton.setDisable(true); // Disabilita il pulsante dopo la conferma
           }
         });
 
+    // Listener per abilitare/disabilitare il pulsante
+    selectedSeats.addListener(
+        (SetChangeListener<ToggleButton>)
+            change -> {
+              boolean isSelectionChanged =
+                  !selectedSeats.equals(confirmedSeats); // Confronta con la selezione confermata
+              confirmButton.setDisable(!isSelectionChanged); // Disabilita se non ci sono modifiche
+            });
+
     // Abilita il pulsante quando ci sono posti selezionati
-    confirmButton.disableProperty().bind(javafx.beans.binding.Bindings.isEmpty(selectedSeats));
+    // confirmButton.disableProperty().bind(javafx.beans.binding.Bindings.isEmpty(selectedSeats));
 
     container.getChildren().addAll(seatGrid, confirmButton);
     return container;
@@ -60,6 +75,14 @@ public class SeatSelection {
 
   public GridPane createSeatGrid() {
     GridPane gridPane = new GridPane();
+
+    // Imposta dimensioni fisse per la griglia
+    gridPane.setPrefWidth(300); // Larghezza fissa (adatta alle tue esigenze)
+    gridPane.setPrefHeight(250); // Altezza fissa (adatta alle tue esigenze)
+    gridPane.setMaxWidth(300);
+    gridPane.setMaxHeight(250);
+    gridPane.setMinWidth(300);
+    gridPane.setMinHeight(250);
 
     // Aggiunge le etichette delle righe
     for (int row = 0; row < ROWS.length; row++) {
@@ -96,13 +119,13 @@ public class SeatSelection {
             });
 
         // Cambia lo sfondo per il posto selezionato
-        seatButton.setStyle("-fx-base: lightgray; -fx-background-color: lightgray;");
+        // seatButton.setStyle("-fx-base: lightgray; -fx-background-color: lightgray;");
         seatButton.setOnAction(
             e -> {
               if (seatButton.isSelected()) {
                 selectedSeats.add(seatButton);
                 seatButton.setStyle(
-                    "-fx-base: darkgray; -fx-background-color: #A9A9A9; -fx-text-fill: white;");
+                    "-fx-base: black; -fx-background-color: #222; -fx-text-fill: white;");
               } else {
                 selectedSeats.remove(seatButton);
                 seatButton.setStyle(
@@ -137,9 +160,21 @@ public class SeatSelection {
         }
       }
 
-      if (row != -1 && col != -1) {
+      /*if (row != -1 && col != -1) {
         // Aggiungi la riga e la colonna selezionata alla mappa
         selectedSeatsMap.put((long) (col + 1), ROWS[row]);
+      }*/
+
+      if (row != -1 && col != -1) {
+        // Concatenare le righe selezionate per ogni colonna
+        String existingRows = selectedSeatsMap.getOrDefault((long) (col + 1), "");
+        String newRow = ROWS[row];
+        if (!existingRows.isEmpty()) {
+          existingRows += ","; // Separatore tra le righe
+        }
+        existingRows += newRow;
+
+        selectedSeatsMap.put((long) (col + 1), existingRows);
       }
     }
     return selectedSeatsMap;
