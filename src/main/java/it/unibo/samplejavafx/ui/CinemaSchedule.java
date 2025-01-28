@@ -2,6 +2,7 @@ package it.unibo.samplejavafx.ui;
 
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
 import it.unibo.samplejavafx.cinema.services.BffService;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import it.unibo.samplejavafx.cinema.services.orari_proiezioni.OrariProiezioniService;
@@ -30,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 // import java.util.ArrayList;
 // import java.util.Collections;
 // import java.util.HashMap;
@@ -38,20 +40,24 @@ import java.util.Locale;
 import java.util.Map;
 // import java.util.Random;
 // import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class CinemaSchedule extends Application {
     // private static final String[] DAYS = {"GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ"};
-    private final MovieProjections movieService = new MovieProjections();
+    private final MovieProjections movieService;
     private final OrariProiezioniService orariProiezioniService;
     private VBox container;
-    private final ScheduleManager scheduleManager;
+    private final FilmRepository filmRepository;
+    // private final ScheduleManager scheduleManager;
     private final BffService bffService;
-    public CinemaSchedule(OrariProiezioniService orariProiezioniService) {
+    public CinemaSchedule(OrariProiezioniService orariProiezioniService, FilmRepository filmRepository) {
+        this.filmRepository = filmRepository;
+        this.movieService = new MovieProjections(filmRepository);
         this.orariProiezioniService = orariProiezioniService;
-        this.scheduleManager = ScheduleManager.getInstance(orariProiezioniService);
+        // this.scheduleManager = ScheduleManager.getInstance(orariProiezioniService);
         this.bffService = new BffService();
     }
     // private ScheduleData scheduleData;
@@ -313,27 +319,45 @@ public class CinemaSchedule extends Application {
     private void updateTimeSelector(ComboBox<String> timeSelector, String selectedDay, Film movie) {
         timeSelector.getItems().clear();
         
-        String dayOfWeek = selectedDay.split(" ")[0];
-        Map<String, List<String>> movieSchedule = scheduleManager.getScheduleForMovie(
-            movie, 
-            movieService.getWeeklyMovies()
-        );
-        
-        List<String> times = movieSchedule.getOrDefault(dayOfWeek, new ArrayList<>());
-        timeSelector.getItems().addAll(times);
+        try {
+            // Estrai la data dal formato "GIORNO dd/MM"
+            String[] parts = selectedDay.split(" ")[1].split("/");
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int year = LocalDate.now().getYear();
+            LocalDate selectedDate = LocalDate.of(year, month, day);
+
+            // Ottieni le proiezioni per il film e la data selezionata
+            List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
+            List<String> orari = proiezioni.stream()
+                .filter(p -> p.getData().toLocalDate().equals(selectedDate))
+                .map(p -> p.getOrarioProiezione().getStartTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .sorted()
+                .collect(Collectors.toList());
+
+            timeSelector.getItems().addAll(orari);
+        } catch (Exception e) {
+            System.err.println("Errore nel recupero delle proiezioni: " + e.getMessage());
+            timeSelector.setPromptText("Orari non disponibili");
+        }
     }
 
     private void visualizzaFilmFiltrati(List<Film> films) {
-        // Rimuovi tutti gli elementi tranne l'interfaccia di ricerca e la sezione di acquisto rapido
-        container.getChildren().removeIf(node -> 
-            !(node instanceof MovieSearchInterface) && 
-            !(node instanceof HBox && ((HBox)node).getChildren().size() > 0 && 
-              ((HBox)node).getChildren().get(0) instanceof Label && 
-              ((Label)((HBox)node).getChildren().get(0)).getText().equals("ACQUISTA IL BIGLIETTO!"))
-        );
+        List<Film> filmsConProiezioni = films.stream()
+            .filter(film -> {
+                try {
+                    List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(film.getId());
+                    return !proiezioni.isEmpty();
+                } catch (Exception e) {
+                    // Log dell'errore
+                    System.err.println("Errore nel recupero delle proiezioni per il film " + film.getTitle() + ": " + e.getMessage());
+                    return false; // Se c'è un errore, escludiamo il film
+                }
+            })
+            .collect(Collectors.toList());
     
         // Controllo se la lista è vuota
-        if (films.isEmpty()) {
+        if (filmsConProiezioni.isEmpty()) {
             Label nessunRisultato = new Label("Nessun risultato");
             nessunRisultato.setId("nessunRisultatoLabel"); // Imposta un ID univoco
             nessunRisultato.getStyleClass().add("nessun-risultato-label");
@@ -341,11 +365,7 @@ public class CinemaSchedule extends Application {
             container.getChildren().removeIf(node -> node.getId() != null && node.getId().equals("nessunRisultatoLabel"));
             container.getChildren().add(nessunRisultato);
         } else {
-            // Rimossa vecchia etichetta "Nessun risultato" se presente
-            container.getChildren().removeIf(node -> node.getId() != null && node.getId().equals("nessunRisultatoLabel"));
-            
-            // Aggiunti film trovati
-            for (Film film : films) {
+            for (Film film : filmsConProiezioni) {
                 HBox boxFilm = createMovieBox(film);
                 boxFilm.setMaxWidth(Double.MAX_VALUE);
                 container.getChildren().add(boxFilm);
@@ -399,32 +419,55 @@ public class CinemaSchedule extends Application {
     grid.setHgap(10);
     grid.setVgap(5);
 
-        Map<String, List<String>> movieSchedule = scheduleManager.getScheduleForMovie(
-            movie, 
-            movieService.getWeeklyMovies()
-        );
+    try {
+        List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
+        Map<LocalDate, List<LocalTime>> proiezioniPerGiorno = proiezioni.stream()
+            .collect(Collectors.groupingBy(
+                p -> p.getData().toLocalDate(),
+                Collectors.mapping(
+                    p -> p.getOrarioProiezione().getStartTime().toLocalTime(),
+                    Collectors.toList()
+                )
+            ));
 
-        List<String> days = scheduleManager.getDays();
-        for (int i = 0; i < days.size(); i++) {
-            String day = days.get(i);
-            Label dayLabel = new Label(day);
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE", new Locale("it", "IT"));
+
+        for (int i = 0; i < 7; i++) {
+            LocalDate currentDate = today.plusDays(i);
+            String dayName = currentDate.format(dayFormatter).toUpperCase();
+
+            Label dayLabel = new Label(dayName);
             dayLabel.getStyleClass().add("schedule-grid-label");
             grid.add(dayLabel, 0, i);
 
-            String times = String.join(" ", movieSchedule.get(day));
+            List<LocalTime> orari = proiezioniPerGiorno.getOrDefault(currentDate, Collections.emptyList());
+            String times = orari.stream()
+                .sorted()
+                .map(time -> time.format(DateTimeFormatter.ofPattern("HH:mm")))
+                .collect(Collectors.joining(" "));
+
             Label timeLabel = new Label(times);
             timeLabel.getStyleClass().add("schedule-grid-label");
             grid.add(timeLabel, 1, i);
         }
+    } catch (Exception e) {
+        System.err.println("Errore nel recupero delle proiezioni per il film " + movie.getTitle() + ": " + e.getMessage());
+        // In caso di errore, mostriamo una griglia vuota
+        Label errorLabel = new Label("Orari non disponibili");
+        errorLabel.getStyleClass().add("schedule-grid-label");
+        grid.add(errorLabel, 0, 0);
+    }
 
     return grid;
-  }
+}
 
-  private void openMovieDetail(Film movie) {
-        Stage detailStage = new Stage();
-        MovieDetail movieDetail = new MovieDetail(movie, orariProiezioniService);
-        movieDetail.start(detailStage);
-    }
+
+private void openMovieDetail(Film movie) {
+    Stage detailStage = new Stage();
+    MovieDetail movieDetail = new MovieDetail(movie, orariProiezioniService, filmRepository);
+    movieDetail.start(detailStage);
+}
 
   public static void main(String[] args) {
     launch(args);

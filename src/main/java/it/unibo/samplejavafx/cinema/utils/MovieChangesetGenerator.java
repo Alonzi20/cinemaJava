@@ -8,7 +8,10 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 
 public class MovieChangesetGenerator {
@@ -44,18 +47,21 @@ public class MovieChangesetGenerator {
             </insert>
             """;
 
-    public static void generateChangeset() {
+
+    private final FilmRepository filmRepository;
+
+    public MovieChangesetGenerator(FilmRepository filmRepository) {
+        this.filmRepository = filmRepository;
+    }
+    public void generateChangeset() {
         try {
-            //crea percorso dir
             String projectDir = new File("").getAbsolutePath();
-            
-            //creazione percorso completo per il file e le directory
             File changelogDir = new File(projectDir, "src/main/resources/db/changelog/changes");
             changelogDir.mkdirs(); 
             
             File outputFile = new File(changelogDir, "movies-update.xml");
             
-            MovieProjections movieService = new MovieProjections();
+            MovieProjections movieService = new MovieProjections(filmRepository);
             List<Film> weeklyMovies = movieService.getWeeklyMovies();
             
             StringBuilder insertsBuilder = new StringBuilder();
@@ -75,14 +81,11 @@ public class MovieChangesetGenerator {
                 insertsBuilder.append(insertStatement);
             }
             
-            
             long changesetId = System.currentTimeMillis();
-            
             String completeChangeset = String.format(CHANGESET_TEMPLATE, 
                 changesetId,
                 insertsBuilder.toString()
             );
-            
             
             try (BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(
@@ -111,7 +114,16 @@ public class MovieChangesetGenerator {
                    .trim();             
     }
 
+    public static void generateChangesetStatic(FilmRepository filmRepository) {
+        MovieChangesetGenerator generator = new MovieChangesetGenerator(filmRepository);
+        generator.generateChangeset();
+    }
+
     public static void main(String[] args) {
-        generateChangeset();
+        try (AnnotationConfigApplicationContext context = 
+                 new AnnotationConfigApplicationContext("it.unibo.samplejavafx.cinema")) {
+            FilmRepository filmRepository = context.getBean(FilmRepository.class);
+            generateChangesetStatic(filmRepository);
+        }
     }
 }

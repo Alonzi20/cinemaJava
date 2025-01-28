@@ -3,6 +3,7 @@ package it.unibo.samplejavafx.ui;
 import it.unibo.samplejavafx.ScheduleManager;
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
 import it.unibo.samplejavafx.cinema.services.BffService;
 import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import it.unibo.samplejavafx.cinema.services.orari_proiezioni.OrariProiezioniService;
@@ -13,6 +14,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -27,17 +30,15 @@ import javafx.stage.Stage;
 
 public class MovieDetail extends Application {
   private final Film movie;
-  private final Map<String, List<String>> scheduleCache;
+  //private final Map<String, List<String>> scheduleCache;
   private final BffService bffService;
   private final OrariProiezioniService orariProiezioniService;
+  //private final MovieProjections movieService;
 
-  public MovieDetail(Film movie, OrariProiezioniService orariProiezioniService) {
-      this.movie = movie;
-      this.orariProiezioniService = orariProiezioniService;
-      this.bffService = new BffService();
-      MovieProjections movieService = new MovieProjections();
-      this.scheduleCache = ScheduleManager.getInstance(orariProiezioniService)
-          .getScheduleForMovie(movie, movieService.getWeeklyMovies());
+  public MovieDetail(Film movie, OrariProiezioniService orariProiezioniService, FilmRepository filmRepository) {
+    this.movie = movie;
+    this.orariProiezioniService = orariProiezioniService;
+    this.bffService = new BffService();
   }
   @Override
   public void start(Stage stage) {
@@ -179,13 +180,29 @@ public class MovieDetail extends Application {
   private void updateTimeSelector(ComboBox<String> timeSelector, String selectedDay) {
     timeSelector.getItems().clear();
 
-    // Estrai il giorno della settimana dal formato "GIORNO dd/MM"
-    String dayOfWeek = selectedDay.split(" ")[0];
+    try {
+        // Estrai la data dal formato "GIORNO dd/MM"
+        String[] parts = selectedDay.split(" ")[1].split("/");
+        int day = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]);
+        int year = LocalDate.now().getYear();
+        LocalDate selectedDate = LocalDate.of(year, month, day);
 
-    // Usa gli orari dalla cache
-    List<String> times = scheduleCache.getOrDefault(dayOfWeek, new ArrayList<>());
-    timeSelector.getItems().addAll(times);
-  }
+        // Ottieni le proiezioni per il film e la data selezionata
+        List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
+        List<String> orari = proiezioni.stream()
+            .filter(p -> p.getData().toLocalDate().equals(selectedDate))
+            .map(p -> p.getOrarioProiezione().getStartTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+            .sorted()
+            .collect(Collectors.toList());
+
+        timeSelector.getItems().addAll(orari);
+    } catch (Exception e) {
+        System.err.println("Errore nel recupero delle proiezioni: " + e.getMessage());
+        // Opzionalmente, mostra un messaggio all'utente
+        timeSelector.setPromptText("Orari non disponibili");
+    }
+}
 
   private Label createLabel(String text, String... styleClasses) {
     Label label = new Label(text);

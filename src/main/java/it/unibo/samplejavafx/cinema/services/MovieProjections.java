@@ -1,10 +1,14 @@
 package it.unibo.samplejavafx.cinema.services;
 
 import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -18,63 +22,31 @@ import org.json.JSONObject;
 public class MovieProjections {
   private static final String API_KEY = "2ad42fcfac14ac8869896349fa9c4b6f";
   private List<Film> weeklyMovies;
+  private final FilmRepository filmRepository;
 
-  public MovieProjections() {
-    weeklyMovies = new ArrayList<>();
+  public MovieProjections(FilmRepository filmRepository) {
+    this.filmRepository = filmRepository;  // Aggiunta questa riga
+    this.weeklyMovies = new ArrayList<>();
     fetchWeeklyMovies();
-  }
+}
 
   private void fetchWeeklyMovies() {
-    OkHttpClient client = new OkHttpClient();
-    Request request =
-        new Request.Builder()
-            .url(
-                "https://api.themoviedb.org/3/movie/now_playing?api_key="
-                    + API_KEY
-                    + "&language=it-IT&page=1&region=IT")
-            .get()
-            .addHeader("accept", "application/json")
-            .build();
-
     try {
-      Response response = client.newCall(request).execute();
-
-      if (response.isSuccessful() && response.body() != null) {
-        String jsonData = response.body().string();
-        JSONObject jsonObject = new JSONObject(jsonData);
-        JSONArray results = jsonObject.getJSONArray("results");
-
-        List<Film> allMovies = new ArrayList<>();
-
-        // conversione film
-        for (int i = 0; i < results.length(); i++) {
-          JSONObject movieJson = results.getJSONObject(i);
-          int movieId = movieJson.getInt("id");
-
-          // dettagli specifici film aggiuntivi non in now playing
-          Film film = getMovieDetails(movieId);
-
-          if (film != null) {
-            allMovies.add(film);
-          }
-        }
-
-        // ordinamento film per data più recente
-        allMovies.sort(
-            (m1, m2) -> {
-              LocalDate date1 = LocalDate.parse(m1.getReleaseDate());
-              LocalDate date2 = LocalDate.parse(m2.getReleaseDate());
-              return date2.compareTo(date1);
-            });
-
-        weeklyMovies.clear();
-        weeklyMovies.addAll(allMovies);
-      }
-    } catch (IOException e) {
-      log.error("Errore durante il recupero dei film settimanali", e);
-      e.printStackTrace();
+        // Recupera i film dal database e prendi solo i primi 10 più recenti
+        weeklyMovies = filmRepository.findAll().stream()
+            .sorted((m1, m2) -> {
+                LocalDate date1 = LocalDate.parse(m1.getReleaseDate());
+                LocalDate date2 = LocalDate.parse(m2.getReleaseDate());
+                return date2.compareTo(date1);
+            })
+            .limit(10)
+            .collect(Collectors.toList());
+            
+    } catch (Exception e) {
+        log.error("Errore durante il recupero dei film dal database", e);
+        weeklyMovies = new ArrayList<>(); // Inizializza a lista vuota in caso di errore
     }
-  }
+}
 
   // Recupero dettagli specifici di un film
   private Film getMovieDetails(int movieId) {
