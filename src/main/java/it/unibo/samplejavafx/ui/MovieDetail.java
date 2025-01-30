@@ -30,16 +30,17 @@ import javafx.stage.Stage;
 
 public class MovieDetail extends Application {
   private final Film movie;
-  //private final Map<String, List<String>> scheduleCache;
+  // private final Map<String, List<String>> scheduleCache;
   private final BffService bffService;
   private final OrariProiezioniService orariProiezioniService;
-  //private final MovieProjections movieService;
+  // private final MovieProjections movieService;
 
   public MovieDetail(Film movie, OrariProiezioniService orariProiezioniService, FilmRepository filmRepository) {
     this.movie = movie;
     this.orariProiezioniService = orariProiezioniService;
     this.bffService = new BffService();
   }
+
   @Override
   public void start(Stage stage) {
     VBox root = new VBox(10);
@@ -49,13 +50,11 @@ public class MovieDetail extends Application {
     Button backButton = new Button("Indietro");
     backButton.setOnAction(e -> stage.close());
 
-    ImageView poster =
-        new ImageView(new Image("https://image.tmdb.org/t/p/w300" + movie.getPosterPath()));
+    ImageView poster = new ImageView(new Image("https://image.tmdb.org/t/p/w300" + movie.getPosterPath()));
     poster.setFitWidth(200);
     poster.setFitHeight(300);
 
-    Label adultLabel =
-        createLabel("Vietato ai minori: " + (movie.isAdult() ? "Si" : "No"), "detail-label");
+    Label adultLabel = createLabel("Vietato ai minori: " + (movie.isAdult() ? "Si" : "No"), "detail-label");
     Label tramaLabel = createLabel("Trama: " + movie.getOverview(), "detail-label");
     tramaLabel.setWrapText(true);
     tramaLabel.setMaxWidth(600);
@@ -120,42 +119,40 @@ public class MovieDetail extends Application {
     purchaseButton.setDisable(true);
 
     timeSelector.setOnAction(
-        e ->
-            purchaseButton.setDisable(
-                daySelector.getValue() == null || timeSelector.getValue() == null));
+        e -> purchaseButton.setDisable(
+            daySelector.getValue() == null || timeSelector.getValue() == null));
 
     purchaseButton.setOnAction(e -> {
       try {
-         
-          String selectedDay = daySelector.getValue();
-          String selectedTime = timeSelector.getValue();
-  
-         
-          String[] parts = selectedDay.split(" ")[1].split("/");
-          int day = Integer.parseInt(parts[0]);
-          int month = Integer.parseInt(parts[1]);
-          int year = LocalDate.now().getYear();
-  
-          LocalDate selectedDate = LocalDate.of(year, month, day);
-          LocalTime time = LocalTime.parse(selectedTime);
-          
-          List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
-          
-          Proiezione proiezione = proiezioni.stream()
-              .filter(p -> {
-                  LocalDate proiezioneDate = p.getData().toLocalDate();
-                  LocalTime proiezioneTime = p.getOrarioProiezione().getStartTime().toLocalTime();
-                  return proiezioneDate.equals(selectedDate) && proiezioneTime.equals(time);
-              })
-              .findFirst()
-              .orElseThrow(() -> new RuntimeException("Nessuna proiezione trovata per la data e ora selezionate"));
-              
-          new BuyTicket(proiezione).start(new Stage());
-          
+
+        String selectedDay = daySelector.getValue();
+        String selectedTime = timeSelector.getValue();
+
+        String[] parts = selectedDay.split(" ")[1].split("/");
+        int day = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]);
+        int year = LocalDate.now().getYear();
+
+        LocalDate selectedDate = LocalDate.of(year, month, day);
+        LocalTime time = LocalTime.parse(selectedTime);
+
+        List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
+
+        Proiezione proiezione = proiezioni.stream()
+            .filter(p -> {
+              LocalDate proiezioneDate = p.getData().toLocalDate();
+              LocalTime proiezioneTime = p.getOrarioProiezione().getStartTime().toLocalTime();
+              return proiezioneDate.equals(selectedDate) && proiezioneTime.equals(time);
+            })
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Nessuna proiezione trovata per la data e ora selezionate"));
+
+        new BuyTicket(proiezione).start(new Stage());
+
       } catch (Exception ex) {
-          ex.printStackTrace();
+        ex.printStackTrace();
       }
-  });
+    });
 
     HBox selectors = new HBox(10);
     selectors.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -167,8 +164,7 @@ public class MovieDetail extends Application {
 
   private void populateDaySelector(ComboBox<String> daySelector) {
     LocalDate today = LocalDate.now();
-    DateTimeFormatter formatter =
-        DateTimeFormatter.ofPattern("EEEE dd/MM", Locale.forLanguageTag("it-IT"));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd/MM", Locale.forLanguageTag("it-IT"));
 
     for (int i = 0; i < 7; i++) {
       LocalDate date = today.plusDays(i);
@@ -181,28 +177,28 @@ public class MovieDetail extends Application {
     timeSelector.getItems().clear();
 
     try {
-        // Estrai la data dal formato "GIORNO dd/MM"
-        String[] parts = selectedDay.split(" ")[1].split("/");
-        int day = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]);
-        int year = LocalDate.now().getYear();
-        LocalDate selectedDate = LocalDate.of(year, month, day);
+      // Estratta la data dal formato "GIORNO dd/MM"
+      String[] parts = selectedDay.split(" ")[1].split("/");
+      int day = Integer.parseInt(parts[0]);
+      int month = Integer.parseInt(parts[1]);
+      int year = LocalDate.now().getYear();
+      LocalDate selectedDate = LocalDate.of(year, month, day);
 
-        // Ottieni le proiezioni per il film e la data selezionata
-        List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
-        List<String> orari = proiezioni.stream()
-            .filter(p -> p.getData().toLocalDate().equals(selectedDate))
-            .map(p -> p.getOrarioProiezione().getStartTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
-            .sorted()
-            .collect(Collectors.toList());
+      // Ottienute le proiezioni per il film e la data selezionata
+      List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
+      List<String> orari = proiezioni.stream()
+          .filter(p -> p.getData().toLocalDate().equals(selectedDate))
+          .map(p -> p.getOrarioProiezione().getStartTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+          .sorted()
+          .collect(Collectors.toList());
 
-        timeSelector.getItems().addAll(orari);
+      timeSelector.getItems().addAll(orari);
     } catch (Exception e) {
-        System.err.println("Errore nel recupero delle proiezioni: " + e.getMessage());
-        // Opzionalmente, mostra un messaggio all'utente
-        timeSelector.setPromptText("Orari non disponibili");
+      System.err.println("Errore nel recupero delle proiezioni: " + e.getMessage());
+      // Opzionalmente, mostra un messaggio all'utente
+      timeSelector.setPromptText("Orari non disponibili");
     }
-}
+  }
 
   private Label createLabel(String text, String... styleClasses) {
     Label label = new Label(text);
