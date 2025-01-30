@@ -2,38 +2,24 @@ package it.unibo.samplejavafx.cinema.services.proiezione;
 
 import it.unibo.samplejavafx.cinema.application.dto.CreaProiezione;
 import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.OrariProiezioni;
 import it.unibo.samplejavafx.cinema.application.models.Posto;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
 import it.unibo.samplejavafx.cinema.repositories.*;
-import it.unibo.samplejavafx.cinema.services.MovieProjections;
 import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
 import it.unibo.samplejavafx.cinema.services.posto.PostoService;
 import it.unibo.samplejavafx.cinema.services.sala.SalaService;
+import jakarta.annotation.PostConstruct;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import it.unibo.samplejavafx.cinema.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import it.unibo.samplejavafx.cinema.application.models.Film;
-import it.unibo.samplejavafx.cinema.application.models.Posto;
-import it.unibo.samplejavafx.cinema.application.models.Proiezione;
-import it.unibo.samplejavafx.cinema.application.models.Sala;
-import it.unibo.samplejavafx.cinema.application.models.OrariProiezioni;
-import it.unibo.samplejavafx.cinema.services.exceptions.ProiezioneNotFoundException;
-import it.unibo.samplejavafx.cinema.services.posto.PostoService;
-import it.unibo.samplejavafx.cinema.services.sala.SalaService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -142,6 +128,7 @@ public class ProiezioneServiceImpl implements ProiezioneService {
       posto.setFila(fila);
       posto.setProiezione(this.findProiezioneById(idProiezione));
       posto.setClienteId(idCliente);
+      posto.setPrenotato(true);
       postoRepository.save(posto);
 
       if (posto.getProiezione() != null && posto.getProiezione().getId() == idProiezione) {

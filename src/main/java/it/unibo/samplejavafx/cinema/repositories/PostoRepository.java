@@ -12,7 +12,8 @@ public interface PostoRepository extends JpaRepository<Posto, Long> {
 
   List<Long> findAllByProiezione_Id(Long proiezioneId);
 
-  int countByProiezione_Id(Long proiezioneId);
+  int countByPrenotatoAndProiezione_Id(boolean prenotato, Long proiezioneId);
 
-  List<Posto> findAllByNumeroAndFilaAndProiezione_Id(Long numero, String fila, Long proiezioneId);
+  List<Posto> findAllByNumeroAndFilaAndPrenotatoAndProiezione_Id(
+      Long numero, String fila, boolean prenotato, Long proiezioneId);
 }

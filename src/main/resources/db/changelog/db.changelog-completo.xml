@@ -103,6 +103,7 @@
             <column name="fila" type="VARCHAR(1)"/>
             <column name="proiezione_id" type="BIGINT"/>
             <column name="cliente_id" type="BIGINT"/>
+            <column name="prenotato" type="BOOLEAN"/>
         </createTable>
 
         <!-- Aggiunta vincoli di chiave esterna -->
@@ -274,108 +275,126 @@
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="1"/>
             <column name="cliente_id" value="1"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="1"/>
             <column name="cliente_id" value="1"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="1"/>
             <column name="cliente_id" value="1"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="1"/>
             <column name="cliente_id" value="1"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="2"/>
             <column name="cliente_id" value="1"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="1"/>
             <column name="cliente_id" value="1"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="2"/>
             <column name="cliente_id" value="1"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="2"/>
             <column name="cliente_id" value="2"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="2"/>
             <column name="cliente_id" value="2"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="2"/>
             <column name="cliente_id" value="2"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="2"/>
             <column name="cliente_id" value="2"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="3"/>
             <column name="cliente_id" value="2"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="3"/>
             <column name="cliente_id" value="2"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="3"/>
             <column name="cliente_id" value="3"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="A"/>
             <column name="proiezione_id" value="3"/>
             <column name="cliente_id" value="3"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="1"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="4"/>
             <column name="cliente_id" value="3"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="2"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="4"/>
             <column name="cliente_id" value="3"/>
+            <column name="prenotato" value="false"/>
         </insert>
         <insert tableName="Posto">
             <column name="numero" value="3"/>
             <column name="fila" value="B"/>
             <column name="proiezione_id" value="4"/>
             <column name="cliente_id" value="3"/>
+            <column name="prenotato" value="false"/>
         </insert>
     </changeSet>
 
