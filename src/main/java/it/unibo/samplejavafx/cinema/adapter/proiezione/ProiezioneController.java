@@ -1,6 +1,16 @@
 package it.unibo.samplejavafx.cinema.adapter.proiezione;
 
+import java.util.List;
+import java.util.Map;
+
 import it.unibo.samplejavafx.cinema.application.dto.CreaProiezione;
+import it.unibo.samplejavafx.cinema.application.models.Film;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.services.proiezione.ProiezioneService;
 import java.util.List;
@@ -63,8 +73,17 @@ public class ProiezioneController {
     return proiezioneService.postiLiberi(idProiezione, idSala);
   }
 
-  @PostMapping("/populate")
-  public List<Proiezione> populateWeeklyProiezioni() {
-    return proiezioneService.createProiezioniFromApi();
+  @PostMapping("/generate")
+  public ResponseEntity<String> generateProjections() {
+    try {
+      proiezioneService.generateProjections();
+      return ResponseEntity.ok("Proiezioni generate correttamente.");
+    } catch (Exception e) {
+      log.error("Errore nella generazione delle proiezioni: {}", e.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body("Errore nella generazione delle proiezioni.");
+    }
   }
+
+
 }

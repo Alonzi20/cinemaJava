@@ -28,6 +28,11 @@ public class Proiezione {
   @OneToMany(mappedBy = "proiezione", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Posto> postiPrenotati;
 
+  // TODO Alex: [28/01/2025]
+  //  Per com'è ora quando si crea un posto e lo si associa ad una proiezione è già prenotato
+  //  Bisogna fare o una lista di posti prenotati e una di posti liberi o trasformare la lista che
+  //  c'è ora in una mappa Posto, boolean
+
   @ManyToOne(
       fetch = FetchType.EAGER) // Per caricare l'entità OrariProiezioni, sennò non la risolveva
   @JoinColumn(name = "orario_proiezione_id")

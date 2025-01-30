@@ -5,6 +5,9 @@ import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import java.util.List;
 import java.util.Map;
 
+import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+
 public interface ProiezioneService {
   Proiezione findProiezioneById(Long id);
 
@@ -24,5 +27,5 @@ public interface ProiezioneService {
 
   Long prenota(long numero, String fila, long idProiezione, long idSala, long idCliente);
 
-  List<Proiezione> createProiezioniFromApi();
+  List<Proiezione> generateProjections();
 }

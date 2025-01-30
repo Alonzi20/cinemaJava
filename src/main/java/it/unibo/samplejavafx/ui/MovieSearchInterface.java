@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import it.unibo.samplejavafx.cinema.application.models.Film;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
+import it.unibo.samplejavafx.cinema.services.BffService;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Button;
@@ -25,7 +27,22 @@ public class MovieSearchInterface extends HBox {
         super(10);
         this.getStyleClass().add("search-section");
         this.onSearchUpdated = onSearchUpdated;
-        this.filmFiltrati = new FilteredList<>(FXCollections.observableArrayList(films));
+        BffService bffService = new BffService();
+        List<Film> filmsConProiezioni = films.stream()
+        .filter(film -> {
+            if (film.getId() == null) {
+                return false;
+            }
+            try {
+                List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(film.getId());
+                return !proiezioni.isEmpty();
+            } catch (Exception e) {
+                System.err.println("Errore nel recupero delle proiezioni per il film " + film.getTitle() + ": " + e.getMessage());
+                return false;
+            }
+        })
+        .collect(Collectors.toList());
+        this.filmFiltrati = new FilteredList<>(FXCollections.observableArrayList(filmsConProiezioni));
         
         Label titleLabel = new Label("CERCA FILM");
         titleLabel.getStyleClass().add("search-title");
@@ -36,7 +53,7 @@ public class MovieSearchInterface extends HBox {
         campoRicerca.setPrefWidth(300); 
         campoRicerca.textProperty().addListener((obs, old, newValue) -> applicaFiltri());
         
-        Set<String> tuttiGeneri = films.stream()
+        Set<String> tuttiGeneri = filmsConProiezioni.stream()
         .flatMap(m -> m.getGenresList().stream())
         .collect(Collectors.toSet());
         filtroGenere = new ComboBox<>(FXCollections.observableArrayList(tuttiGeneri));
