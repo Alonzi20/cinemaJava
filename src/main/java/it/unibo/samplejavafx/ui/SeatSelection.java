@@ -37,6 +37,7 @@ public class SeatSelection {
     VBox container = new VBox(10);
     container.setAlignment(Pos.CENTER);
     container.setPadding(new Insets(20));
+    container.getStyleClass().add("detail-root");
 
     // Creazione griglia dei posti
     GridPane seatGrid = createSeatGrid();
@@ -83,6 +84,7 @@ public class SeatSelection {
     gridPane.setMaxHeight(250);
     gridPane.setMinWidth(300);
     gridPane.setMinHeight(250);
+    gridPane.getStyleClass().add("detail-root");
 
     // Aggiunge le etichette delle righe
     for (int row = 0; row < ROWS.length; row++) {
@@ -97,6 +99,7 @@ public class SeatSelection {
       for (int col = 0; col < COLUMNS; col++) {
         ToggleButton seatButton = new ToggleButton(String.valueOf(col + 1));
         seatButton.setPrefSize(50, 50);
+        seatButton.getStyleClass().add("seat-button");
 
         // Esegui la chiamata al servizio per verificare se il posto è occupato
         int finalRow = row;

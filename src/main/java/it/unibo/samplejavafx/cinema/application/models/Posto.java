@@ -24,9 +24,11 @@ public class Posto {
 
   @ManyToOne
   @JoinColumn(name = "proiezione_id", nullable = false) // Collega il posto a una proiezione
-  @JsonIgnoreProperties(
-      "postiPrenotati") // Ignora il lato opposto della relazione, per evitare cicli
+  @JsonIgnoreProperties("posti") // Ignora il lato opposto della relazione, per evitare cicli
   private Proiezione proiezione;
 
   Long clienteId; // Id del cliente che ha prenotato il posto
+
+  @Builder.Default
+  boolean prenotato = false; // Nuovo campo per distinguere i posti prenotati da quelli liberi
 }

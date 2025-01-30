@@ -41,13 +41,13 @@ public class PostoServiceImpl implements PostoService {
 
   @Override
   public int postiPrenotatiByProiezioneId(Long idProiezione) {
-    return postoRepository.countByProiezione_Id(idProiezione);
+    return postoRepository.countByPrenotatoAndProiezione_Id(true, idProiezione);
   }
 
   @Override
   public boolean isPostoPrenotabile(long numero, String fila, long idProiezione) {
     return postoRepository
-        .findAllByNumeroAndFilaAndProiezione_Id(numero, fila, idProiezione)
+        .findAllByNumeroAndFilaAndPrenotatoAndProiezione_Id(numero, fila, true, idProiezione)
         .isEmpty();
   }
 }
