@@ -10,11 +10,13 @@ import it.unibo.samplejavafx.cinema.application.models.Sala;
 import it.unibo.samplejavafx.cinema.services.BffService;
 import java.util.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -47,92 +49,89 @@ public class BuyTicket extends Application {
 
   @Override
   public void start(Stage stage) {
-    VBox root = new VBox(10);
+    VBox root = new VBox(20); // Aumentato lo spacing tra gli elementi
     root.setPadding(new Insets(20));
+    root.getStyleClass().add("detail-root");
 
-    Button backButton = new Button("Indietro");
+    // Header section con bottone indietro
+    Button backButton = new Button("← Indietro");
+    backButton.getStyleClass().add("detail-button");
     backButton.setOnAction(e -> stage.close());
 
-    ImageView poster =
-        new ImageView(new Image("https://image.tmdb.org/t/p/w300" + movie.getPosterPath()));
-    poster.setFitWidth(200);
-    poster.setFitHeight(300);
+    // Movie info section
+    VBox movieInfoSection = new VBox(10);
+    movieInfoSection.getStyleClass().add("movie-info-section");
+    movieInfoSection.setPadding(new Insets(15));
 
-    Label adultLabel = createLabel("Vietato ai minori: " + (movie.isAdult() ? "Si" : "No"));
+    // Titolo principale
+    Label titleLabel = createLabel(movie.getTitle(), "detail-title");
 
-    // Aggiungi il pannello di selezione posti
+    // Container per info film in griglia
+    GridPane movieDetailsGrid = new GridPane();
+    movieDetailsGrid.setHgap(20);
+    movieDetailsGrid.setVgap(10);
+    movieDetailsGrid.setPadding(new Insets(15, 0, 15, 0));
+
+    // Aggiunta info film con etichette più descrittive
+    movieDetailsGrid.add(createLabel("Genere:", "detail-label", "label-header"), 0, 0);
+    movieDetailsGrid.add(createLabel(movie.getGenres(), "detail-label", "label-content"), 1, 0);
+
+    movieDetailsGrid.add(createLabel("Sala:", "detail-label", "label-header"), 0, 1);
+    movieDetailsGrid.add(createLabel(String.valueOf(sala.getNumero()), "detail-label", "label-content"), 1, 1);
+
+    movieDetailsGrid.add(createLabel("Restrizioni:", "detail-label", "label-header"), 0, 2);
+    movieDetailsGrid.add(createLabel(movie.isAdult() ? "Vietato ai minori" : "Per tutti", "detail-label", "label-content"), 1, 2);
+
+    // Assembla la sezione info film
+    movieInfoSection.getChildren().addAll(titleLabel, movieDetailsGrid);
+
+    // Poster section (se lo vuoi includere)
+    if (movie.getPosterPath() != null && !movie.getPosterPath().isEmpty()) {
+      ImageView poster = new ImageView(new Image("https://image.tmdb.org/t/p/w300" + movie.getPosterPath()));
+      poster.setFitWidth(100);
+      poster.setFitHeight(150);
+      poster.getStyleClass().add("detail-poster");
+      movieInfoSection.getChildren().add(0, poster); // Aggiungi il poster all'inizio della sezione
+    }
+
+    // Seat selection section
     VBox seatSelectionPane = seatSelection.createSeatSelectionPane();
-    VBox dynamicContent = new VBox(10); // Contenitore per i biglietti
+    seatSelectionPane.getStyleClass().add("seat-selection-section");
+
+    // Dynamic content for tickets
+    VBox dynamicContent = new VBox(10);
+    dynamicContent.getStyleClass().add("tickets-section");
     seatSelection.setOnConfirm(() -> this.handleSeatSelection(dynamicContent));
 
-    root.getChildren()
-        .addAll(
+    // Assembla tutto
+    root.getChildren().addAll(
             backButton,
-            /*poster,*/
-            createLabel("Film: " + movie.getTitle()),
-            createLabel("Genere: " + movie.getGenres()),
-            createLabel("Sala " + sala.getNumero()),
-            adultLabel,
-            seatSelectionPane // Aggiunge scelta posti
-            );
+            movieInfoSection,
+            seatSelectionPane,
+            dynamicContent
+    );
 
-    /*if (!biglietti.isEmpty()) {
-      for (Biglietto biglietto : biglietti) {
-        root.getChildren().add(createSelezione(biglietto));
-      }
-    }*/
-
-    root.getChildren().add(dynamicContent);
-
-    // Inserisci VBox in un ScrollPane
+    // ScrollPane setup
     ScrollPane scrollPane = new ScrollPane(root);
-    scrollPane.setFitToWidth(true); // Permette al contenuto di adattarsi alla larghezza
-
-    // Rendi il contenitore principale adattabile all'altezza dello schermo
+    scrollPane.setFitToWidth(true);
     scrollPane.setPrefHeight(javafx.stage.Screen.getPrimary().getVisualBounds().getHeight() - 35);
-    // Permetti al contenuto di scrollare verticalmente solo quando necessario
     scrollPane.setFitToHeight(false);
+    scrollPane.getStyleClass().add("detail-scroll-pane");
 
     Scene scene = new Scene(scrollPane);
-    scene
-        .getStylesheets()
-        .add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+    scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+    stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icontheme.png")));
     stage.setTitle("Acquista Biglietti");
     stage.setScene(scene);
     stage.show();
   }
-
   private void handleSeatSelection(VBox dynamicContent) {
     Map<Long, String> posti = seatSelection.getSelectedSeats();
     try {
-      // Pulisci solo il contenitore dinamico, non la lista dei biglietti
       dynamicContent.getChildren().clear();
 
-      /*// Ottieni i nuovi biglietti per i posti selezionati
-      List<Biglietto> nuoviBiglietti = bffService.createBiglietti(proiezione.getId(), posti, false);
-
-      // Aggiorna la lista dei biglietti:
-      // Rimuovi quelli che non sono più selezionati
-      biglietti.removeIf(
-          b ->
-              posti.entrySet().stream()
-                  .noneMatch(
-                      entry ->
-                          entry.getKey().equals(b.getNumero())
-                              && entry.getValue().equals(b.getFila())));
-
-      // Aggiungi i nuovi biglietti se non sono già presenti
-      for (Biglietto nuovoBiglietto : nuoviBiglietti) {
-        if (!biglietti.contains(nuovoBiglietto)) {
-          biglietti.add(nuovoBiglietto);
-        }
-      }*/
-
-      // Usa i posti selezionati per creare i biglietti
-      // Converte la stringa di righe in una lista di righe separate
       Map<Long, List<String>> postiConListe = new HashMap<>();
 
-      // Converti la stringa delle righe selezionate in una lista di righe
       for (Map.Entry<Long, String> entry : posti.entrySet()) {
         Long colonna = entry.getKey();
         String righeSelezionate = entry.getValue();
@@ -141,12 +140,10 @@ public class BuyTicket extends Application {
       }
 
       List<Biglietto> createdBiglietti =
-          bffService.createBiglietti(proiezione.getId(), postiConListe, false);
-      // Rimuovi i biglietti precedenti per evitare duplicati
+              bffService.createBiglietti(proiezione.getId(), postiConListe, false);
       biglietti.clear();
       biglietti.addAll(createdBiglietti);
 
-      // Se ci sono biglietti, mostra le selezioni e il pulsante Compra
       if (!biglietti.isEmpty()) {
         Label bigliettiLabel = createLabel("Biglietti");
         dynamicContent.getChildren().add(bigliettiLabel);
@@ -158,18 +155,23 @@ public class BuyTicket extends Application {
         Button buyButton = new Button("COMPRA");
         buyButton.getStyleClass().add("quick-purchase-button");
         buyButton.setOnAction(e -> buyTickets());
-        dynamicContent.getChildren().add(totalLabel); // Aggiungi il totale
-        dynamicContent.getChildren().add(buyButton); // Aggiungi il pulsante Compra
+        dynamicContent.getChildren().add(totalLabel);
+        dynamicContent.getChildren().add(buyButton);
+
+        // Aggiungi questo codice per scrollare automaticamente
+        Platform.runLater(() -> {
+          ScrollPane scrollPane = (ScrollPane) dynamicContent.getScene().getRoot();
+          scrollPane.setVvalue(1.0); // Scrolla alla fine
+        });
       }
     } catch (Exception e) {
       new Alert(
               Alert.AlertType.ERROR,
               "Errore durante la creazione dei biglietti: " + e.getMessage(),
               ButtonType.OK)
-          .showAndWait();
+              .showAndWait();
     }
   }
-
   private Label createLabel(String text, String... styleClasses) {
     Label label = new Label(text);
     label.getStyleClass().addAll(styleClasses);
@@ -220,8 +222,16 @@ public class BuyTicket extends Application {
   private void buyTickets() {
     try {
       if (biglietti.isEmpty()) {
-        new Alert(Alert.AlertType.ERROR, "Nessun biglietto selezionato", ButtonType.OK)
-            .showAndWait();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Errore");
+        alert.setHeaderText(null);
+        alert.setContentText("Nessun biglietto selezionato");
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStyleClass().add("custom-alert");
+        dialogPane.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+
+        alert.showAndWait();
         return;
       }
 
@@ -230,17 +240,30 @@ public class BuyTicket extends Application {
         biglietto.setClienteId(1L);
         bffService.compraBiglietto(biglietto, biglietto.isRidotto());
       }
-      new Alert(Alert.AlertType.INFORMATION, "Biglietti acquistati con successo", ButtonType.OK)
-          .showAndWait();
 
-      // Chiudi la finestra e torna alla pagina precedente
+      Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+      successAlert.setTitle("Successo");
+      successAlert.setHeaderText(null);
+      successAlert.setContentText("Biglietti acquistati con successo");
+
+      DialogPane successPane = successAlert.getDialogPane();
+      successPane.getStyleClass().add("custom-alert");
+      successPane.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+
+      successAlert.showAndWait();
       closePage();
     } catch (Exception e) {
-      new Alert(
-              Alert.AlertType.ERROR,
-              "Errore durante l'acquisto dei biglietti: " + e.getMessage(),
-              ButtonType.OK)
-          .showAndWait();
+      Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+      errorAlert.setTitle("Errore");
+      errorAlert.setHeaderText(null);
+      errorAlert.setContentText("Errore durante l'acquisto dei biglietti: " + e.getMessage());
+
+
+      DialogPane errorPane = errorAlert.getDialogPane();
+      errorPane.getStyleClass().add("custom-alert");
+      errorPane.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+
+      errorAlert.showAndWait();
     }
   }
 

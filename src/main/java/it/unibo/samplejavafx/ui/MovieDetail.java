@@ -46,7 +46,8 @@ public class MovieDetail extends Application {
     root.setPadding(new Insets(20));
     root.getStyleClass().add("detail-root");
 
-    Button backButton = new Button("Indietro");
+      Button backButton = new Button("← Indietro");
+      backButton.getStyleClass().add("detail-button");
     backButton.setOnAction(e -> stage.close());
 
     ImageView poster =
@@ -81,6 +82,7 @@ public class MovieDetail extends Application {
     scene
         .getStylesheets()
         .add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+    stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icontheme.png")));
     stage.setTitle("Dettagli Film");
     stage.setScene(scene);
     stage.show();
