@@ -154,94 +154,114 @@ public class ProiezioneServiceImpl implements ProiezioneService {
     }
   }
 
-  @Override
-  @Transactional
-  public List<Proiezione> generateProjections() {
-    // Caricamento anticipato di tutti i dati necessari
-    List<Film> allFilms = filmRepository.findAll();
-    List<Film> films = allFilms.stream()
-        .sorted((f1, f2) -> LocalDate.parse(f2.getReleaseDate())
-            .compareTo(LocalDate.parse(f1.getReleaseDate())))
-        .limit(10)
-        .collect(Collectors.toList());
+    @Override
+    @Transactional
+    public List<Proiezione> generateProjections() {
+        //recupero tutti i film che devono essere processati
+        List<Film> allFilms = filmRepository.findAll();
+        List<Film> films = allFilms.stream()
+                .sorted((f1, f2) -> LocalDate.parse(f2.getReleaseDate())
+                        .compareTo(LocalDate.parse(f1.getReleaseDate())))
+                .limit(10)
+                .collect(Collectors.toList());
 
-    // Precarica tutti gli orari una volta sola
-    Map<String, List<OrariProiezioni>> orariCache = new HashMap<>();
-    orariCache.put("WEEKDAY", orariProiezioniRepository.findByPatternType("WEEKDAY"));
-    orariCache.put("WEEKEND", orariProiezioniRepository.findByPatternType("WEEKEND"));
-    orariCache.put("WEEKEND_MORNING", orariProiezioniRepository.findByPatternType("WEEKEND_MORNING"));
+        //controlla se esistono già proiezioni per i film selezionati
+        List<Long> filmIds = films.stream()
+                .map(Film::getId)
+                .collect(Collectors.toList());
 
-    // Precarica tutte le sale
-    List<Long> salaIds = salaRepository.findAll().stream()
-        .map(Sala::getId)
-        .collect(Collectors.toList());
-
-    log.info("Initialization: {} films, {} weekday times, {} weekend times",
-        films.size(),
-        orariCache.get("WEEKDAY").size(),
-        orariCache.get("WEEKEND").size());
-
-    List<Proiezione> nuoveProiezioni = new ArrayList<>();
-    LocalDate startDate = LocalDate.now();
-
-    List<Proiezione> proiezioniToSave = new ArrayList<>();
-    List<Posto> postiToSave = new ArrayList<>();
-
-    for (Film film : films) {
-      log.info("Processing film: {}", film.getTitle());
-
-      for (int i = 0; i < 7; i++) {
-        LocalDate currentDate = startDate.plusDays(i);
-        Map<Integer, Set<LocalTime>> salaOccupata = new HashMap<>();
-
-        String patternType = currentDate.getDayOfWeek().getValue() >= 6 ? "WEEKEND" : "WEEKDAY";
-        List<OrariProiezioni> orari = new ArrayList<>(orariCache.get(patternType));
-
-        if (patternType.equals("WEEKEND") && Math.random() < 0.4) {
-          orari.addAll(orariCache.get("WEEKEND_MORNING"));
+        long countExistingProiezioni = proiezioneRepository.countByFilmIdIn(filmIds);
+        if (countExistingProiezioni > 0) {
+            log.info("Proiezioni già presenti per questi film. Skip della generazione.");
+            return Collections.emptyList();
         }
 
-        for (OrariProiezioni orario : orari) {
-          Optional<Long> availableSala = findAvailableSala(salaIds, salaOccupata,
-              currentDate,
-              LocalTime.parse(orario.getStartTime().toString()),
-              film.getDuration());
+        log.info("Nessuna proiezione trovata per i film selezionati, generazione in corso...");
 
-          if (availableSala.isPresent()) {
-            Proiezione proiezione = new Proiezione();
-            proiezione.setFilmId(film.getId());
-            proiezione.setSalaId(availableSala.get());
-            proiezione.setData(Date.valueOf(currentDate));
-            proiezione.setOrarioProiezione(orario);
+        Map<String, List<OrariProiezioni>> orariCache = new HashMap<>();
+        orariCache.put("WEEKDAY", orariProiezioniRepository.findByPatternType("WEEKDAY"));
+        orariCache.put("WEEKEND", orariProiezioniRepository.findByPatternType("WEEKEND"));
+        orariCache.put("WEEKEND_MORNING", orariProiezioniRepository.findByPatternType("WEEKEND_MORNING"));
 
-            proiezioniToSave.add(proiezione);
+        List<Long> salaIds = salaRepository.findAll().stream()
+                .map(Sala::getId)
+                .collect(Collectors.toList());
 
-            postiToSave.addAll(createPosti(proiezione));
+        log.info("Initialization: {} films, {} weekday times, {} weekend times",
+                films.size(),
+                orariCache.get("WEEKDAY").size(),
+                orariCache.get("WEEKEND").size());
 
-            salaOccupata.computeIfAbsent(availableSala.get().intValue(), k -> new HashSet<>())
-                .add(LocalTime.parse(orario.getStartTime().toString()));
+        List<Proiezione> nuoveProiezioni = new ArrayList<>();
+        LocalDate startDate = LocalDate.now();
 
-            if (proiezioniToSave.size() >= 50) {
-              nuoveProiezioni.addAll(proiezioneRepository.saveAll(proiezioniToSave));
-              postoRepository.saveAll(postiToSave);
-              proiezioniToSave.clear();
-              postiToSave.clear();
+        List<Proiezione> proiezioniToSave = new ArrayList<>();
+        List<Posto> postiToSave = new ArrayList<>();
+
+        for (Film film : films) {
+            log.info("Processing film: {}", film.getTitle());
+
+            for (int i = 0; i < 7; i++) {
+                LocalDate currentDate = startDate.plusDays(i);
+                Map<Integer, Set<LocalTime>> salaOccupata = new HashMap<>();
+                Set<LocalTime> orariAssegnati = new HashSet<>();
+
+                String patternType = currentDate.getDayOfWeek().getValue() >= 6 ? "WEEKEND" : "WEEKDAY";
+                List<OrariProiezioni> orari = new ArrayList<>(orariCache.get(patternType));
+
+                if (patternType.equals("WEEKEND") && Math.random() < 0.4) {
+                    orari.addAll(orariCache.get("WEEKEND_MORNING"));
+                }
+
+
+                for (OrariProiezioni orario : orari) {
+                    LocalTime startTime = orario.getStartTime().toLocalTime();
+
+                    if (orariAssegnati.contains(startTime)) {
+                        continue;
+                    }
+
+                    Optional<Long> availableSala = findAvailableSala(salaIds, salaOccupata,
+                            currentDate, startTime, film.getDuration());
+
+                    if (availableSala.isPresent()) {
+                        Proiezione proiezione = new Proiezione();
+                        proiezione.setFilmId(film.getId());
+                        proiezione.setSalaId(availableSala.get());
+                        proiezione.setData(Date.valueOf(currentDate));
+                        proiezione.setOrarioProiezione(orario);
+
+                        proiezioniToSave.add(proiezione);
+                        postiToSave.addAll(createPosti(proiezione));
+
+                        salaOccupata.computeIfAbsent(availableSala.get().intValue(), k -> new HashSet<>())
+                                .add(startTime);
+
+                        orariAssegnati.add(startTime);
+
+                        if (proiezioniToSave.size() >= 50) {
+                            nuoveProiezioni.addAll(proiezioneRepository.saveAll(proiezioniToSave));
+                            postoRepository.saveAll(postiToSave);
+                            proiezioniToSave.clear();
+                            postiToSave.clear();
+                        }
+                    }
+                }
             }
-          }
         }
-      }
+
+        if (!proiezioniToSave.isEmpty()) {
+            nuoveProiezioni.addAll(proiezioneRepository.saveAll(proiezioniToSave));
+            postoRepository.saveAll(postiToSave);
+        }
+
+        log.info("Completed: Generated {} projections", nuoveProiezioni.size());
+        return nuoveProiezioni;
     }
 
-    if (!proiezioniToSave.isEmpty()) {
-      nuoveProiezioni.addAll(proiezioneRepository.saveAll(proiezioniToSave));
-      postoRepository.saveAll(postiToSave);
-    }
 
-    log.info("Completed: Generated {} projections", nuoveProiezioni.size());
-    return nuoveProiezioni;
-  }
 
-  private Optional<Long> findAvailableSala(List<Long> salaIds, Map<Integer, Set<LocalTime>> salaOccupata,
+    private Optional<Long> findAvailableSala(List<Long> salaIds, Map<Integer, Set<LocalTime>> salaOccupata,
                                            LocalDate currentDate, LocalTime startTime, int duration) {
     return salaIds.stream()
             .filter(salaId -> {

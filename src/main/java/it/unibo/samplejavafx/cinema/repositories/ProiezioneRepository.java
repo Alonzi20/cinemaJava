@@ -17,4 +17,7 @@ public interface ProiezioneRepository extends JpaRepository<Proiezione, Long> {
   List<Proiezione> findAllByDataAndOrarioProiezione_StartTime(Date date, Time startTime);
 
   List<Proiezione> findByDataAndSalaId(Date date, Long salaId);
+
+  long countByFilmIdIn(List<Long> filmIds);
+
 }
