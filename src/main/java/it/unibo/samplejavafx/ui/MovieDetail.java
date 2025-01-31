@@ -46,7 +46,8 @@ public class MovieDetail extends Application {
     root.setPadding(new Insets(20));
     root.getStyleClass().add("detail-root");
 
-    Button backButton = new Button("Indietro");
+      Button backButton = new Button("← Indietro");
+      backButton.getStyleClass().add("detail-button");
     backButton.setOnAction(e -> stage.close());
 
     ImageView poster =

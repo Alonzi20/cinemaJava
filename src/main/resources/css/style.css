@@ -1,17 +1,21 @@
+
 .container {
     -fx-background-color: #00008B;
 }
 
-.nessun-risultato-label {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
+.detail-root {
+    -fx-background-color: #00008B;
+    -fx-padding: 20px;
 }
 
-.detail-button {
-    -fx-background-color: #003366;
-    -fx-text-fill: white;
+
+.movie-info-section {
+    -fx-background-color: #0a1940;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
 }
+
 
 .movie-title {
     -fx-font-weight: bold;
@@ -22,28 +26,15 @@
     -fx-text-fill: white;
 }
 
-.schedule-grid-label {
-    -fx-text-fill: white;
-}
-
-.detail-root {
-    -fx-background-color: #00008B;
-    -fx-padding: 20px;
-}
-
-.detail-poster {
-    -fx-fit-width: 200px;
-    -fx-fit-height: 300px;
+.detail-title {
+    -fx-text-fill: yellow;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10 0;
 }
 
 .detail-label {
     -fx-text-fill: white;
-}
-
-.detail-title {
-    -fx-text-fill: white;
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
 }
 
 .detail-trama {
@@ -52,44 +43,38 @@
     -fx-max-width: 600px;
 }
 
-.movie-search-interface {
-    -fx-background-color: #003366;
-    -fx-padding: 10px;
+.label-header {
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700;
 }
 
-.text-field {
-    -fx-background-color: white;
+.label-content {
+    -fx-text-fill: white;
 }
 
-.combo-box {
-    -fx-background-color: white;
+.nessun-risultato-label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+
+.detail-button {
+    -fx-background-color: #002366;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15 8 15;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.detail-button:hover {
+    -fx-background-color: #003399;
 }
 
 .reset-button {
     -fx-background-color: white;
     -fx-font-weight: bold;
-}
-
-.ticket-section {
-    -fx-background-color: #f0f0f0;
-    -fx-padding: 15px;
-    -fx-spacing: 10px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-}
-
-.ticket-section-title {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #002366;
-}
-
-.combo-box {
-    -fx-min-width: 200px;
-    -fx-pref-width: 200px;
-    -fx-background-color: white;
-    -fx-border-color: #002366;
-    -fx-border-radius: 3px;
 }
 
 .purchase-button {
@@ -110,58 +95,75 @@
 }
 
 .seat-button {
-    -fx-background-color: #A9A9A9;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    /*-fx-min-width: 150px;
-    -fx-padding: 10px 20px;*/
-    -fx-cursor: hand;
-}
-
-.seat-button.disabled {
-    -fx-opacity: 0.7;
-    -fx-background-color: rgba(211, 211, 211);
-    -fx-text-fill: gray;
+    -fx-background-radius: 15px;
+    -fx-min-width: 50px;
+    -fx-min-height: 50px;
+    -fx-background-color: #FFD700;
+    -fx-border-color: #DAA520;
+    -fx-border-radius: 15px;
+    -fx-text-fill: black;
     -fx-font-weight: bold;
 }
 
 .seat-button:hover {
-    -fx-background-color: #666;
+    -fx-background-color: #FFC107;
 }
 
-.seat-button.selected {
-    -fx-background-color: #222;
+.seat-button:disabled {
+    -fx-background-color: #808080;
+    -fx-text-fill: white;
+    -fx-opacity: 0.7;
+}
+
+.seat-button:selected {
+    -fx-background-color: #00FF00;
     -fx-text-fill: white;
 }
 
-.quick-purchase-section {
-    -fx-background-color: #0a1940;
-    -fx-padding: 15px;
-    -fx-spacing: 10px;
-    -fx-max-width: 1000px;
-}
-
-.quick-purchase-title {
-    -fx-text-fill: yellow;
+.seat-number {
+    -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
 
-.quick-purchase-combo-box {
-    -fx-background-color: white;
-    -fx-pref-width: 200px;
-}
 
-.quick-purchase-button {
-    -fx-background-color: #002366;
+.row-label {
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 8px 15px;
+    -fx-font-size: 16px;
 }
 
-.quick-purchase-button:hover {
-    -fx-background-color: #003399;
+
+.seat-selection-section {
+    -fx-background-color: #0a1940;
+    -fx-background-radius: 10px;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
 }
+
+.tickets-section {
+    -fx-background-color: #0a1940;
+    -fx-background-radius: 10px;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+.ticket-section {
+    -fx-background-color: #0a1940;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.ticket-section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: yellow;
+}
+
 
 .search-section {
     -fx-background-color: #0a1940;
@@ -178,26 +180,72 @@
     -fx-padding: 5px 10px 5px 0;
 }
 
+.quick-purchase-section {
+    -fx-background-color: #0a1940;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-max-width: 1000px;
+}
+
+.quick-purchase-title {
+    -fx-text-fill: yellow;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+
+.text-field {
+    -fx-background-color: white;
+}
+
 .search-text-field {
     -fx-background-color: white;
     -fx-pref-width: 300px;
 }
 
-.search-combo-box {
+.combo-box {
+    -fx-min-width: 200px;
+    -fx-pref-width: 200px;
+    -fx-background-color: white;
+    -fx-border-color: #002366;
+    -fx-border-radius: 3px;
+}
+
+.combo-box:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.2), 5, 0, 0, 0);
+}
+
+.quick-purchase-combo-box {
     -fx-background-color: white;
     -fx-pref-width: 200px;
 }
 
-.search-button {
-    -fx-background-color: #002366;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 8px 15px;
+
+.detail-poster {
+    -fx-fit-width: 200px;
+    -fx-fit-height: 300px;
 }
 
-.search-button:hover {
-    -fx-background-color: #003399;
+
+.detail-scroll-pane {
+    -fx-background: #00008B;
+    -fx-background-color: transparent;
 }
+
+.detail-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.schedule-grid-label {
+    -fx-text-fill: white;
+}
+
+
+.movie-search-interface {
+    -fx-background-color: #003366;
+    -fx-padding: 10px;
+}
+
 
 .detail-ticket-section {
     -fx-background-color: #0a1940;
@@ -211,4 +259,54 @@
     -fx-text-fill: yellow;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
+}
+
+.quick-purchase-button {
+    -fx-background-color: #002366;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+}
+
+.quick-purchase-button:hover {
+    -fx-background-color: #003399;
+}
+
+.search-button {
+    -fx-background-color: #002366;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+}
+
+.search-button:hover {
+    -fx-background-color: #003399;
+}
+
+.custom-alert {
+    -fx-background-color: white;
+}
+
+.custom-alert > *.header-panel {
+    -fx-background-color: white;
+}
+
+.custom-alert:error *.header-panel {
+    -fx-background-color: white;
+}
+
+.custom-alert .content {
+    -fx-font-size: 14px;
+    -fx-padding: 16px;
+}
+
+.custom-alert .button-bar .button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+}
+
+.custom-alert .button-bar .button:hover {
+    -fx-background-color: #1976D2;
 }
