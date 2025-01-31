@@ -9,17 +9,17 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class LoginPage extends Application {
+public class SignupPage extends Application {
 
   private final BffService bffService;
 
-  public LoginPage() {
+  public SignupPage() {
     bffService = new BffService();
   }
 
   @Override
   public void start(Stage stage) {
-    stage.setTitle("Login Page");
+    stage.setTitle("Sing Up Page");
 
     // Bottone per tornare indietro
     Button backButton = new Button("← Indietro");
@@ -33,50 +33,61 @@ public class LoginPage extends Application {
     grid.setVgap(10);
     grid.setPadding(new Insets(25, 25, 25, 25));
 
+    // Etichetta e campo nome
+    Label nomeLabel = new Label("Nome:");
+    grid.add(nomeLabel, 0, 0);
+    TextField nomeField = new TextField();
+    grid.add(nomeField, 1, 0);
+
+    // Etichetta e campo cognome
+    Label cognomeLabel = new Label("Cognome:");
+    grid.add(cognomeLabel, 0, 1);
+    TextField cognomeField = new TextField();
+    grid.add(cognomeField, 1, 1);
+
     // Etichetta e campo email
     Label emailLabel = new Label("Email:");
-    grid.add(emailLabel, 0, 0);
+    grid.add(emailLabel, 0, 2);
     TextField emailField = new TextField();
-    grid.add(emailField, 1, 0);
+    grid.add(emailField, 1, 2);
 
     // Etichetta e campo password
     Label passwordLabel = new Label("Password:");
-    grid.add(passwordLabel, 0, 1);
-    PasswordField passwordField = new PasswordField();
-    grid.add(passwordField, 1, 1);
+    grid.add(passwordLabel, 0, 3);
+    TextField passwordField = new PasswordField();
+    grid.add(passwordField, 1, 3);
 
-    // Pulsante per registrarsi
+    // Bottone per registrarsi
     Button singupButton = new Button("Registrati");
-    grid.add(singupButton, 0, 2);
+    grid.add(singupButton, 1, 4);
 
-    // Pulsante di login
-    Button loginButton = new Button("Accedi");
-    grid.add(loginButton, 1, 2);
-
-    // Messaggio di output
-    Label messageLabel = new Label();
-    grid.add(messageLabel, 1, 3);
-
-    // Azione del pulsante per registrarsi
+    // Azione bottone
     singupButton.setOnAction(
         e -> {
-          Stage singupStage = new Stage();
-          SignupPage signupPage = new SignupPage();
-          signupPage.start(singupStage);
-        });
-
-    // Azione del pulsante di accesso
-    loginButton.setOnAction(
-        e -> {
+          String nome = nomeField.getText();
+          String cognome = cognomeField.getText();
           String email = emailField.getText();
           String password = passwordField.getText();
           try {
-            bffService.logInCliente(email, password);
+            bffService.createCliente(nome, cognome, email, password);
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Successo");
+            successAlert.setHeaderText(null);
+            successAlert.setContentText("Utente creato con successo");
+
+            DialogPane successPane = successAlert.getDialogPane();
+            successPane.getStyleClass().add("custom-alert");
+            successPane
+                .getStylesheets()
+                .add(getClass().getResource("/css/style.css").toExternalForm());
+
+            successAlert.showAndWait();
           } catch (Exception ex) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setTitle("Errore");
             errorAlert.setHeaderText(null);
-            errorAlert.setContentText("Errore durante l'accesso dell'utente: " + ex.getMessage());
+            errorAlert.setContentText(
+                "Errore durante la creazione dell'utente: " + ex.getMessage());
 
             DialogPane errorPane = errorAlert.getDialogPane();
             errorPane.getStyleClass().add("custom-alert");
