@@ -82,6 +82,7 @@ public class MovieDetail extends Application {
     scene
         .getStylesheets()
         .add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+    stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icontheme.png")));
     stage.setTitle("Dettagli Film");
     stage.setScene(scene);
     stage.show();

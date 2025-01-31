@@ -120,6 +120,7 @@ public class BuyTicket extends Application {
 
     Scene scene = new Scene(scrollPane);
     scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+    stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icontheme.png")));
     stage.setTitle("Acquista Biglietti");
     stage.setScene(scene);
     stage.show();
