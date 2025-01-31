@@ -226,8 +226,8 @@ public class BffService {
     }
   }
 
-  public Cliente createCliente(String nome, String cognome, String email) throws Exception {
-    String url = BASE_URL + "/cliente?nome=" + nome + "&cognome=" + cognome + "&email=" + email;
+  public Cliente createCliente(String nome, String cognome, String email, String password) throws Exception {
+    String url = BASE_URL + "/cliente?nome=" + nome + "&cognome=" + cognome + "&email=" + email + "&password=" + password;
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
@@ -240,6 +240,23 @@ public class BffService {
     } else {
       throw new RuntimeException(
           "Errore durante la creazione del cliente: " + response.statusCode());
+    }
+  }
+
+  public Cliente logInCliente(String email, String password) throws Exception {
+    String url = BASE_URL + "/login?email=" + email + "&password=" + password;
+    HttpRequest request =
+    HttpRequest.newBuilder()
+        .uri(URI.create(url))
+        .POST(HttpRequest.BodyPublishers.noBody())
+        .build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return objectMapper.readValue(response.body(), Cliente.class);
+    } else {
+      throw new RuntimeException(
+          "Errore durante l'accesso del cliente: " + response.statusCode());
     }
   }
 

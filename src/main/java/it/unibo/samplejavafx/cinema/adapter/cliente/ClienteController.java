@@ -50,7 +50,7 @@ public class ClienteController {
     }
   }
 
-  @PostMapping("/signin")
+  @PostMapping("/signup")
   public ResponseEntity<?> createCliente(@RequestParam String nome, @RequestParam String cognome, @RequestParam String email, @RequestParam String password) {
     try{
       Cliente cliente = clienteService.createCliente(nome, cognome, email, password);
