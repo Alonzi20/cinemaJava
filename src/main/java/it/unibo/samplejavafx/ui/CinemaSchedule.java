@@ -192,7 +192,8 @@ public class CinemaSchedule extends Application {
         root.setContent(container);
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-        primaryStage.setMaximized(true);
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icontheme.png")));
+        primaryStage.setMaximized(true); 
         primaryStage.setTitle("Programmazione Cinema");
         primaryStage.setScene(scene);
         primaryStage.show();

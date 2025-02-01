@@ -4,6 +4,8 @@ import it.unibo.samplejavafx.cinema.services.BffService;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
@@ -12,6 +14,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import lombok.Setter;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.geometry.Pos;
+
 
 public class SeatSelection {
 
@@ -37,6 +47,7 @@ public class SeatSelection {
     VBox container = new VBox(10);
     container.setAlignment(Pos.CENTER);
     container.setPadding(new Insets(20));
+    container.getStyleClass().add("detail-root");
 
     // Creazione griglia dei posti
     GridPane seatGrid = createSeatGrid();
@@ -75,70 +86,86 @@ public class SeatSelection {
 
   public GridPane createSeatGrid() {
     GridPane gridPane = new GridPane();
+    gridPane.setPrefWidth(350);
+    gridPane.setPrefHeight(300);
+    gridPane.setHgap(5);
+    gridPane.setVgap(5);
+    gridPane.getStyleClass().add("detail-root");
 
-    // Imposta dimensioni fisse per la griglia
-    gridPane.setPrefWidth(300); // Larghezza fissa (adatta alle tue esigenze)
-    gridPane.setPrefHeight(250); // Altezza fissa (adatta alle tue esigenze)
-    gridPane.setMaxWidth(300);
-    gridPane.setMaxHeight(250);
-    gridPane.setMinWidth(300);
-    gridPane.setMinHeight(250);
-
-    // Aggiunge le etichette delle righe
+    // Aggiunge le lettere delle file (A, B, C, D) con stile bianco
     for (int row = 0; row < ROWS.length; row++) {
       Label rowLabel = new Label(ROWS[row]);
       rowLabel.setPrefWidth(30);
       rowLabel.setAlignment(Pos.CENTER);
+      rowLabel.getStyleClass().add("row-label");
       gridPane.add(rowLabel, 0, row);
     }
 
-    // Crea i pulsanti dei posti
+    // Creazione dei pulsanti dei posti
     for (int row = 0; row < ROWS.length; row++) {
       for (int col = 0; col < COLUMNS; col++) {
-        ToggleButton seatButton = new ToggleButton(String.valueOf(col + 1));
-        seatButton.setPrefSize(50, 50);
 
-        // Esegui la chiamata al servizio per verificare se il posto è occupato
+        Label seatNumber = new Label(String.valueOf(col + 1));
+        seatNumber.setAlignment(Pos.CENTER);
+        seatNumber.getStyleClass().add("seat-number");
+        seatNumber.setMouseTransparent(true);
+
+
+        ToggleButton seatButton = new ToggleButton();
+        seatButton.setPrefSize(50, 50);
+        seatButton.getStyleClass().add("seat-button");
+
+        //aggiunta icona posti presi
+        ImageView personIcon = new ImageView(new Image(getClass().getResource("/images/seattaken.png").toExternalForm()));
+        personIcon.setFitWidth(30);
+        personIcon.setFitHeight(30);
+        personIcon.setVisible(false);
+
+        //crea uno StackPane per sovrapporre tutti gli elementi
+        StackPane seatStack = new StackPane();
+        seatStack.getChildren().addAll(seatButton, seatNumber, personIcon);
+
+        // Verifica se il posto è occupato
         int finalRow = row;
         int finalCol = col;
-        executor.execute(
-            () -> {
-              boolean isPrenotabile;
-              try {
-                isPrenotabile =
-                    bffService.isPostoPrenotabile(
-                        finalCol + 1L, ROWS[finalRow], proiezioneId, salaId);
-              } catch (Exception e) {
-                throw new RuntimeException(e);
-              }
-              seatButton.setDisable(!isPrenotabile); // Disabilita il bottone se il posto è occupato
-              seatButton.setStyle(
-                  isPrenotabile
-                      ? "-fx-base: darkgray; -fx-background-color: #A9A9A9; -fx-text-fill: white;"
-                      : "-fx-base: lightgray; -fx-background-color: rgba(211, 211, 211, 0.7); -fx-text-fill: gray;");
-            });
+        executor.execute(() -> {
+          boolean isPrenotabile;
+          try {
+            isPrenotabile = bffService.isPostoPrenotabile(
+                    finalCol + 1L, ROWS[finalRow], proiezioneId, salaId);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
 
-        // Cambia lo sfondo per il posto selezionato
-        // seatButton.setStyle("-fx-base: lightgray; -fx-background-color: lightgray;");
-        seatButton.setOnAction(
-            e -> {
-              if (seatButton.isSelected()) {
-                selectedSeats.add(seatButton);
-                seatButton.setStyle(
-                    "-fx-base: black; -fx-background-color: #222; -fx-text-fill: white;");
-              } else {
-                selectedSeats.remove(seatButton);
-                seatButton.setStyle(
-                    "-fx-base: darkgray; -fx-background-color: #A9A9A9; -fx-text-fill: white;");
-              }
-            });
+          //aggiorna ui
+          Platform.runLater(() -> {
+            if (!isPrenotabile) {
+              seatButton.setDisable(true);
+              personIcon.setVisible(true);
+              seatNumber.setVisible(false);
+              seatButton.setOpacity(0.7);
+            }
+          });
+        });
+
+        //gestione della selezione del posto
+        seatButton.setOnAction(e -> {
+          if (seatButton.isSelected()) {
+            selectedSeats.add(seatButton);
+            seatButton.setStyle("-fx-background-color: #00FF00; -fx-text-fill: white;");
+          } else {
+            selectedSeats.remove(seatButton);
+            seatButton.setStyle("-fx-background-color: #FFD700; -fx-text-fill: black;");
+          }
+        });
 
         seatButtons[row][col] = seatButton;
-        gridPane.add(seatButton, col + 1, row); // Colonna +1 per lasciare spazio alle etichette
+        gridPane.add(seatStack, col + 1, row);
       }
     }
     return gridPane;
   }
+
 
   public Map<Long, String> getSelectedSeats() {
     Map<Long, String> selectedSeatsMap = new HashMap<>();

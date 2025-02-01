@@ -1,23 +1,15 @@
 package it.unibo.samplejavafx.cinema.adapter.proiezione;
 
-import java.util.List;
-import java.util.Map;
-
 import it.unibo.samplejavafx.cinema.application.dto.CreaProiezione;
-import it.unibo.samplejavafx.cinema.application.models.Film;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.services.proiezione.ProiezioneService;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,9 +73,7 @@ public class ProiezioneController {
     } catch (Exception e) {
       log.error("Errore nella generazione delle proiezioni: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Errore nella generazione delle proiezioni.");
+          .body("Errore nella generazione delle proiezioni.");
     }
   }
-
-
 }
