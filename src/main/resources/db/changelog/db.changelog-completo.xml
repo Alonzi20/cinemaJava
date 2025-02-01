@@ -190,6 +190,26 @@
             <column name="numero" value="3"/>
             <column name="posti" value="20"/>
         </insert>
+        <insert tableName="Sala">
+            <column name="numero" value="4"/>
+            <column name="posti" value="20"/>
+        </insert>
+        <insert tableName="Sala">
+            <column name="numero" value="5"/>
+            <column name="posti" value="20"/>
+        </insert>
+        <insert tableName="Sala">
+            <column name="numero" value="6"/>
+            <column name="posti" value="20"/>
+        </insert>
+        <insert tableName="Sala">
+            <column name="numero" value="7"/>
+            <column name="posti" value="20"/>
+        </insert>
+        <insert tableName="Sala">
+            <column name="numero" value="8"/>
+            <column name="posti" value="20"/>
+        </insert>
     </changeSet>
 
     <!-- Inserimento dati Film -->
