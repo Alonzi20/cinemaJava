@@ -105,6 +105,12 @@ dependencies {
     // Lombok per i test
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+
+    // Testing dependencies
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.4.0")
+    testImplementation("org.mockito:mockito-core:5.10.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
+    testImplementation("com.h2database:h2:2.2.224") 
 }
 
 java {
