@@ -76,6 +76,8 @@ public class ClienteServiceImpl implements ClienteService {
   public void logOutCliente(HttpSession session) {
     if (session != null) {
       session.invalidate();
+    }else{
+      throw new RuntimeException("Nessun utente autenticato");
     }
   }
 }

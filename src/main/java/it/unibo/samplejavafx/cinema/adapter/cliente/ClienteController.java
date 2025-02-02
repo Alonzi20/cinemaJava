@@ -39,7 +39,7 @@ public class ClienteController {
     return clienteService.findAllClienti();
   }
 
-  @GetMapping("/login")
+  @PostMapping("/login")
   public ResponseEntity<?> logInCliente(@RequestParam String email, @RequestParam String password) {
     try{
       Cliente cliente = clienteService.logInCliente(email, password);
@@ -63,8 +63,12 @@ public class ClienteController {
 
   @GetMapping("/logout")
   public ResponseEntity<?> logOutCliente(@RequestParam HttpSession session) {
-    clienteService.logOutCliente(session);
-    return ResponseEntity.ok("Log Out effettuato con successo!");
+    try{
+      clienteService.logOutCliente(session);
+      return ResponseEntity.ok("Log Out effettuato con successo!");
+    }catch(RuntimeException e){
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
   
 }
