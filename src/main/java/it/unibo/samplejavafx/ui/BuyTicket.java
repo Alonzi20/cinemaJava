@@ -4,6 +4,7 @@ import static it.unibo.samplejavafx.cinema.application.models.Biglietto.PREZZO_I
 import static it.unibo.samplejavafx.cinema.application.models.Biglietto.PREZZO_RIDOTTO;
 
 import it.unibo.samplejavafx.cinema.application.models.Biglietto;
+import it.unibo.samplejavafx.cinema.application.models.Cliente;
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
@@ -34,9 +35,11 @@ public class BuyTicket extends Application {
   private final List<Biglietto> biglietti = new ArrayList<>();
   private final Label totalLabel = new Label("Totale: 0€");
   private final SeatSelection seatSelection;
+  private final Cliente cliente;
 
-  public BuyTicket(Proiezione proiezione) {
+  public BuyTicket(Proiezione proiezione, Cliente cliente) {
     this.proiezione = proiezione;
+    this.cliente = cliente;
     this.seatSelection = new SeatSelection(proiezione.getId(), proiezione.getSalaId());
     try {
       this.movie = bffService.findByFilmId(proiezione.getFilmId());
@@ -236,8 +239,7 @@ public class BuyTicket extends Application {
       }
 
       for (Biglietto biglietto : biglietti) {
-        // TODO Alex: [23/01/2025] settare idCliente al biglietto per l'acquisto
-        biglietto.setClienteId(1L);
+        biglietto.setClienteId(cliente.getId());
         bffService.compraBiglietto(biglietto, biglietto.isRidotto());
       }
 

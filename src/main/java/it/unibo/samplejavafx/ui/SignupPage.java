@@ -1,5 +1,7 @@
 package it.unibo.samplejavafx.ui;
 
+import it.unibo.samplejavafx.cinema.application.models.Cliente;
+import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.services.BffService;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -7,19 +9,24 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SignupPage extends Application {
 
   private final BffService bffService;
+  private final Proiezione proiezione;
 
-  public SignupPage() {
+  public SignupPage(Proiezione proiezione) {
     bffService = new BffService();
+    this.proiezione = proiezione;
   }
 
   @Override
   public void start(Stage stage) {
-    stage.setTitle("Sing Up Page");
+    VBox root = new VBox(10);
+    root.setPadding(new Insets(20));
+    root.getStyleClass().add("detail-root");
 
     // Bottone per tornare indietro
     Button backButton = new Button("← Indietro");
@@ -69,19 +76,9 @@ public class SignupPage extends Application {
           String email = emailField.getText();
           String password = passwordField.getText();
           try {
-            bffService.createCliente(nome, cognome, email, password);
-            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-            successAlert.setTitle("Successo");
-            successAlert.setHeaderText(null);
-            successAlert.setContentText("Utente creato con successo");
-
-            DialogPane successPane = successAlert.getDialogPane();
-            successPane.getStyleClass().add("custom-alert");
-            successPane
-                .getStylesheets()
-                .add(getClass().getResource("/css/style.css").toExternalForm());
-
-            successAlert.showAndWait();
+            Cliente cliente = bffService.createCliente(nome, cognome, email, password);
+            stage.close();
+            new BuyTicket(proiezione, cliente);
           } catch (Exception ex) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setTitle("Errore");
@@ -97,9 +94,17 @@ public class SignupPage extends Application {
 
             errorAlert.showAndWait();
           }
-        });
+        }
+      );
 
-    Scene scene = new Scene(grid, 300, 200);
+    root.getChildren()
+    .addAll(
+      backButton,
+      grid
+    );
+
+    Scene scene = new Scene(root, 300, 300);
+    stage.setTitle("Sing Up Page");
     stage.setScene(scene);
     stage.show();
   }

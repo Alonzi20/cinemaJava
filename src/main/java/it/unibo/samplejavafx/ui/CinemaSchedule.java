@@ -292,7 +292,10 @@ public class CinemaSchedule extends Application {
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Nessuna proiezione trovata per la data e ora selezionate"));
                     
-                new BuyTicket(proiezione).start(new Stage());
+                Stage loginStage = new Stage();
+                LoginPage loginPage = new LoginPage(proiezione);
+                loginPage.start(loginStage);
+                //new BuyTicket(proiezione).start(new Stage());
                 
             } catch (Exception ex) {
                 ex.printStackTrace();
