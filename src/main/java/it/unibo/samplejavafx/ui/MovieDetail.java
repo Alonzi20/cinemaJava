@@ -126,6 +126,7 @@ public class MovieDetail extends Application {
 
     purchaseButton.setOnAction(e -> {
       try {
+<<<<<<< HEAD
 
         String selectedDay = daySelector.getValue();
         String selectedTime = timeSelector.getValue();
@@ -151,6 +152,36 @@ public class MovieDetail extends Application {
 
         new BuyTicket(proiezione).start(new Stage());
 
+=======
+         
+          String selectedDay = daySelector.getValue();
+          String selectedTime = timeSelector.getValue();
+  
+         
+          String[] parts = selectedDay.split(" ")[1].split("/");
+          int day = Integer.parseInt(parts[0]);
+          int month = Integer.parseInt(parts[1]);
+          int year = LocalDate.now().getYear();
+  
+          LocalDate selectedDate = LocalDate.of(year, month, day);
+          LocalTime time = LocalTime.parse(selectedTime);
+          
+          List<Proiezione> proiezioni = bffService.findAllProiezioniByFilmId(movie.getId());
+          
+          Proiezione proiezione = proiezioni.stream()
+              .filter(p -> {
+                  LocalDate proiezioneDate = p.getData().toLocalDate();
+                  LocalTime proiezioneTime = p.getOrarioProiezione().getStartTime().toLocalTime();
+                  return proiezioneDate.equals(selectedDate) && proiezioneTime.equals(time);
+              })
+              .findFirst()
+              .orElseThrow(() -> new RuntimeException("Nessuna proiezione trovata per la data e ora selezionate"));
+              
+          Stage loginStage = new Stage();
+          LoginPage loginPage = new LoginPage(proiezione);
+          loginPage.start(loginStage);
+          
+>>>>>>> origin/luca
       } catch (Exception ex) {
         ex.printStackTrace();
       }

@@ -11,26 +11,27 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JavaFXApplication extends Application {
-    
-    private static ApplicationContext applicationContext;
-    private static OrariProiezioniService orariProiezioniService;
-    private static FilmRepository filmRepository;
 
-    public static void launch(ApplicationContext context) {
-        JavaFXApplication.applicationContext = context;
-        JavaFXApplication.orariProiezioniService = context.getBean(OrariProiezioniService.class);
-        JavaFXApplication.filmRepository = context.getBean(FilmRepository.class); // Aggiunta questa riga
-        Application.launch(JavaFXApplication.class);
-    }
+  private static ApplicationContext applicationContext;
+  private static OrariProiezioniService orariProiezioniService;
+  private static FilmRepository filmRepository;
 
-    @Override
-    public void start(Stage primaryStage) {
-        CinemaSchedule cinemaSchedule = new CinemaSchedule(orariProiezioniService, filmRepository);
-        cinemaSchedule.start(primaryStage);
-    }
+  public static void launch(ApplicationContext context) {
+    JavaFXApplication.applicationContext = context;
+    JavaFXApplication.orariProiezioniService = context.getBean(OrariProiezioniService.class);
+    JavaFXApplication.filmRepository =
+        context.getBean(FilmRepository.class); // Aggiunta questa riga
+    Application.launch(JavaFXApplication.class);
+  }
 
-    @Override
-    public void stop() {
-        Platform.exit();
-    }
+  @Override
+  public void start(Stage primaryStage) {
+    CinemaSchedule cinemaSchedule = new CinemaSchedule(orariProiezioniService, filmRepository);
+    cinemaSchedule.start(primaryStage);
+  }
+
+  @Override
+  public void stop() {
+    Platform.exit();
+  }
 }

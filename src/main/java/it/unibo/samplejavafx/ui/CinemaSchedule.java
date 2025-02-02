@@ -290,6 +290,7 @@ public class CinemaSchedule extends Application {
                 List<Proiezione> proiezioni = searchInterface.getProiezioniForFilm(selectedMovie.getId());
 
                 Proiezione proiezione = proiezioni.stream()
+<<<<<<< HEAD
                         .filter(p -> {
                             LocalDate proiezioneDate = p.getData().toLocalDate();
                             LocalTime proiezioneTime = p.getOrarioProiezione().getStartTime().toLocalTime();
@@ -301,6 +302,21 @@ public class CinemaSchedule extends Application {
 
                 new BuyTicket(proiezione).start(new Stage());
 
+=======
+                    .filter(p -> {
+                        LocalDate proiezioneDate = p.getData().toLocalDate();
+                        LocalTime proiezioneTime = p.getOrarioProiezione().getStartTime().toLocalTime();
+                        return proiezioneDate.equals(selectedDate) && proiezioneTime.equals(time);
+                    })
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Nessuna proiezione trovata per la data e ora selezionate"));
+                    
+                Stage loginStage = new Stage();
+                LoginPage loginPage = new LoginPage(proiezione);
+                loginPage.start(loginStage);
+                //new BuyTicket(proiezione).start(new Stage());
+                
+>>>>>>> origin/luca
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
