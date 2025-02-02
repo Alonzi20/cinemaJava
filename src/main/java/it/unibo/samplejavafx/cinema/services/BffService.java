@@ -8,6 +8,8 @@ import it.unibo.samplejavafx.cinema.application.models.Cliente;
 import it.unibo.samplejavafx.cinema.application.models.Film;
 import it.unibo.samplejavafx.cinema.application.models.Proiezione;
 import it.unibo.samplejavafx.cinema.application.models.Sala;
+import jakarta.servlet.http.HttpSession;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -227,11 +229,15 @@ public class BffService {
   }
 
   public Cliente createCliente(String nome, String cognome, String email, String password) throws Exception {
-    String url = BASE_URL + "/cliente?nome=" + nome + "&cognome=" + cognome + "&email=" + email + "&password=" + password;
+    String url = BASE_URL + "/cliente/signup";
+
+    String data = "nome=" + nome + "&cognome=" + cognome + "&email=" + email + "&password=" + password;
+
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
-            .POST(HttpRequest.BodyPublishers.noBody())
+            .POST(HttpRequest.BodyPublishers.ofString(data))
+            .header("Content-Type", "application/x-www-form-urlencoded")
             .build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -239,16 +245,20 @@ public class BffService {
       return objectMapper.readValue(response.body(), Cliente.class);
     } else {
       throw new RuntimeException(
-          "Errore durante la creazione del cliente: " + response.statusCode());
+          "Errore durante la creazione del cliente: email già in uso");
     }
   }
 
   public Cliente logInCliente(String email, String password) throws Exception {
-    String url = BASE_URL + "/login?email=" + email + "&password=" + password;
+    String url = BASE_URL + "/cliente/login";
+
+    String data = "email=" + email + "&password=" + password;
+
     HttpRequest request =
     HttpRequest.newBuilder()
         .uri(URI.create(url))
-        .POST(HttpRequest.BodyPublishers.noBody())
+        .POST(HttpRequest.BodyPublishers.ofString(data))
+        .header("Content-Type", "application/x-www-form-urlencoded")
         .build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -256,7 +266,28 @@ public class BffService {
       return objectMapper.readValue(response.body(), Cliente.class);
     } else {
       throw new RuntimeException(
-          "Errore durante l'accesso del cliente: " + response.statusCode());
+          "Errore durante l'accesso del cliente: credenziali errate");
+    }
+  }
+
+  public Cliente logOutCliente(HttpSession session) throws Exception {
+    String url = BASE_URL + "/cliente/logout";
+
+    String data = "session=" + session;
+
+    HttpRequest request =
+    HttpRequest.newBuilder()
+        .uri(URI.create(url))
+        .POST(HttpRequest.BodyPublishers.ofString(data))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .build();
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 200) {
+      return objectMapper.readValue(response.body(), Cliente.class);
+    } else {
+      throw new RuntimeException(
+          "Errore durante l'uscita del cliente: nessun utente autenticato");
     }
   }
 
