@@ -2,7 +2,7 @@ package it.unibo.samplejavafx;
 
 import it.unibo.samplejavafx.cinema.repositories.FilmRepository;
 import it.unibo.samplejavafx.cinema.services.orari_proiezioni.OrariProiezioniService;
-import it.unibo.samplejavafx.ui.LoginPage;
+import it.unibo.samplejavafx.ui.CinemaSchedule;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -26,10 +26,8 @@ public class JavaFXApplication extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    // CinemaSchedule cinemaSchedule = new CinemaSchedule(orariProiezioniService, filmRepository);
-    // cinemaSchedule.start(primaryStage);
-    LoginPage loginPage = new LoginPage();
-    loginPage.start(primaryStage);
+    CinemaSchedule cinemaSchedule = new CinemaSchedule(orariProiezioniService, filmRepository);
+    cinemaSchedule.start(primaryStage);
   }
 
   @Override
