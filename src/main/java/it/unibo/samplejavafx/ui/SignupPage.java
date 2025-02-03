@@ -78,7 +78,7 @@ public class SignupPage extends Application {
           try {
             Cliente cliente = bffService.createCliente(nome, cognome, email, password);
             stage.close();
-            new BuyTicket(proiezione, cliente);
+            new BuyTicket(proiezione, cliente).start(new Stage());
           } catch (Exception ex) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setTitle("Errore");
