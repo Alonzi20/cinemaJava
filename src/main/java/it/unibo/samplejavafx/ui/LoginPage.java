@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -43,23 +44,37 @@ public class LoginPage extends Application {
 
     // Etichetta e campo email
     Label emailLabel = new Label("Email:");
+    emailLabel.getStyleClass().add("detail-label");
     grid.add(emailLabel, 0, 0);
     TextField emailField = new TextField();
     grid.add(emailField, 1, 0);
 
     // Etichetta e campo password
     Label passwordLabel = new Label("Password:");
+    passwordLabel.getStyleClass().add("detail-label");
     grid.add(passwordLabel, 0, 1);
     PasswordField passwordField = new PasswordField();
     grid.add(passwordField, 1, 1);
 
-    // Pulsante per registrarsi
-    Button signupButton = new Button("Registrati");
-    grid.add(signupButton, 0, 2);
-
     // Pulsante di login
     Button loginButton = new Button("Accedi");
-    grid.add(loginButton, 1, 2);
+    loginButton.getStyleClass().add("detail-button");
+
+    // Pulsante per registrarsi
+    Button signupButton = new Button("Registrati");
+    signupButton.getStyleClass().add("detail-button");
+    grid.add(signupButton, 0, 3);
+
+    HBox loginContainer = new HBox();
+    loginContainer.setAlignment(Pos.CENTER);
+    loginContainer.getChildren().add(loginButton);
+
+    HBox signupContainer = new HBox();
+    signupContainer.setAlignment(Pos.CENTER);
+    signupContainer.getChildren().add(signupButton);
+
+    grid.add(loginContainer, 0,2,2,1);
+    grid.add(signupContainer, 0, 3, 2, 1);
 
     // Azione del pulsante per registrarsi
     signupButton.setOnAction(
@@ -105,6 +120,7 @@ public class LoginPage extends Application {
 
     Scene scene = new Scene(root, 300, 300);
     stage.setTitle("Login Page");
+    scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
     stage.setScene(scene);
     stage.show();
   }
