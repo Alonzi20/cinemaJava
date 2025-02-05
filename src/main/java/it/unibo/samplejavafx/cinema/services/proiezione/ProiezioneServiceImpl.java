@@ -157,7 +157,12 @@ public class ProiezioneServiceImpl implements ProiezioneService {
         .map(Film::getId)
         .collect(Collectors.toList());
 
-    long countExistingProiezioni = proiezioneRepository.countByFilmIdIn(filmIds);
+    LocalDate startDate = LocalDate.now();
+    LocalDate endDate = startDate.plusDays(7);
+
+    long countExistingProiezioni = proiezioneRepository.countByFilmIdInAndDataBetween(filmIds, 
+    Date.valueOf(startDate), 
+    Date.valueOf(endDate));
     if (countExistingProiezioni > 0) {
       log.info("Proiezioni già presenti per questi film. Skip della generazione.");
       return Collections.emptyList();
@@ -182,7 +187,6 @@ public class ProiezioneServiceImpl implements ProiezioneService {
         orariCache.get("WEEKEND").size());
 
     List<Proiezione> nuoveProiezioni = new ArrayList<>();
-    LocalDate startDate = LocalDate.now();
 
     // Mappa per tenere traccia delle sale occupate per ogni giorno
     Map<LocalDate, Map<Integer, Set<LocalTime>>> salaOccupataPerGiorno = new HashMap<>();
