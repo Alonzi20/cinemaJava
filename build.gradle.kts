@@ -39,6 +39,8 @@ val javaFXModules = listOf(
 val supportedPlatforms = listOf("linux", "mac", "win") // All required for OOP
 
 dependencies {
+
+    implementation("org.springframework.boot:spring-boot-loader:3.4.0")
     // Suppressions for SpotBugs
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.8.6")
 
@@ -115,7 +117,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(17)) // Sostituisci con la versione corretta
     }
 }
 
@@ -130,33 +132,25 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks {
+    // Disabilita bootJar per evitare conflitti con shadowJar
+    bootJar {
+        enabled = false
+    }
+    jar {
+        enabled = true
+    }
+    shadowJar {
+        archiveClassifier.set("") // Rimuove il suffisso "-all"
+        mergeServiceFiles()
+        configurations = listOf(project.configurations.runtimeClasspath.get()) // Includi tutte le dipendenze
+        manifest {
+            attributes["Main-Class"] = "it.unibo.samplejavafx.App"
+        }
+    }
+}
+
 application {
     // Define the main class for the application
     mainClass.set("it.unibo.samplejavafx.App")
-}
-
-tasks.shadowJar {
-    manifest {
-        attributes["Main-Class"] = "it.unibo.samplejavafx.App"
-        attributes["Spring-Boot-Classes"] = "BOOT-INF/classes/"
-        attributes["Spring-Boot-Lib"] = "BOOT-INF/lib/"
-        attributes["Spring-Boot-Version"] = "3.4.0"
-    }
-
-    mergeServiceFiles()
-
-    from("src/main/resources") {
-        into("BOOT-INF/classes")
-    }
-
-
-    from("build/resources/main") {
-        into("BOOT-INF/classes")
-    }
-}
-
-
-springBoot {
-    mainClass.set("it.unibo.samplejavafx.App")
-    buildInfo()
 }
