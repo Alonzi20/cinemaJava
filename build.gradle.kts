@@ -115,7 +115,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17)) // Sostituisci con la versione corretta
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -133,4 +133,30 @@ tasks.withType<Test> {
 application {
     // Define the main class for the application
     mainClass.set("it.unibo.samplejavafx.App")
+}
+
+tasks.shadowJar {
+    manifest {
+        attributes["Main-Class"] = "it.unibo.samplejavafx.App"
+        attributes["Spring-Boot-Classes"] = "BOOT-INF/classes/"
+        attributes["Spring-Boot-Lib"] = "BOOT-INF/lib/"
+        attributes["Spring-Boot-Version"] = "3.4.0"
+    }
+
+    mergeServiceFiles()
+
+    from("src/main/resources") {
+        into("BOOT-INF/classes")
+    }
+
+
+    from("build/resources/main") {
+        into("BOOT-INF/classes")
+    }
+}
+
+
+springBoot {
+    mainClass.set("it.unibo.samplejavafx.App")
+    buildInfo()
 }
