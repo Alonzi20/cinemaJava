@@ -112,7 +112,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.4.0")
     testImplementation("org.mockito:mockito-core:5.10.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
-    testImplementation("com.h2database:h2:2.2.224") 
+    testImplementation("com.h2database:h2:2.2.224")
 }
 
 java {
@@ -133,9 +133,8 @@ tasks.withType<Test> {
 }
 
 tasks {
-    // Disabilita bootJar per evitare conflitti con shadowJar
     bootJar {
-        enabled = false
+        enabled = true
     }
     jar {
         enabled = true
