@@ -18,6 +18,6 @@ public interface ProiezioneRepository extends JpaRepository<Proiezione, Long> {
 
   List<Proiezione> findByDataAndSalaId(Date date, Long salaId);
 
-  long countByFilmIdInAndDataBetween(List<Long> filmIds, Date startDate, Date endDate);
+  List<Proiezione> findByFilmIdAndDataBetween(Long filmId, Date startDate, Date endDate);
 
 }
