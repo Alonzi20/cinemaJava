@@ -234,7 +234,7 @@
             <column name="duration" value="120"/>
             <column name="cast" value="Brad Pitt"/>
             <column name="director" value="Regista 1"/>
-            <column name="adult" value="true"/>
+            <column name="adult" value="1"/>
         </insert>
         <insert tableName="Film">
             <column name="title" value="Avatar"/>
@@ -245,7 +245,7 @@
             <column name="duration" value="180"/>
             <column name="cast" value="Zoe Saldana"/>
             <column name="director" value="Regista 2"/>
-            <column name="adult" value="false"/>
+            <column name="adult" value="0"/>
         </insert>
         <insert tableName="Film">
             <column name="title" value="Terminator"/>
@@ -256,7 +256,7 @@
             <column name="duration" value="150"/>
             <column name="cast" value="Arnold Schwarzenegger"/>
             <column name="director" value="Regista 3"/>
-            <column name="adult" value="false"/>
+            <column name="adult" value="0"/>
         </insert>
         <insert tableName="Film">
             <column name="title" value="Inception"/>
@@ -267,7 +267,7 @@
             <column name="duration" value="160"/>
             <column name="cast" value="Leonardo Di Caprio"/>
             <column name="director" value="Regista 4"/>
-            <column name="adult" value="false"/>
+            <column name="adult" value="0"/>
         </insert>
     </changeSet>
 
