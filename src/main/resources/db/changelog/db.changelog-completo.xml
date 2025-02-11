@@ -6,6 +6,17 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
 
+<!-- Changeset per la creazione del database -->
+    <changeSet id="0" author="setup" runAlways="true">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="DATABASECHANGELOG"/>
+            </not>
+        </preConditions>
+        <sql>CREATE DATABASE IF NOT EXISTS cinema_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+        <sql>USE cinema_db;</sql>
+    </changeSet>
+
     <!-- Creazione tabella Cliente -->
     <changeSet id="1" author="user">
         <createTable tableName="Cliente">
