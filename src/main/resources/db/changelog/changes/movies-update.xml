@@ -7,228 +7,254 @@
 
     <changeSet id="movies_update_1737483458871" author="auto_generator">
         <!-- Clear existing films -->
-        <sql>DELETE FROM Film</sql>
+        <sql>DELETE
+             FROM Film</sql>
 
         <insert tableName="Film">
-    <column name="title" value="The Opera! - Arie per un&apos;eclissi"/>
-    <column name="overview" value="Una rilettura moderna del mito di Orfeo ed Euridice in forma di opera-musical immersiva e transmediale. Ambientata tra una Parigi semisommersa e il Teatro Regio di Torino, unisce musica classica e contemporanea, con riferimenti visivi che spaziano tra opera lirica, moda e arti visive."/>
-    <column name="release_date" value="2025-01-20"/>
-    <column name="poster_path" value="/mfdAaCR5uuLmRy8LBVJmpDnhw6g.jpg"/>
-    <column name="genres" value="Dramma,Musica"/>
-    <column name="duration" value="106"/>
-    <column name="cast" value="Vincent Cassel,Caterina Murino,Fanny Ardant,Rossy de Palma,Angela Finocchiaro"/>
-    <column name="director" value="Davide Livermore"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Liliana"/>
-    <column name="overview" value="Un documentario che ripercorre la testimonianza della senatrice a vita Liliana Segre legata all’arresto, alla deportazione e allo struggente ultimo addio al padre. Il film si basa su accostamenti, rimandi e contrasti tra il racconto storico e il ritratto contemporaneo di una delle donne più importanti del panorama italiano. Il docu-film mette in luce gli aspetti meno conosciuti della senatrice, facendo scoprire una figura culturale e politica moderna e appassionata nel trasmettere alle giovani generazioni un messaggio di libertà e uguaglianza. A raccontarla sono le voci delle persone a lei vicine: i figli, i nipoti, personaggi pubblici come Ferruccio De Bortoli, Mario Monti, Geppi Cucciari, Fabio Fazio, Enrico Mentana, i carabinieri della scorta, che permettono di avvicinarsi a una Liliana più familiare e privata."/>
-    <column name="release_date" value="2025-01-20"/>
-    <column name="poster_path" value="/vd7Oh6iDQxrfnGaNnDhKH1syuG5.jpg"/>
-    <column name="genres" value="Documentario"/>
-    <column name="duration" value="86"/>
-    <column name="cast" value="Liliana Segre,Alberto Belli Paci,Luciano Belli Paci,Federica Belli Paci,Davide Belli Paci"/>
-    <column name="director" value="Ruggero Gabbai"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Wolf Man"/>
-    <column name="overview" value="Blake eredita la casa d&apos;infanzia nell&apos;Oregon dopo la scomparsa di suo padre, che viene dato per morto. Con il logorarsi del suo matrimonio con la potente moglie Charlotte, Blake la convince a prendersi una pausa dalla città e andare a visitare la proprietà con la loro giovane figlia, Ginger. Ma quando la famiglia si avvicina alla fattoria nel cuore della notte, viene attaccata da un animale invisibile e, in una fuga disperata, si barrica all&apos;interno della casa mentre la creatura si aggira attorno al perimetro. Con il passare della notte, però, Blake inizia a comportarsi in modo strano, trasformandosi in qualcosa di irriconoscibile, e Charlotte sarà costretta a decidere se il terrore all&apos;interno della casa sia più letale di quello all’esterno."/>
-    <column name="release_date" value="2025-01-15"/>
-    <column name="poster_path" value="/tUtuMtC6oaRXr4x2B5Xi6ABdMCv.jpg"/>
-    <column name="genres" value="Horror,Thriller"/>
-    <column name="duration" value="103"/>
-    <column name="cast" value="Christopher Abbott,Julia Garner,Matilda Firth,Sam Jaeger,Ben Prendergast"/>
-    <column name="director" value="Leigh Whannell"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Io sono la fine del mondo"/>
-    <column name="overview" value="&quot;Un giorno i tuoi genitori non ci saranno più e sarai pieno di rimorsi&quot; è la frase che convince Angelo a prendersi cura dei suoi vecchi genitori ora che non sono più autosufficienti: non vuole infatti perdere l&apos;occasione di vendicarsi dei peggiori nemici della sua adolescenza."/>
-    <column name="release_date" value="2025-01-09"/>
-    <column name="poster_path" value="/eyyAmXTFLYJY0WMZWYCr5bbOtsC.jpg"/>
-    <column name="genres" value="Commedia"/>
-    <column name="duration" value="90"/>
-    <column name="cast" value="Angelo Duro,Giorgio Colangeli,Matilde Piana,Marilù Pipitone,Evelyn Famà"/>
-    <column name="director" value="Gennaro Nunziante"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Nosferatu"/>
-    <column name="overview" value="Una racconto gotico sull&apos;ossessione tra una giovane donna tormentata e il terrificante vampiro che si è infatuato di lei, provocando un indicibile orrore."/>
-    <column name="release_date" value="2024-12-25"/>
-    <column name="poster_path" value="/8FeFKeveW5BQuoz9reFeh4kRfVR.jpg"/>
-    <column name="genres" value="Dramma,Fantasy,Horror"/>
-    <column name="duration" value="133"/>
-    <column name="cast" value="Lily-Rose Depp,Nicholas Hoult,Bill Skarsgård,Aaron Taylor-Johnson,Willem Dafoe"/>
-    <column name="director" value="Robert Eggers"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Sonic  3 - Il film"/>
-    <column name="overview" value="Sonic, Knuckles e Tails si ritrovano a dover fronteggiare un nuovo e formidabile nemico:  Shadow, un misterioso villain con poteri incredibili mai visti prima. Con le loro abilità messe alla prova in ogni modo, il Team Sonic dovra cercare un&apos;alleanza inaspettata per fermare Shadow e proteggere il pianeta."/>
-    <column name="release_date" value="2024-12-19"/>
-    <column name="poster_path" value="/hArbAOlNZX0qfd2Udpr6RCTflpg.jpg"/>
-    <column name="genres" value="Azione,Fantascienza,Commedia,Famiglia"/>
-    <column name="duration" value="110"/>
-    <column name="cast" value="Jim Carrey,Ben Schwartz,Keanu Reeves,Idris Elba,Colleen O&apos;Shaughnessey"/>
-    <column name="director" value="Jeff Fowler"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Diamanti"/>
-    <column name="overview" value="Un regista convoca le sue attrici preferite, quelle con cui ha lavorato e quelle che ha amato. Vuole fare un film sulle donne ma non svela molto: le osserva, prende spunto, si fa ispirare, finché il suo immaginario non le catapulta in un’altra epoca, in un passato dove il rumore delle macchine da cucire riempie un luogo di lavoro gestito e popolato da donne, dove gli uomini hanno piccoli ruoli marginali e il cinema può essere raccontato da un altro punto di vista: quello del costume. Tra solitudini, passioni, ansie, mancanze strazianti e legami indissolubili, realtà e finzione si compenetrano, così come la vita delle attrici con quella dei personaggi, la competizione con la sorellanza, il visibile con l’invisibile."/>
-    <column name="release_date" value="2024-12-19"/>
-    <column name="poster_path" value="/l9Gwwr7nMQzCsOZ9B0b6FlOWTU6.jpg"/>
-    <column name="genres" value="Commedia,Dramma"/>
-    <column name="duration" value="135"/>
-    <column name="cast" value="Luisa Ranieri,Jasmine Trinca,Elena Sofia Ricci,Lunetta Savino,Vanessa Scalera"/>
-    <column name="director" value="Ferzan Özpetek"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Mufasa - Il re leone"/>
-    <column name="overview" value="Rafiki narra la leggenda di Mufasa alla giovane leoncina Kiara, figlia di Simba e Nala, con Timon e Pumbaa che offrono il loro caratteristico spettacolo. Raccontata attraverso flashback, la storia presenta Mufasa, un cucciolo orfano, perso e solo fino a quando incontra un leone compassionevole di nome Taka, erede di una stirpe reale. L&apos;incontro casuale dà il via al viaggio di uno straordinario gruppo di sventurati alla ricerca del proprio destino: i loro legami saranno messi alla prova mentre lavorano insieme per sfuggire a un nemico minaccioso e letale."/>
-    <column name="release_date" value="2024-12-18"/>
-    <column name="poster_path" value="/eZS2taWdadP8lh22xJOVrWT0lTn.jpg"/>
-    <column name="genres" value="Avventura,Famiglia,Animazione"/>
-    <column name="duration" value="118"/>
-    <column name="cast" value="Aaron Pierre,Kelvin Harrison Jr.,Tiffany Boone,Kagiso Lediga,Preston Nyman"/>
-    <column name="director" value="Barry Jenkins"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Better Man"/>
-    <column name="overview" value="La storia vera dell&apos;ascesa fulminante, della drammatica caduta e della straordinaria rinascita della superstar del pop britannico Robbie Williams, uno dei più grandi cantanti di tutti i tempi. Il film è raccontato in modo unico dal punto di vista di Williams, facendo trasparire la sua caratteristica ironia e il suo stile inimitabile. Ripercorre le tappe del successo di Robbie, dall&apos;infanzia al ruolo di più giovane componente dei Take That, la boyband che ha sbancato le classifiche, fino agli ineguagliabili successi da solista fuori da ogni record, affrontando al contempo le sfide che fama e successo stratosferici possono portare con sé."/>
-    <column name="release_date" value="2024-12-14"/>
-    <column name="poster_path" value="/bBwQX0Dn4b6riK1pNNYcmATaSQ5.jpg"/>
-    <column name="genres" value="Musica,Commedia,Dramma"/>
-    <column name="duration" value="135"/>
-    <column name="cast" value="Robbie Williams,Jonno Davies,Raechelle Banno,Damon Herriman,Steve Pemberton"/>
-    <column name="director" value="Michael Gracey"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Kraven - Il cacciatore"/>
-    <column name="overview" value="Kraven Il Cacciatore racconta la violenta storia della nascita e del destino di uno dei villain più iconici della Marvel. Ambientato prima della sua famigerata vendetta contro Spider-Man, Aaron Taylor-Johnson interpreta il protagonista di questo film vietato ai minori di 14 anni."/>
-    <column name="release_date" value="2024-12-11"/>
-    <column name="poster_path" value="/vQZ11oQtuapB6xYgBTkM8VFAu86.jpg"/>
-    <column name="genres" value="Azione,Fantascienza,Avventura,Fantasy,Thriller"/>
-    <column name="duration" value="127"/>
-    <column name="cast" value="Aaron Taylor-Johnson,Ariana DeBose,Fred Hechinger,Alessandro Nivola,Christopher Abbott"/>
-    <column name="director" value="J.C. Chandor"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Il Signore degli Anelli - La guerra dei Rohirrim"/>
-    <column name="overview" value="183 anni prima degli aventi del Signore degli Anelli, Helm Mandimartello, re di Rohan, e la sua famiglia difendono il loro regno da un esercito di Dunlandiani. A prendersi il ruolo di protagonista della battaglia, però, è soprattutto Hèra, figlia di Helm dal temperamento ribelle che non esiterà a scendere in campo per difendere il proprio popolo."/>
-    <column name="release_date" value="2024-12-05"/>
-    <column name="poster_path" value="/vNVAJb5gmQP0wjd1LDxu0eI6Thl.jpg"/>
-    <column name="genres" value="Animazione,Fantasy,Azione,Avventura"/>
-    <column name="duration" value="134"/>
-    <column name="cast" value="Brian Cox,Gaia Wise,Luke Pasqualino,Laurence Ubong Williams,Lorraine Ashbourne"/>
-    <column name="director" value="Kenji Kamiyama"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Maria"/>
-    <column name="overview" value="Il 16 settembre 1977 Maria Callas muore a 53 anni nel suo appartamento di Parigi, dove viveva sola con l&apos;unica compagnia dei fidatissimi Ferruccio, autista e maggiordomo, e Bruna, la domestica. Nella settimana precedente alla morte, e a più di quattro anni dall&apos;ultima performance, la straordinaria soprano greco-statunitense fa i conti con il peso della sua fama, con il ricordo ancora forte del compagno Aristotele Onassis e, forse, con un ultimo tentativo di tornare a calcare i palcoscenici dell&apos;opera, pur indebolita e con una voce nella quale lei per prima non riconosce più il timbro de &quot;la Callas&quot; e delle sue indimenticabili interpretazioni."/>
-    <column name="release_date" value="2024-11-27"/>
-    <column name="poster_path" value="/6xHKEYfrO1FpVZJJnKy5BhfWVCK.jpg"/>
-    <column name="genres" value="Dramma,Musica"/>
-    <column name="duration" value="123"/>
-    <column name="cast" value="Angelina Jolie,Pierfrancesco Favino,Alba Rohrwacher,Haluk Bilginer,Kodi Smit-McPhee"/>
-    <column name="director" value="Pablo Larraín"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="No Other Land"/>
-    <column name="overview" value="Il documentario è opera di un collettivo israelo-palestinese che ha filmato per quasi dieci anni le operazioni di espulsione forzata degli abitanti di Masafer Yatta in Cisgiordania da parte dell’esercito israeliano. Le riprese mostrano la distruzione delle case e gli abusi subiti dalla comunità palestinese dei territori occupati. Il gruppo di attivisti palestinesi, sostenuto da membri israeliani, documenta la propria lotta contro la missione israeliana. Basel Adra, un giovane palestinese, scopre grazie a questo progetto la possibilità di avere un grande amico israeliano, si tratta del giornalista Yuval Abraham. Un&apos;amicizia che si oppone all&apos;odio distruttivo tra i due popoli."/>
-    <column name="release_date" value="2024-11-01"/>
-    <column name="poster_path" value="/iQcponQFjf9Ym9ZmBGj4lXbq9Tp.jpg"/>
-    <column name="genres" value="Documentario"/>
-    <column name="duration" value="96"/>
-    <column name="cast" value="Basel Adra,Yuval Abraham,Farisa Abu Aram,Nasser Adra,Harun Abu Aram"/>
-    <column name="director" value="Rachel Szor"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Here"/>
-    <column name="overview" value="Un&apos;odissea attraverso il tempo e la memoria, incentrata su un luogo ben preciso del New England; da quando era solo natura selvaggia fino al momento in cui ha ospitato la sua prima casa, testimoniando l&apos;amore, la perdita, la lotta, la speranza e gli insegnamenti che si sono tramandati di famiglia in famiglia, di generazione in generazione."/>
-    <column name="release_date" value="2024-10-30"/>
-    <column name="poster_path" value="/m2FYEz9ETXeG2oy4Iz1tDlV0r78.jpg"/>
-    <column name="genres" value="Dramma"/>
-    <column name="duration" value="104"/>
-    <column name="cast" value="Tom Hanks,Robin Wright,Paul Bettany,Kelly Reilly,Ellis Grunsell"/>
-    <column name="director" value="Robert Zemeckis"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Conclave"/>
-    <column name="overview" value="CONCLAVE ci porta nel cuore di uno degli eventi più misteriosi e segreti del mondo: l&apos;elezione di un nuovo Papa. Dopo la morte improvvisa dell’amato e compianto Papa, il Cardinale Lawrence (Ralph Fiennes) è incaricato di dirigere questo delicato processo. Una volta che i leader più potenti della Chiesa Cattolica si riuniscono e si chiudono nelle segrete sale del Vaticano, Lawrence si ritrova intrappolato in una rete di intrighi, tradimenti e giochi di potere. Un oscuro segreto viene alla luce, minacciando di scuotere le fondamenta stesse della Chiesa."/>
-    <column name="release_date" value="2024-10-25"/>
-    <column name="poster_path" value="/ftIJ42zwuFvUFVEWZQbFq1vcV5U.jpg"/>
-    <column name="genres" value="Dramma"/>
-    <column name="duration" value="120"/>
-    <column name="cast" value="Ralph Fiennes,Stanley Tucci,John Lithgow,Isabella Rossellini,Lucian Msamati"/>
-    <column name="director" value="Edward Berger"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Armand"/>
-    <column name="overview" value="Poco prima dell’inizio delle  vacanze scolastiche, i genitori  di Armand e Jon vengono  convocati dalla dirigenza  scolastica in seguito ad un “fatto”  avvenuto tra di loro. Nessuno  però sembra in grado di spiegare  cosa sia realmente accaduto. Si è trattato di un gioco innocente  tra due bambini di sei anni o  di qualcosa di molto più serio? Le versioni dei due compagni  non coincidono, le opinioni si  contrappongono e le certezze  degli adulti vacillano…"/>
-    <column name="release_date" value="2024-09-27"/>
-    <column name="poster_path" value="/toW7qhFaO3VvuoRXFNpjs55PXMZ.jpg"/>
-    <column name="genres" value="Dramma,Thriller"/>
-    <column name="duration" value="116"/>
-    <column name="cast" value="Renate Reinsve,Ellen Dorrit Petersen,Endre Hellestveit,Thea Lambrechts Vaulen,Øystein Røger"/>
-    <column name="director" value="Halfdan Ullmann Tøndel"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Emilia Pérez"/>
-    <column name="overview" value="Rita, un avvocato sottovalutato che lavora per un grande studio legale più interessato a far uscire di prigione i criminali che a consegnarli alla giustizia, viene assunta dal leader di un&apos;organizzazione criminale."/>
-    <column name="release_date" value="2024-08-21"/>
-    <column name="poster_path" value="/l3rR9vgWFup3QCOWJ21UUohqkIA.jpg"/>
-    <column name="genres" value="Dramma,Thriller"/>
-    <column name="duration" value="132"/>
-    <column name="cast" value="Karla Sofía Gascón,Zoe Saldaña,Selena Gomez,Adriana Paz,Edgar Ramírez"/>
-    <column name="director" value="Jacques Audiard"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Una notte a New York"/>
-    <column name="overview" value="Una donna prende un taxi dall&apos;aeroporto JFK di New York e si ritrova coinvolta in una profonda conversazione insieme all&apos;autista, raccontandosi a vicenda le storie delle relazioni più importanti che hanno avuto nelle loro vite."/>
-    <column name="release_date" value="2024-06-27"/>
-    <column name="poster_path" value="/6q7Hu1ulikgsXJmnNhIW6Hun21g.jpg"/>
-    <column name="genres" value="Dramma"/>
-    <column name="duration" value="101"/>
-    <column name="cast" value="Dakota Johnson,Sean Penn,Marcos A. Gonzalez,Zora Lloyd,Shannon Gannon"/>
-    <column name="director" value="Christy Hall"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Le occasioni dell&apos;amore"/>
-    <column name="overview" value="Mathieu vive a Parigi, Alice in una piccola località di mare nella Francia occidentale. Lui è un famoso attore in procinto di compiere cinquant’anni, lei un’insegnante di piano sulla quarantina. Innamorati quindici anni fa, successivamente separati. Il tempo è passato. Ciascuno ha preso la propria strada e le ferite si sono lentamente rimarginate. Quando Mathieu va in una spa per cercare di superare la malinconia che lo attanaglia, si imbatte in Alice."/>
-    <column name="release_date" value="2024-03-20"/>
-    <column name="poster_path" value="/HHypMdtrOX6m61h2D5M1EAg5aQ.jpg"/>
-    <column name="genres" value="Dramma"/>
-    <column name="duration" value="116"/>
-    <column name="cast" value="Guillaume Canet,Alba Rohrwacher,Sharif Andoura,Emmy Boissard Paumelle,Marie Drucker"/>
-    <column name="director" value="Stéphane Brizé"/>
-    <column name="adult" value="false"/>
-</insert>
-<insert tableName="Film">
-    <column name="title" value="Toys - Giocattoli alla riscossa"/>
-    <column name="overview" value="Stanco di vestire i panni di buffone nel teatrino in cui vive, Don si avventura nell’immenso Central Park di New York per compiere il suo destino da eroe. Aiutato dal potere dell’immaginazione e con DJ Doggy Dog, un rapper di peluche come scudiero, il prode burattino scoprirà che condividere i propri sogni con gli altri è il primo passo per far sì che diventino realtà."/>
-    <column name="release_date" value="2023-09-01"/>
-    <column name="poster_path" value="/lGeQj1c16EOOtZn4cfMQmJh5gIS.jpg"/>
-    <column name="genres" value="Animazione,Avventura,Commedia,Famiglia"/>
-    <column name="duration" value="90"/>
-    <column name="cast" value="Monica Young,Danny Fehsenfeld,Olivier Paris,Dakota West,Jordan Baird"/>
-    <column name="director" value="Jérémie Degruson"/>
-    <column name="adult" value="false"/>
-</insert>
+            <column name="title" value="The Opera! - Arie per un&apos;eclissi"/>
+            <column name="overview"
+                    value="Una rilettura moderna del mito di Orfeo ed Euridice in forma di opera-musical immersiva e transmediale. Ambientata tra una Parigi semisommersa e il Teatro Regio di Torino, unisce musica classica e contemporanea, con riferimenti visivi che spaziano tra opera lirica, moda e arti visive."/>
+            <column name="release_date" value="2025-01-20"/>
+            <column name="poster_path" value="/mfdAaCR5uuLmRy8LBVJmpDnhw6g.jpg"/>
+            <column name="genres" value="Dramma,Musica"/>
+            <column name="duration" value="106"/>
+            <column name="cast" value="Vincent Cassel,Caterina Murino,Fanny Ardant,Rossy de Palma,Angela Finocchiaro"/>
+            <column name="director" value="Davide Livermore"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Liliana"/>
+            <column name="overview"
+                    value="Un documentario che ripercorre la testimonianza della senatrice a vita Liliana Segre legata all’arresto, alla deportazione e allo struggente ultimo addio al padre. Il film si basa su accostamenti, rimandi e contrasti tra il racconto storico e il ritratto contemporaneo di una delle donne più importanti del panorama italiano. Il docu-film mette in luce gli aspetti meno conosciuti della senatrice, facendo scoprire una figura culturale e politica moderna e appassionata nel trasmettere alle giovani generazioni un messaggio di libertà e uguaglianza. A raccontarla sono le voci delle persone a lei vicine: i figli, i nipoti, personaggi pubblici come Ferruccio De Bortoli, Mario Monti, Geppi Cucciari, Fabio Fazio, Enrico Mentana, i carabinieri della scorta, che permettono di avvicinarsi a una Liliana più familiare e privata."/>
+            <column name="release_date" value="2025-01-20"/>
+            <column name="poster_path" value="/vd7Oh6iDQxrfnGaNnDhKH1syuG5.jpg"/>
+            <column name="genres" value="Documentario"/>
+            <column name="duration" value="86"/>
+            <column name="cast"
+                    value="Liliana Segre,Alberto Belli Paci,Luciano Belli Paci,Federica Belli Paci,Davide Belli Paci"/>
+            <column name="director" value="Ruggero Gabbai"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Wolf Man"/>
+            <column name="overview"
+                    value="Blake eredita la casa d&apos;infanzia nell&apos;Oregon dopo la scomparsa di suo padre, che viene dato per morto. Con il logorarsi del suo matrimonio con la potente moglie Charlotte, Blake la convince a prendersi una pausa dalla città e andare a visitare la proprietà con la loro giovane figlia, Ginger. Ma quando la famiglia si avvicina alla fattoria nel cuore della notte, viene attaccata da un animale invisibile e, in una fuga disperata, si barrica all&apos;interno della casa mentre la creatura si aggira attorno al perimetro. Con il passare della notte, però, Blake inizia a comportarsi in modo strano, trasformandosi in qualcosa di irriconoscibile, e Charlotte sarà costretta a decidere se il terrore all&apos;interno della casa sia più letale di quello all’esterno."/>
+            <column name="release_date" value="2025-01-15"/>
+            <column name="poster_path" value="/tUtuMtC6oaRXr4x2B5Xi6ABdMCv.jpg"/>
+            <column name="genres" value="Horror,Thriller"/>
+            <column name="duration" value="103"/>
+            <column name="cast" value="Christopher Abbott,Julia Garner,Matilda Firth,Sam Jaeger,Ben Prendergast"/>
+            <column name="director" value="Leigh Whannell"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Io sono la fine del mondo"/>
+            <column name="overview"
+                    value="&quot;Un giorno i tuoi genitori non ci saranno più e sarai pieno di rimorsi&quot; è la frase che convince Angelo a prendersi cura dei suoi vecchi genitori ora che non sono più autosufficienti: non vuole infatti perdere l&apos;occasione di vendicarsi dei peggiori nemici della sua adolescenza."/>
+            <column name="release_date" value="2025-01-09"/>
+            <column name="poster_path" value="/eyyAmXTFLYJY0WMZWYCr5bbOtsC.jpg"/>
+            <column name="genres" value="Commedia"/>
+            <column name="duration" value="90"/>
+            <column name="cast" value="Angelo Duro,Giorgio Colangeli,Matilde Piana,Marilù Pipitone,Evelyn Famà"/>
+            <column name="director" value="Gennaro Nunziante"/>
+            <column name="adult" value="1"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Nosferatu"/>
+            <column name="overview"
+                    value="Una racconto gotico sull&apos;ossessione tra una giovane donna tormentata e il terrificante vampiro che si è infatuato di lei, provocando un indicibile orrore."/>
+            <column name="release_date" value="2024-12-25"/>
+            <column name="poster_path" value="/8FeFKeveW5BQuoz9reFeh4kRfVR.jpg"/>
+            <column name="genres" value="Dramma,Fantasy,Horror"/>
+            <column name="duration" value="133"/>
+            <column name="cast" value="Lily-Rose Depp,Nicholas Hoult,Bill Skarsgård,Aaron Taylor-Johnson,Willem Dafoe"/>
+            <column name="director" value="Robert Eggers"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Sonic  3 - Il film"/>
+            <column name="overview"
+                    value="Sonic, Knuckles e Tails si ritrovano a dover fronteggiare un nuovo e formidabile nemico:  Shadow, un misterioso villain con poteri incredibili mai visti prima. Con le loro abilità messe alla prova in ogni modo, il Team Sonic dovra cercare un&apos;alleanza inaspettata per fermare Shadow e proteggere il pianeta."/>
+            <column name="release_date" value="2024-12-19"/>
+            <column name="poster_path" value="/hArbAOlNZX0qfd2Udpr6RCTflpg.jpg"/>
+            <column name="genres" value="Azione,Fantascienza,Commedia,Famiglia"/>
+            <column name="duration" value="110"/>
+            <column name="cast" value="Jim Carrey,Ben Schwartz,Keanu Reeves,Idris Elba,Colleen O&apos;Shaughnessey"/>
+            <column name="director" value="Jeff Fowler"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Diamanti"/>
+            <column name="overview"
+                    value="Un regista convoca le sue attrici preferite, quelle con cui ha lavorato e quelle che ha amato. Vuole fare un film sulle donne ma non svela molto: le osserva, prende spunto, si fa ispirare, finché il suo immaginario non le catapulta in un’altra epoca, in un passato dove il rumore delle macchine da cucire riempie un luogo di lavoro gestito e popolato da donne, dove gli uomini hanno piccoli ruoli marginali e il cinema può essere raccontato da un altro punto di vista: quello del costume. Tra solitudini, passioni, ansie, mancanze strazianti e legami indissolubili, realtà e finzione si compenetrano, così come la vita delle attrici con quella dei personaggi, la competizione con la sorellanza, il visibile con l’invisibile."/>
+            <column name="release_date" value="2024-12-19"/>
+            <column name="poster_path" value="/l9Gwwr7nMQzCsOZ9B0b6FlOWTU6.jpg"/>
+            <column name="genres" value="Commedia,Dramma"/>
+            <column name="duration" value="135"/>
+            <column name="cast" value="Luisa Ranieri,Jasmine Trinca,Elena Sofia Ricci,Lunetta Savino,Vanessa Scalera"/>
+            <column name="director" value="Ferzan Özpetek"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Mufasa - Il re leone"/>
+            <column name="overview"
+                    value="Rafiki narra la leggenda di Mufasa alla giovane leoncina Kiara, figlia di Simba e Nala, con Timon e Pumbaa che offrono il loro caratteristico spettacolo. Raccontata attraverso flashback, la storia presenta Mufasa, un cucciolo orfano, perso e solo fino a quando incontra un leone compassionevole di nome Taka, erede di una stirpe reale. L&apos;incontro casuale dà il via al viaggio di uno straordinario gruppo di sventurati alla ricerca del proprio destino: i loro legami saranno messi alla prova mentre lavorano insieme per sfuggire a un nemico minaccioso e letale."/>
+            <column name="release_date" value="2024-12-18"/>
+            <column name="poster_path" value="/eZS2taWdadP8lh22xJOVrWT0lTn.jpg"/>
+            <column name="genres" value="Avventura,Famiglia,Animazione"/>
+            <column name="duration" value="118"/>
+            <column name="cast" value="Aaron Pierre,Kelvin Harrison Jr.,Tiffany Boone,Kagiso Lediga,Preston Nyman"/>
+            <column name="director" value="Barry Jenkins"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Better Man"/>
+            <column name="overview"
+                    value="La storia vera dell&apos;ascesa fulminante, della drammatica caduta e della straordinaria rinascita della superstar del pop britannico Robbie Williams, uno dei più grandi cantanti di tutti i tempi. Il film è raccontato in modo unico dal punto di vista di Williams, facendo trasparire la sua caratteristica ironia e il suo stile inimitabile. Ripercorre le tappe del successo di Robbie, dall&apos;infanzia al ruolo di più giovane componente dei Take That, la boyband che ha sbancato le classifiche, fino agli ineguagliabili successi da solista fuori da ogni record, affrontando al contempo le sfide che fama e successo stratosferici possono portare con sé."/>
+            <column name="release_date" value="2024-12-14"/>
+            <column name="poster_path" value="/bBwQX0Dn4b6riK1pNNYcmATaSQ5.jpg"/>
+            <column name="genres" value="Musica,Commedia,Dramma"/>
+            <column name="duration" value="135"/>
+            <column name="cast" value="Robbie Williams,Jonno Davies,Raechelle Banno,Damon Herriman,Steve Pemberton"/>
+            <column name="director" value="Michael Gracey"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Kraven - Il cacciatore"/>
+            <column name="overview"
+                    value="Kraven Il Cacciatore racconta la violenta storia della nascita e del destino di uno dei villain più iconici della Marvel. Ambientato prima della sua famigerata vendetta contro Spider-Man, Aaron Taylor-Johnson interpreta il protagonista di questo film vietato ai minori di 14 anni."/>
+            <column name="release_date" value="2024-12-11"/>
+            <column name="poster_path" value="/vQZ11oQtuapB6xYgBTkM8VFAu86.jpg"/>
+            <column name="genres" value="Azione,Fantascienza,Avventura,Fantasy,Thriller"/>
+            <column name="duration" value="127"/>
+            <column name="cast"
+                    value="Aaron Taylor-Johnson,Ariana DeBose,Fred Hechinger,Alessandro Nivola,Christopher Abbott"/>
+            <column name="director" value="J.C. Chandor"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Il Signore degli Anelli - La guerra dei Rohirrim"/>
+            <column name="overview"
+                    value="183 anni prima degli aventi del Signore degli Anelli, Helm Mandimartello, re di Rohan, e la sua famiglia difendono il loro regno da un esercito di Dunlandiani. A prendersi il ruolo di protagonista della battaglia, però, è soprattutto Hèra, figlia di Helm dal temperamento ribelle che non esiterà a scendere in campo per difendere il proprio popolo."/>
+            <column name="release_date" value="2024-12-05"/>
+            <column name="poster_path" value="/vNVAJb5gmQP0wjd1LDxu0eI6Thl.jpg"/>
+            <column name="genres" value="Animazione,Fantasy,Azione,Avventura"/>
+            <column name="duration" value="134"/>
+            <column name="cast" value="Brian Cox,Gaia Wise,Luke Pasqualino,Laurence Ubong Williams,Lorraine Ashbourne"/>
+            <column name="director" value="Kenji Kamiyama"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Maria"/>
+            <column name="overview"
+                    value="Il 16 settembre 1977 Maria Callas muore a 53 anni nel suo appartamento di Parigi, dove viveva sola con l&apos;unica compagnia dei fidatissimi Ferruccio, autista e maggiordomo, e Bruna, la domestica. Nella settimana precedente alla morte, e a più di quattro anni dall&apos;ultima performance, la straordinaria soprano greco-statunitense fa i conti con il peso della sua fama, con il ricordo ancora forte del compagno Aristotele Onassis e, forse, con un ultimo tentativo di tornare a calcare i palcoscenici dell&apos;opera, pur indebolita e con una voce nella quale lei per prima non riconosce più il timbro de &quot;la Callas&quot; e delle sue indimenticabili interpretazioni."/>
+            <column name="release_date" value="2024-11-27"/>
+            <column name="poster_path" value="/6xHKEYfrO1FpVZJJnKy5BhfWVCK.jpg"/>
+            <column name="genres" value="Dramma,Musica"/>
+            <column name="duration" value="123"/>
+            <column name="cast"
+                    value="Angelina Jolie,Pierfrancesco Favino,Alba Rohrwacher,Haluk Bilginer,Kodi Smit-McPhee"/>
+            <column name="director" value="Pablo Larraín"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="No Other Land"/>
+            <column name="overview"
+                    value="Il documentario è opera di un collettivo israelo-palestinese che ha filmato per quasi dieci anni le operazioni di espulsione forzata degli abitanti di Masafer Yatta in Cisgiordania da parte dell’esercito israeliano. Le riprese mostrano la distruzione delle case e gli abusi subiti dalla comunità palestinese dei territori occupati. Il gruppo di attivisti palestinesi, sostenuto da membri israeliani, documenta la propria lotta contro la missione israeliana. Basel Adra, un giovane palestinese, scopre grazie a questo progetto la possibilità di avere un grande amico israeliano, si tratta del giornalista Yuval Abraham. Un&apos;amicizia che si oppone all&apos;odio distruttivo tra i due popoli."/>
+            <column name="release_date" value="2024-11-01"/>
+            <column name="poster_path" value="/iQcponQFjf9Ym9ZmBGj4lXbq9Tp.jpg"/>
+            <column name="genres" value="Documentario"/>
+            <column name="duration" value="96"/>
+            <column name="cast" value="Basel Adra,Yuval Abraham,Farisa Abu Aram,Nasser Adra,Harun Abu Aram"/>
+            <column name="director" value="Rachel Szor"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Here"/>
+            <column name="overview"
+                    value="Un&apos;odissea attraverso il tempo e la memoria, incentrata su un luogo ben preciso del New England; da quando era solo natura selvaggia fino al momento in cui ha ospitato la sua prima casa, testimoniando l&apos;amore, la perdita, la lotta, la speranza e gli insegnamenti che si sono tramandati di famiglia in famiglia, di generazione in generazione."/>
+            <column name="release_date" value="2024-10-30"/>
+            <column name="poster_path" value="/m2FYEz9ETXeG2oy4Iz1tDlV0r78.jpg"/>
+            <column name="genres" value="Dramma"/>
+            <column name="duration" value="104"/>
+            <column name="cast" value="Tom Hanks,Robin Wright,Paul Bettany,Kelly Reilly,Ellis Grunsell"/>
+            <column name="director" value="Robert Zemeckis"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Conclave"/>
+            <column name="overview"
+                    value="CONCLAVE ci porta nel cuore di uno degli eventi più misteriosi e segreti del mondo: l&apos;elezione di un nuovo Papa. Dopo la morte improvvisa dell’amato e compianto Papa, il Cardinale Lawrence (Ralph Fiennes) è incaricato di dirigere questo delicato processo. Una volta che i leader più potenti della Chiesa Cattolica si riuniscono e si chiudono nelle segrete sale del Vaticano, Lawrence si ritrova intrappolato in una rete di intrighi, tradimenti e giochi di potere. Un oscuro segreto viene alla luce, minacciando di scuotere le fondamenta stesse della Chiesa."/>
+            <column name="release_date" value="2024-10-25"/>
+            <column name="poster_path" value="/ftIJ42zwuFvUFVEWZQbFq1vcV5U.jpg"/>
+            <column name="genres" value="Dramma"/>
+            <column name="duration" value="120"/>
+            <column name="cast" value="Ralph Fiennes,Stanley Tucci,John Lithgow,Isabella Rossellini,Lucian Msamati"/>
+            <column name="director" value="Edward Berger"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Armand"/>
+            <column name="overview"
+                    value="Poco prima dell’inizio delle  vacanze scolastiche, i genitori  di Armand e Jon vengono  convocati dalla dirigenza  scolastica in seguito ad un “fatto”  avvenuto tra di loro. Nessuno  però sembra in grado di spiegare  cosa sia realmente accaduto. Si è trattato di un gioco innocente  tra due bambini di sei anni o  di qualcosa di molto più serio? Le versioni dei due compagni  non coincidono, le opinioni si  contrappongono e le certezze  degli adulti vacillano…"/>
+            <column name="release_date" value="2024-09-27"/>
+            <column name="poster_path" value="/toW7qhFaO3VvuoRXFNpjs55PXMZ.jpg"/>
+            <column name="genres" value="Dramma,Thriller"/>
+            <column name="duration" value="116"/>
+            <column name="cast"
+                    value="Renate Reinsve,Ellen Dorrit Petersen,Endre Hellestveit,Thea Lambrechts Vaulen,Øystein Røger"/>
+            <column name="director" value="Halfdan Ullmann Tøndel"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Emilia Pérez"/>
+            <column name="overview"
+                    value="Rita, un avvocato sottovalutato che lavora per un grande studio legale più interessato a far uscire di prigione i criminali che a consegnarli alla giustizia, viene assunta dal leader di un&apos;organizzazione criminale."/>
+            <column name="release_date" value="2024-08-21"/>
+            <column name="poster_path" value="/l3rR9vgWFup3QCOWJ21UUohqkIA.jpg"/>
+            <column name="genres" value="Dramma,Thriller"/>
+            <column name="duration" value="132"/>
+            <column name="cast" value="Karla Sofía Gascón,Zoe Saldaña,Selena Gomez,Adriana Paz,Edgar Ramírez"/>
+            <column name="director" value="Jacques Audiard"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Una notte a New York"/>
+            <column name="overview"
+                    value="Una donna prende un taxi dall&apos;aeroporto JFK di New York e si ritrova coinvolta in una profonda conversazione insieme all&apos;autista, raccontandosi a vicenda le storie delle relazioni più importanti che hanno avuto nelle loro vite."/>
+            <column name="release_date" value="2024-06-27"/>
+            <column name="poster_path" value="/6q7Hu1ulikgsXJmnNhIW6Hun21g.jpg"/>
+            <column name="genres" value="Dramma"/>
+            <column name="duration" value="101"/>
+            <column name="cast" value="Dakota Johnson,Sean Penn,Marcos A. Gonzalez,Zora Lloyd,Shannon Gannon"/>
+            <column name="director" value="Christy Hall"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Le occasioni dell&apos;amore"/>
+            <column name="overview"
+                    value="Mathieu vive a Parigi, Alice in una piccola località di mare nella Francia occidentale. Lui è un famoso attore in procinto di compiere cinquant’anni, lei un’insegnante di piano sulla quarantina. Innamorati quindici anni fa, successivamente separati. Il tempo è passato. Ciascuno ha preso la propria strada e le ferite si sono lentamente rimarginate. Quando Mathieu va in una spa per cercare di superare la malinconia che lo attanaglia, si imbatte in Alice."/>
+            <column name="release_date" value="2024-03-20"/>
+            <column name="poster_path" value="/HHypMdtrOX6m61h2D5M1EAg5aQ.jpg"/>
+            <column name="genres" value="Dramma"/>
+            <column name="duration" value="116"/>
+            <column name="cast"
+                    value="Guillaume Canet,Alba Rohrwacher,Sharif Andoura,Emmy Boissard Paumelle,Marie Drucker"/>
+            <column name="director" value="Stéphane Brizé"/>
+            <column name="adult" value="0"/>
+        </insert>
+        <insert tableName="Film">
+            <column name="title" value="Toys - Giocattoli alla riscossa"/>
+            <column name="overview"
+                    value="Stanco di vestire i panni di buffone nel teatrino in cui vive, Don si avventura nell’immenso Central Park di New York per compiere il suo destino da eroe. Aiutato dal potere dell’immaginazione e con DJ Doggy Dog, un rapper di peluche come scudiero, il prode burattino scoprirà che condividere i propri sogni con gli altri è il primo passo per far sì che diventino realtà."/>
+            <column name="release_date" value="2023-09-01"/>
+            <column name="poster_path" value="/lGeQj1c16EOOtZn4cfMQmJh5gIS.jpg"/>
+            <column name="genres" value="Animazione,Avventura,Commedia,Famiglia"/>
+            <column name="duration" value="90"/>
+            <column name="cast" value="Monica Young,Danny Fehsenfeld,Olivier Paris,Dakota West,Jordan Baird"/>
+            <column name="director" value="Jérémie Degruson"/>
+            <column name="adult" value="0"/>
+        </insert>
 
     </changeSet>
 

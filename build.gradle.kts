@@ -147,6 +147,30 @@ tasks {
             attributes["Main-Class"] = "it.unibo.samplejavafx.App"
         }
     }
+
+    // Aggiungi le dipendenze esplicite
+    bootDistZip {
+        dependsOn(shadowJar)
+    }
+
+    bootDistTar {
+        dependsOn(shadowJar)
+    }
+
+    bootStartScripts {
+        dependsOn(shadowJar)
+    }
+
+    // Aggiungi la dipendenza per startShadowScripts
+    startShadowScripts {
+        dependsOn(bootJar)
+    }
+
+    // Assicurati che tutti i task necessari vengano eseguiti nell'ordine corretto
+    build {
+        dependsOn(shadowJar)
+        dependsOn(bootJar)
+    }
 }
 
 application {
